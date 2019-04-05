@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "SpaceMouse",
+	"Description": "Control the camera of viewports with 3DConnexion SpaceMice",
+	"Category": "Other",
+	"CreatedBy": "microdee",
+	"CreatedByURL": "mcro.de",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"Installed": false,
+	"Modules": [
+    {
+      "Name": "SpaceMouse",
+      "Type": "Editor",
+      "LoadingPhase": "PostEngineInit"
+    }
+	]
+}
