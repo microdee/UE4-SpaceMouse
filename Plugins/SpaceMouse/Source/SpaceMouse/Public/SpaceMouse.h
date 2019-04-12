@@ -17,6 +17,7 @@ class FSpaceMouseModule : public IModuleInterface
 private:
 	void OnTick();
 	FTimerHandle TickTimerHandle;
+	unsigned char OutputBuffer[80];
 public:
 
 	/** IModuleInterface implementation */

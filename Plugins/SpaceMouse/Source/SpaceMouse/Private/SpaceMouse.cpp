@@ -6,6 +6,10 @@
 
 void FSpaceMouseModule::OnTick()
 {
+	if(DeviceOpened)
+	{
+		hid_read(Device, (unsigned char*)&OutputBuffer, 28);
+	}
 	GEditor->GetTimerManager().Get()->SetTimerForNextTick(OnTick);
 }
 
