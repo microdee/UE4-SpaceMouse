@@ -1,4 +1,4 @@
-// Some copyright should be here...
+// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
@@ -7,7 +7,6 @@ public class SpaceMouse : ModuleRules
 	public SpaceMouse(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-
         bEnableUndefinedIdentifierWarnings = false;
 
         PublicIncludePaths.AddRange(
@@ -28,7 +27,6 @@ public class SpaceMouse : ModuleRules
 			new string[]
 			{
 				"Core",
-                "UnrealEd"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -38,11 +36,12 @@ public class SpaceMouse : ModuleRules
 			new string[]
 			{
 				"CoreUObject",
-                "Core",
 				"Engine",
 				"Slate",
 				"SlateCore",
-                "UnrealEd"
+				"InputCore",
+				"UnrealEd",
+				"LevelEditor",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

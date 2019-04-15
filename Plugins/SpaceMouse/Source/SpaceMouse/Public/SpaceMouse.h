@@ -2,27 +2,33 @@
 
 #pragma once
 
-#include "Hid.h"
+#include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
-#include "Editor.h"
-#include "Engine.h"
-#include "Editor/EditorEngine.h"
-#include "Editor/UnrealEdEngine.h"
-#include "UnrealClient.h"
 #include "TimerManager.h"
-#include "GenericPlatformMisc.h"
+#include "LevelEditorViewport.h"
+#include "Hid.h"
 
 class FSpaceMouseModule : public IModuleInterface
 {
 private:
+
+	FTimerDelegate OnTickDel;
 	void OnTick();
-	FTimerHandle TickTimerHandle;
 	unsigned char OutputBuffer[80];
+
+	FVector Translation;
+	FVector Rotation;
+	bool Buttons[48];
+
+	FEditorViewportClient* ActiveViewportClient;
+
 public:
 
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
+
+	float Resolution = 350.0;
 
 	hid_device * Device;
 	bool DeviceOpened;
