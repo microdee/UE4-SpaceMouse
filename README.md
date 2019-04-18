@@ -3,6 +3,8 @@
 **Compatible with UE 4.22 and probably below**  
 **Download plugin from releases**
 
+Demo video: https://youtu.be/Qibig0gQWvE
+
 You can control any 3D editor viewport currently in focus (user clicked on it). Controls are 6DOF camera movement type, no orbit type yet. See the picture for the transition and rotation axis:
 
 ![Alt text](/ReadmeMedia/coordinates.jpg?raw=true "Coordinates")
