@@ -2,10 +2,12 @@
 
 #include "SpaceMouse.h"
 #include "Editor.h"
-#include "SWidget.h"
 #include "SEditorViewport.h"
-#include "SceneViewport.h"
 #include "App.h"
+#include "Object.h"
+#include "ISettingsModule.h"
+#include "ISettingsSection.h"
+#include "ISettingsContainer.h"
 
 //#define DEBUG_SM_VALUES 1
 
@@ -21,7 +23,13 @@ void FSpaceMouseDevice::Tick()
 	unsigned char* pOutput = (unsigned char*)&OutputBuffer;
 	int ctr = 0;
 
-	while (hid_read(Device, pOutput, 28) > 0 && ctr < 64)
+	PrevMoving = Moving;
+
+	Moving = false;
+
+	int maxreads = FSpaceMouseModule::Settings->MaxHidReadOperationsPerFrame;
+
+	while (hid_read(Device, pOutput, 28) > 0 && ctr < maxreads)
 	{
 		unsigned char* pCurr = pOutput;
 		for (int i = 0; i < 4; i++)
@@ -34,6 +42,11 @@ void FSpaceMouseDevice::Tick()
 			int16 xx = *(int16*)(pCurr + 1);
 			int16 yy = *(int16*)(pCurr + 3);
 			int16 zz = *(int16*)(pCurr + 5);
+
+			float fx = (float)xx / FSpaceMouseModule::gResolution;
+			float fy = (float)yy / FSpaceMouseModule::gResolution;
+			float fz = (float)zz / FSpaceMouseModule::gResolution;
+
 #if defined(DEBUG_SM_VALUES)
 			GEngine->AddOnScreenDebugMessage(
 				2000 + report,
@@ -45,30 +58,40 @@ void FSpaceMouseDevice::Tick()
 
 			if (report == 1)
 			{
+				Moving = true;
+
 #if defined(DEBUG_SM_VALUES)
 				GEngine->AddOnScreenDebugMessage(3002, 1.0, FColor::Cyan, "tx " + FString::FromInt(xx));
 				GEngine->AddOnScreenDebugMessage(3003, 1.0, FColor::Cyan, "ty " + FString::FromInt(yy));
 				GEngine->AddOnScreenDebugMessage(3004, 1.0, FColor::Cyan, "tz " + FString::FromInt(zz));
 #endif
+				FVector xmap = FSpaceMouseModule::Settings->XTranslationAxisMap;
+				FVector ymap = FSpaceMouseModule::Settings->YTranslationAxisMap;
+				FVector zmap = FSpaceMouseModule::Settings->ZTranslationAxisMap;
+
 				Translation = FVector(
-					(float)yy / -FSpaceMouseModule::gResolution,
-					(float)xx / FSpaceMouseModule::gResolution,
-					(float)zz / -FSpaceMouseModule::gResolution
-				) * FSpaceMouseModule::gTransSpeed * FApp::GetDeltaTime();
+					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
+					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
+					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
+				) * FSpaceMouseModule::Settings->TranslationUnitsPerSec * FApp::GetDeltaTime();
 			}
 			else if (report == 2)
 			{
+				Moving = true;
 
 #if defined(DEBUG_SM_VALUES)
 				GEngine->AddOnScreenDebugMessage(3006, 1.0, FColor::Cyan, "rx " + FString::FromInt(xx));
 				GEngine->AddOnScreenDebugMessage(3007, 1.0, FColor::Cyan, "ry " + FString::FromInt(yy));
 				GEngine->AddOnScreenDebugMessage(3008, 1.0, FColor::Cyan, "rz " + FString::FromInt(zz));
 #endif
+				FVector xmap = FSpaceMouseModule::Settings->PitchAxisMap;
+				FVector ymap = FSpaceMouseModule::Settings->YawAxisMap;
+				FVector zmap = FSpaceMouseModule::Settings->RollAxisMap;
 				Rotation = FRotator(
-					(float)xx / FSpaceMouseModule::gResolution,
-					(float)zz / FSpaceMouseModule::gResolution,
-					(float)yy / -FSpaceMouseModule::gResolution
-				) * FSpaceMouseModule::gRotSpeed * FApp::GetDeltaTime();
+					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
+					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
+					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
+				) * FSpaceMouseModule::Settings->RotationDegreesPerSec * FApp::GetDeltaTime();
 			}
 			else if (report == 3)
 			{
@@ -86,17 +109,16 @@ void FSpaceMouseDevice::Tick()
 		}
 		ctr++;
 	}
+
+	OnMovementStartedFrame = Moving && !PrevMoving;
 }
 
 float FSpaceMouseModule::gResolution;
-float FSpaceMouseModule::gRotSpeed;
-float FSpaceMouseModule::gTransSpeed;
+USpaceMouseConfig* FSpaceMouseModule::Settings;
 
 void FSpaceMouseModule::OnTick()
 {
 	FSpaceMouseModule::gResolution = Resolution;
-	FSpaceMouseModule::gRotSpeed = RotSpeed;
-	FSpaceMouseModule::gTransSpeed = TransSpeed;
 
 	Translation = FVector::ZeroVector;
 	Rotation = FRotator::ZeroRotator;
@@ -107,12 +129,15 @@ void FSpaceMouseModule::OnTick()
 		Buttons[i] = false;
 	}
 
+	bool onmovestarted = false;
+
 	for (auto smi = Devices.CreateConstIterator(); smi; ++smi)
 	{
 		FSpaceMouseDevice* sm = *smi;
 		sm->Tick();
 		Translation += sm->Translation;
 		Rotation += sm->Rotation;
+		onmovestarted = onmovestarted || sm->OnMovementStartedFrame;
 
 		for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
 			Buttons[i] = Buttons[i] || sm->Buttons[i];
@@ -125,47 +150,127 @@ void FSpaceMouseModule::OnTick()
 		FEditorViewportClient* cvp = *cvpi;
 		if (cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
 		{
-			ActiveViewportClient = cvp;
+			if(cvp->IsVisible() && cvp->IsPerspective())
+			{
+				if(cvp != ActiveViewportClient)
+				{
+					if(ActiveViewportClient)
+					{
+						ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
+					}
+					bWasOrbitCamera = cvp->ShouldOrbitCamera();
+					cvp->ToggleOrbitCamera(false);
+				}
+				ActiveViewportClient = cvp;
+			}
 		}
 	}
 
-	if (ActiveViewportClient != nullptr && Enabled)
+	if(onmovestarted && ActiveViewportClient)
 	{
-		if(Buttons[0] && !PrevButtons[0])
-		{
-			ActiveViewportClient->SetCameraSpeedSetting(ActiveViewportClient->GetCameraSpeedSetting() - 1);
-		}
-		if (Buttons[1] && !PrevButtons[1])
-		{
-			ActiveViewportClient->SetCameraSpeedSetting(ActiveViewportClient->GetCameraSpeedSetting() + 1);
-		}
+		ActiveViewportClient->ToggleOrbitCamera(false);
+	}
 
-		FRotator currRot = ActiveViewportClient->GetViewRotation();
-		FVector currPos = ActiveViewportClient->GetViewLocation();
-		currPos += currRot.RotateVector(Translation * ActiveViewportClient->GetCameraSpeed());
-		currRot = FRotator(FQuat(currRot) * FQuat(Rotation));
-		ActiveViewportClient->SetViewLocation(currPos);
-		ActiveViewportClient->SetViewRotation(currRot);
+	try
+	{
+		if (ActiveViewportClient != nullptr && Enabled)
+		{
+			if(ActiveViewportClient->IsVisible())
+			{
+				if(ActiveViewportClient->IsPerspective())
+				{
+					if (Buttons[0] && !PrevButtons[0])
+					{
+						ActiveViewportClient->SetCameraSpeedSetting(ActiveViewportClient->GetCameraSpeedSetting() - 1);
+					}
+					if (Buttons[1] && !PrevButtons[1])
+					{
+						ActiveViewportClient->SetCameraSpeedSetting(ActiveViewportClient->GetCameraSpeedSetting() + 1);
+					}
+
+					FRotator currRot = ActiveViewportClient->GetViewRotation();
+					FVector currPos = ActiveViewportClient->GetViewLocation();
+					currPos += currRot.RotateVector(Translation * ActiveViewportClient->GetCameraSpeed());
+					currRot = FRotator(FQuat(currRot) * FQuat(Rotation));
+					ActiveViewportClient->SetViewLocation(currPos);
+					ActiveViewportClient->SetViewRotation(currRot);
 
 #if defined(DEBUG_SM_VALUES)
-		GEngine->AddOnScreenDebugMessage(
-			2200,
-			1.0,
-			FColor::Yellow,
-			FString::SanitizeFloat(ActiveViewportClient->GetCameraSpeed())
-		);
+					GEngine->AddOnScreenDebugMessage(
+						2200,
+						1.0,
+						FColor::Yellow,
+						FString::SanitizeFloat(ActiveViewportClient->GetCameraSpeed())
+					);
 #endif
+				}
+			}
+		}
 	}
+	catch (int exc) { LastErrorCode = exc; }
 	if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
-};
+}
+
+bool FSpaceMouseModule::HandleSettingsSaved()
+{
+	Settings = GetMutableDefault<USpaceMouseConfig>();
+	Settings->SaveConfig();
+	return true;
+}
+
+void FSpaceMouseModule::RegisterSettings()
+{
+
+	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
+	{
+		// Create the new category
+		ISettingsContainerPtr SettingsContainer = SettingsModule->GetContainer("Editor");
+
+		SettingsContainer->DescribeCategory("SpaceMouse",
+			LOCTEXT("RuntimeWDCategoryName", "SpaceMouse"),
+			LOCTEXT("RuntimeWDCategoryDescription", "Configure SpaceMice for the editor"));
+
+		Settings = GetMutableDefault<USpaceMouseConfig>();
+		// Register the settings
+		ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings("Editor", "SpaceMouse", "General",
+			LOCTEXT("RuntimeGeneralSettingsName", "General"),
+			LOCTEXT("RuntimeGeneralSettingsDescription", "Configure SpaceMice for the editor"),
+			Settings
+		);
+
+		// Register the save handler to your settings, you might want to use it to
+		// validate those or just act to settings changes.
+		if (SettingsSection.IsValid())
+		{
+			SettingsSection->OnModified().BindRaw(this, &FSpaceMouseModule::HandleSettingsSaved);
+		}
+	}
+}
+
+void FSpaceMouseModule::UnregisterSettings()
+{
+	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
+	{
+		SettingsModule->UnregisterSettings("Editor", "SpaceMouse", "General");
+	}
+}
 
 void FSpaceMouseModule::StartupModule()
 {
 	OnTickDel = OnTickDel.CreateLambda([this]() { OnTick(); });
 
+	RegisterSettings();
+	bWasOrbitCamera = false;
+
 	hid_init();
 	DeviceInfos = hid_enumerate(0x46D, 0);
 	hid_device_info* cinfo = DeviceInfos;
+
+	for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
+	{
+		PrevButtons[i] = false;
+		Buttons[i] = false;
+	}
 
 	while (cinfo)
 	{
@@ -187,6 +292,11 @@ void FSpaceMouseModule::StartupModule()
 void FSpaceMouseModule::ShutdownModule()
 {
 	//hid_free_enumeration(DeviceInfos);
+
+	if(UObjectInitialized())
+	{
+		UnregisterSettings();
+	}
 
 	Enabled = false;
 	Devices.Empty();

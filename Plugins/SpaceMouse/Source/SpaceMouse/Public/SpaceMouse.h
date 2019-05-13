@@ -7,6 +7,7 @@
 #include "TimerManager.h"
 #include "LevelEditorViewport.h"
 #include "Hid.h"
+#include "SpaceMouseConfig.h"
 
 //General Log
 DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);
@@ -15,6 +16,8 @@ DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);
 
 class FSpaceMouseDevice
 {
+private:
+	bool PrevMoving;
 public:
 
 
@@ -28,10 +31,16 @@ public:
 	FRotator Rotation;
 	bool Buttons[SPACEMOUSE_BUTTONCOUNT];
 
+	bool OnMovementStartedFrame;
+	bool Moving;
+
 	void Tick();
 
 	explicit FSpaceMouseDevice(hid_device_info* dev)
 	{
+		PrevMoving = false;
+		Moving = false;
+		OnMovementStartedFrame = false;
 		DeviceInfo = dev;
 		Device = hid_open_path(dev->path);
 		DeviceOpened = Device != nullptr;
@@ -57,24 +66,30 @@ private:
 	bool PrevButtons[SPACEMOUSE_BUTTONCOUNT];
 	bool Buttons[SPACEMOUSE_BUTTONCOUNT];
 
+	bool bWasOrbitCamera;
+
 	TArray<FSpaceMouseDevice*> Devices;
 	TArray<FEditorViewportClient*> AllViewportClients;
 	FEditorViewportClient* ActiveViewportClient;
 	FString focusedVpType;
+
+	bool HandleSettingsSaved();
+	void RegisterSettings();
+	void UnregisterSettings();
 
 public:
 
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
+	virtual bool SupportsDynamicReloading() override { return true; }
 
+	int LastErrorCode;
+
+	static USpaceMouseConfig* Settings;
 	static float gResolution;
-	static float gRotSpeed;
-	static float gTransSpeed;
 
 	float Resolution = 350.0;
-	float RotSpeed = 180;
-	float TransSpeed = 1000;
 
 	bool DeviceOpened;
 	hid_device_info * DeviceInfos;
