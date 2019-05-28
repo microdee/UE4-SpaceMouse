@@ -6,7 +6,6 @@
 #include "UObject/Interface.h"
 #include "SpaceMouseConfig.generated.h"
 
-// This class does not need to be modified.
 UCLASS(Config=Editor, defaultconfig)
 class USpaceMouseConfig : public UObject
 {
@@ -40,4 +39,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Config, Category = HID)
 		int MaxHidReadOperationsPerFrame = 2048;
+
+	UPROPERTY(EditAnywhere, Config, Category = HID)
+		bool DisplayDebugInformation = false;
 };

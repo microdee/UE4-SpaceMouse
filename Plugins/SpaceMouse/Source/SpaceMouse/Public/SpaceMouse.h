@@ -18,9 +18,14 @@ class FSpaceMouseDevice
 {
 private:
 	bool PrevMoving;
+
+	FString dr0;
+	FString dr1;
+	FString dr2;
+	FString dr3;
 public:
 
-
+	int InternalID = 0;
 	hid_device* Device;
 	hid_device_info* DeviceInfo;
 
@@ -36,8 +41,9 @@ public:
 
 	void Tick();
 
-	explicit FSpaceMouseDevice(hid_device_info* dev)
+	explicit FSpaceMouseDevice(hid_device_info* dev, int iid)
 	{
+		InternalID = iid;
 		PrevMoving = false;
 		Moving = false;
 		OnMovementStartedFrame = false;

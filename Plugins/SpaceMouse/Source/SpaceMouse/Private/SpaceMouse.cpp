@@ -24,13 +24,21 @@ void FSpaceMouseDevice::Tick()
 	int ctr = 0;
 
 	PrevMoving = Moving;
-
 	Moving = false;
 
 	int maxreads = FSpaceMouseModule::Settings->MaxHidReadOperationsPerFrame;
 
+	bool printdebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
+	bool drecieved = false;
+	FString dreport;
+
 	while (hid_read(Device, pOutput, 28) > 0 && ctr < maxreads)
 	{
+		drecieved = true;
+		if(printdebug)
+		{
+			dreport += FString::FromHexBlob(pOutput, 7);
+		}
 		unsigned char* pCurr = pOutput;
 		for (int i = 0; i < 4; i++)
 		{
@@ -47,24 +55,15 @@ void FSpaceMouseDevice::Tick()
 			float fy = (float)yy / FSpaceMouseModule::gResolution;
 			float fz = (float)zz / FSpaceMouseModule::gResolution;
 
-#if defined(DEBUG_SM_VALUES)
-			GEngine->AddOnScreenDebugMessage(
-				2000 + report,
-				1.0,
-				FColor::Yellow,
-				FString::FromHexBlob((uint8*)pCurr, 28)
-			);
-#endif
+			if (report == 0 && printdebug)
+			{
+				dr0 = FString::FromHexBlob(pCurr, 7);
+			}
 
 			if (report == 1)
 			{
 				Moving = true;
 
-#if defined(DEBUG_SM_VALUES)
-				GEngine->AddOnScreenDebugMessage(3002, 1.0, FColor::Cyan, "tx " + FString::FromInt(xx));
-				GEngine->AddOnScreenDebugMessage(3003, 1.0, FColor::Cyan, "ty " + FString::FromInt(yy));
-				GEngine->AddOnScreenDebugMessage(3004, 1.0, FColor::Cyan, "tz " + FString::FromInt(zz));
-#endif
 				FVector xmap = FSpaceMouseModule::Settings->XTranslationAxisMap;
 				FVector ymap = FSpaceMouseModule::Settings->YTranslationAxisMap;
 				FVector zmap = FSpaceMouseModule::Settings->ZTranslationAxisMap;
@@ -74,16 +73,13 @@ void FSpaceMouseDevice::Tick()
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
 					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
 				) * FSpaceMouseModule::Settings->TranslationUnitsPerSec * FApp::GetDeltaTime();
+
+				if(printdebug) dr1 = FString::FromHexBlob(pCurr, 7);
 			}
 			else if (report == 2)
 			{
 				Moving = true;
 
-#if defined(DEBUG_SM_VALUES)
-				GEngine->AddOnScreenDebugMessage(3006, 1.0, FColor::Cyan, "rx " + FString::FromInt(xx));
-				GEngine->AddOnScreenDebugMessage(3007, 1.0, FColor::Cyan, "ry " + FString::FromInt(yy));
-				GEngine->AddOnScreenDebugMessage(3008, 1.0, FColor::Cyan, "rz " + FString::FromInt(zz));
-#endif
 				FVector xmap = FSpaceMouseModule::Settings->PitchAxisMap;
 				FVector ymap = FSpaceMouseModule::Settings->YawAxisMap;
 				FVector zmap = FSpaceMouseModule::Settings->RollAxisMap;
@@ -92,6 +88,8 @@ void FSpaceMouseDevice::Tick()
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
 					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
 				) * FSpaceMouseModule::Settings->RotationDegreesPerSec * FApp::GetDeltaTime();
+
+				if (printdebug) dr2 = FString::FromHexBlob(pCurr, 7);
 			}
 			else if (report == 3)
 			{
@@ -104,10 +102,23 @@ void FSpaceMouseDevice::Tick()
 						ii++;
 					}
 				}
+
+				if (printdebug) dr3 = FString::FromHexBlob(pCurr, 7);
 			}
 			pCurr += 7;
 		}
 		ctr++;
+	}
+	if (printdebug && drecieved)
+	{
+		FString message = "Device: ";
+		message += "Serial: " + FString(DeviceInfo->serial_number) + "\n";
+		message += "VID: " + FString::FromInt(DeviceInfo->vendor_id) + "\n";
+		message += "PID: " + FString::FromInt(DeviceInfo->product_id) + "\n";
+		message += "Report:\n    ";
+		message += dreport + "\n";
+		message += "Sorted:\n    " + dr0 + "\n    " + dr1 + "\n    " + dr2 + "\n    " + dr3;
+		GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, message);
 	}
 
 	OnMovementStartedFrame = Moving && !PrevMoving;
@@ -141,6 +152,16 @@ void FSpaceMouseModule::OnTick()
 
 		for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
 			Buttons[i] = Buttons[i] || sm->Buttons[i];
+	}
+
+	bool printdebug = Settings->DisplayDebugInformation;
+	if (printdebug)
+	{
+		//FString message = "Connected SpaceMice: " + FString::FromInt(Devices.Num());
+		GEngine->AddOnScreenDebugMessage(
+			2000, 1.0, FColor::Cyan,
+			"Connected SpaceMice: " + FString::FromInt(Devices.Num())
+		);
 	}
 
 	AllViewportClients = GEditor->GetAllViewportClients();
@@ -272,17 +293,19 @@ void FSpaceMouseModule::StartupModule()
 		Buttons[i] = false;
 	}
 
+	int ii = 0;
 	while (cinfo)
 	{
 		auto manfstr = FString((TCHAR*)cinfo->manufacturer_string);
 		if(manfstr.Contains("3Dconnexion", ESearchCase::IgnoreCase, ESearchDir::FromStart))
 		{
-			auto smdevice = new FSpaceMouseDevice(cinfo);
+			auto smdevice = new FSpaceMouseDevice(cinfo, ii);
 			Devices.Add(smdevice);
 			if (smdevice->DeviceOpened)
 				DeviceOpened = true;
 		}
 		cinfo = cinfo->next;
+		ii++;
 	}
 
 	Enabled = true;
