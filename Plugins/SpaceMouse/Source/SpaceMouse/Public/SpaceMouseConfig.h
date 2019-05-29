@@ -42,4 +42,13 @@ public:
 
 	UPROPERTY(EditAnywhere, Config, Category = HID)
 		bool DisplayDebugInformation = false;
+
+	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping)
+		int IncreaseSpeedButtonID = 1;
+
+	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping)
+		int DecreaseSpeedButtonID = 0;
+
+	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping)
+		int ResetSpeedButtonID = 2;
 };

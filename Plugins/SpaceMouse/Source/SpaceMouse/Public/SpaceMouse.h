@@ -14,6 +14,8 @@ DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);
 
 #define SPACEMOUSE_BUTTONCOUNT 48
 
+#define BUTTONDOWN(id) (Buttons[id] && !PrevButtons[id])
+
 class FSpaceMouseDevice
 {
 private:

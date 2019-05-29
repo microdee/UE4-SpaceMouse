@@ -200,18 +200,27 @@ void FSpaceMouseModule::OnTick()
 			{
 				if(ActiveViewportClient->IsPerspective())
 				{
-					if (Buttons[0] && !PrevButtons[0])
+					float camspeed = ActiveViewportClient->GetCameraSpeedSetting();
+					if (BUTTONDOWN(Settings->DecreaseSpeedButtonID))
 					{
-						ActiveViewportClient->SetCameraSpeedSetting(ActiveViewportClient->GetCameraSpeedSetting() - 1);
+						ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
 					}
-					if (Buttons[1] && !PrevButtons[1])
+					if (BUTTONDOWN(Settings->IncreaseSpeedButtonID))
 					{
-						ActiveViewportClient->SetCameraSpeedSetting(ActiveViewportClient->GetCameraSpeedSetting() + 1);
+						ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
 					}
+					if(BUTTONDOWN(Settings->ResetSpeedButtonID))
+					{
+						ActiveViewportClient->SetCameraSpeedSetting(4);
+					}
+
+					float speedexp = FMath::Max(ActiveViewportClient->GetCameraSpeedSetting() - 8, 0);
+					speedexp += FMath::Min(ActiveViewportClient->GetCameraSpeedSetting(), 0);
+					float speedmul = FMath::Pow(2, speedexp);
 
 					FRotator currRot = ActiveViewportClient->GetViewRotation();
 					FVector currPos = ActiveViewportClient->GetViewLocation();
-					currPos += currRot.RotateVector(Translation * ActiveViewportClient->GetCameraSpeed());
+					currPos += currRot.RotateVector(Translation * ActiveViewportClient->GetCameraSpeed()) * speedmul;
 					currRot = FRotator(FQuat(currRot) * FQuat(Rotation));
 					ActiveViewportClient->SetViewLocation(currPos);
 					ActiveViewportClient->SetViewRotation(currRot);
