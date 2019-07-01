@@ -4,7 +4,7 @@
 	"VersionName": "1.0",
 	"FriendlyName": "SpaceMouse",
 	"Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
-	"Category": "Other",
+	"Category": "Input",
 	"CreatedBy": "microdee",
 	"CreatedByURL": "http://mcro.de",
 	"DocsURL": "",

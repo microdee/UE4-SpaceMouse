@@ -142,9 +142,8 @@ void FSpaceMouseModule::OnTick()
 
 	bool onmovestarted = false;
 
-	for (auto smi = Devices.CreateConstIterator(); smi; ++smi)
+	for (FSpaceMouseDevice* sm : Devices)
 	{
-		FSpaceMouseDevice* sm = *smi;
 		sm->Tick();
 		Translation += sm->Translation;
 		Rotation += sm->Rotation;
@@ -164,80 +163,9 @@ void FSpaceMouseModule::OnTick()
 		);
 	}
 
-	AllViewportClients = GEditor->GetAllViewportClients();
+	ManageActiveViewport();
+	MoveActiveViewport(onmovestarted);
 
-	for (auto cvpi = AllViewportClients.CreateConstIterator(); cvpi; ++cvpi)
-	{
-		FEditorViewportClient* cvp = *cvpi;
-		if (cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
-		{
-			if(cvp->IsVisible() && cvp->IsPerspective())
-			{
-				if(cvp != ActiveViewportClient)
-				{
-					if(ActiveViewportClient)
-					{
-						ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
-					}
-					bWasOrbitCamera = cvp->ShouldOrbitCamera();
-					cvp->ToggleOrbitCamera(false);
-				}
-				ActiveViewportClient = cvp;
-			}
-		}
-	}
-
-	if(onmovestarted && ActiveViewportClient)
-	{
-		ActiveViewportClient->ToggleOrbitCamera(false);
-	}
-
-	try
-	{
-		if (ActiveViewportClient != nullptr && Enabled)
-		{
-			if(ActiveViewportClient->IsVisible())
-			{
-				if(ActiveViewportClient->IsPerspective())
-				{
-					float camspeed = ActiveViewportClient->GetCameraSpeedSetting();
-					if (BUTTONDOWN(Settings->DecreaseSpeedButtonID))
-					{
-						ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
-					}
-					if (BUTTONDOWN(Settings->IncreaseSpeedButtonID))
-					{
-						ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
-					}
-					if(BUTTONDOWN(Settings->ResetSpeedButtonID))
-					{
-						ActiveViewportClient->SetCameraSpeedSetting(4);
-					}
-
-					float speedexp = FMath::Max(ActiveViewportClient->GetCameraSpeedSetting() - 8, 0);
-					speedexp += FMath::Min(ActiveViewportClient->GetCameraSpeedSetting(), 0);
-					float speedmul = FMath::Pow(2, speedexp);
-
-					FRotator currRot = ActiveViewportClient->GetViewRotation();
-					FVector currPos = ActiveViewportClient->GetViewLocation();
-					currPos += currRot.RotateVector(Translation * ActiveViewportClient->GetCameraSpeed()) * speedmul;
-					currRot = FRotator(FQuat(currRot) * FQuat(Rotation));
-					ActiveViewportClient->SetViewLocation(currPos);
-					ActiveViewportClient->SetViewRotation(currRot);
-
-#if defined(DEBUG_SM_VALUES)
-					GEngine->AddOnScreenDebugMessage(
-						2200,
-						1.0,
-						FColor::Yellow,
-						FString::SanitizeFloat(ActiveViewportClient->GetCameraSpeed())
-					);
-#endif
-				}
-			}
-		}
-	}
-	catch (int exc) { LastErrorCode = exc; }
 	if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
 }
 
@@ -283,6 +211,84 @@ void FSpaceMouseModule::UnregisterSettings()
 	{
 		SettingsModule->UnregisterSettings("Editor", "SpaceMouse", "General");
 	}
+}
+
+void FSpaceMouseModule::ManageActiveViewport()
+{
+	TArray<FEditorViewportClient*> AllViewportClients = GEditor->GetAllViewportClients();
+
+	if (IsActiveViewportInvalid(AllViewportClients)) ActiveViewportClient = nullptr;
+
+	for (FEditorViewportClient* cvp : AllViewportClients)
+	{
+		if (cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
+		{
+			if (cvp->IsVisible() && cvp->IsPerspective())
+			{
+				if (cvp != ActiveViewportClient)
+				{
+					if (ActiveViewportClient)
+					{
+						ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
+					}
+					bWasOrbitCamera = cvp->ShouldOrbitCamera();
+					cvp->ToggleOrbitCamera(false);
+				}
+				ActiveViewportClient = cvp;
+			}
+		}
+	}
+}
+
+void FSpaceMouseModule::MoveActiveViewport(bool onmovestarted)
+{
+	if (onmovestarted && ActiveViewportClient)
+	{
+		ActiveViewportClient->ToggleOrbitCamera(false);
+	}
+	if (ActiveViewportClient && Enabled)
+	{
+		if (ActiveViewportClient->IsVisible())
+		{
+			if (ActiveViewportClient->IsPerspective())
+			{
+				float camspeed = ActiveViewportClient->GetCameraSpeedSetting();
+				if (BUTTONDOWN(Settings->DecreaseSpeedButtonID))
+				{
+					ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
+				}
+				if (BUTTONDOWN(Settings->IncreaseSpeedButtonID))
+				{
+					ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
+				}
+				if (BUTTONDOWN(Settings->ResetSpeedButtonID))
+				{
+					ActiveViewportClient->SetCameraSpeedSetting(4);
+				}
+
+				float speedexp = FMath::Max(ActiveViewportClient->GetCameraSpeedSetting() - 8, 0);
+				speedexp += FMath::Min(ActiveViewportClient->GetCameraSpeedSetting(), 0);
+				float speedmul = FMath::Pow(2, speedexp);
+
+				FRotator currRot = ActiveViewportClient->GetViewRotation();
+				FVector currPos = ActiveViewportClient->GetViewLocation();
+				currPos += currRot.RotateVector(Translation * ActiveViewportClient->GetCameraSpeed()) * speedmul;
+				currRot = FRotator(FQuat(currRot) * FQuat(Rotation));
+				ActiveViewportClient->SetViewLocation(currPos);
+				ActiveViewportClient->SetViewRotation(currRot);
+			}
+		}
+	}
+}
+
+const bool FSpaceMouseModule::IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients)
+{
+	bool activeViewportInvalid = true;
+	for (FEditorViewportClient* cvp : AllViewportClients)
+	{
+		if (cvp == ActiveViewportClient) return false;
+	}
+	return true;
 }
 
 void FSpaceMouseModule::StartupModule()

@@ -8,6 +8,7 @@
 #include "LevelEditorViewport.h"
 #include "Hid.h"
 #include "SpaceMouseConfig.h"
+#include "SharedPointer.h"
 
 //General Log
 DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);
@@ -77,13 +78,18 @@ private:
 	bool bWasOrbitCamera;
 
 	TArray<FSpaceMouseDevice*> Devices;
-	TArray<FEditorViewportClient*> AllViewportClients;
-	FEditorViewportClient* ActiveViewportClient;
-	FString focusedVpType;
+
+	// We're only supplied with a pointer so we can't create a TWeakPtr :(
+	FEditorViewportClient* ActiveViewportClient = nullptr;
+	FString focusedVpType = "";
 
 	bool HandleSettingsSaved();
 	void RegisterSettings();
 	void UnregisterSettings();
+
+	void ManageActiveViewport();
+	void MoveActiveViewport(bool onmovestarted);
+	const bool IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients);
 
 public:
 
