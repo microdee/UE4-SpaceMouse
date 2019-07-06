@@ -221,6 +221,8 @@ void FSpaceMouseModule::ManageActiveViewport()
 
 	for (FEditorViewportClient* cvp : AllViewportClients)
 	{
+		if (!cvp) continue;
+		if (!cvp->GetEditorViewportWidget().Get()) continue;
 		if (cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
 		{
 			if (cvp->IsVisible() && cvp->IsPerspective())
