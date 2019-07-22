@@ -122,6 +122,7 @@ void FSpaceMouseDevice::Tick()
 	}
 
 	OnMovementStartedFrame = Moving && !PrevMoving;
+	OnMovementEndedFrame = !Moving && PrevMoving;
 }
 
 float FSpaceMouseModule::gResolution;
@@ -141,6 +142,7 @@ void FSpaceMouseModule::OnTick()
 	}
 
 	bool onmovestarted = false;
+	bool onmoveended = false;
 
 	for (FSpaceMouseDevice* sm : Devices)
 	{
@@ -148,6 +150,7 @@ void FSpaceMouseModule::OnTick()
 		Translation += sm->Translation;
 		Rotation += sm->Rotation;
 		onmovestarted = onmovestarted || sm->OnMovementStartedFrame;
+		onmoveended = onmoveended || sm->OnMovementEndedFrame;
 
 		for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
 			Buttons[i] = Buttons[i] || sm->Buttons[i];
@@ -164,7 +167,7 @@ void FSpaceMouseModule::OnTick()
 	}
 
 	ManageActiveViewport();
-	MoveActiveViewport(onmovestarted);
+	MoveActiveViewport(onmovestarted, onmoveended);
 
 	if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
 }
@@ -232,9 +235,12 @@ void FSpaceMouseModule::ManageActiveViewport()
 					if (ActiveViewportClient)
 					{
 						ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
+						ActiveViewportClient->SetRealtime(bWasRealtime);
 					}
 					bWasOrbitCamera = cvp->ShouldOrbitCamera();
+					bWasRealtime = cvp->IsRealtime();
 					cvp->ToggleOrbitCamera(false);
+					cvp->SetRealtime(true);
 				}
 				ActiveViewportClient = cvp;
 			}
@@ -242,12 +248,20 @@ void FSpaceMouseModule::ManageActiveViewport()
 	}
 }
 
-void FSpaceMouseModule::MoveActiveViewport(bool onmovestarted)
+void FSpaceMouseModule::MoveActiveViewport(bool onmovestarted, bool onmoveended)
 {
 	if (onmovestarted && ActiveViewportClient)
 	{
+		bWasRealtime = ActiveViewportClient->IsRealtime();
 		ActiveViewportClient->ToggleOrbitCamera(false);
+		ActiveViewportClient->SetRealtime(true);
 	}
+
+	/*if (onmoveended && ActiveViewportClient)
+	{
+		ActiveViewportClient->SetRealtime(bWasRealtime);
+	}*/
+
 	if (ActiveViewportClient && Enabled)
 	{
 		if (ActiveViewportClient->IsVisible())
@@ -299,6 +313,7 @@ void FSpaceMouseModule::StartupModule()
 
 	RegisterSettings();
 	bWasOrbitCamera = false;
+	bWasRealtime = false;
 
 	hid_init();
 	DeviceInfos = hid_enumerate(0x46D, 0);

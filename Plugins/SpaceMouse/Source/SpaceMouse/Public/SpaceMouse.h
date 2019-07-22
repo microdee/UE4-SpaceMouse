@@ -39,8 +39,9 @@ public:
 	FRotator Rotation;
 	bool Buttons[SPACEMOUSE_BUTTONCOUNT];
 
-	bool OnMovementStartedFrame;
-	bool Moving;
+	bool OnMovementStartedFrame = false;
+	bool OnMovementEndedFrame = false;
+	bool Moving = false;
 
 	void Tick();
 
@@ -75,7 +76,8 @@ private:
 	bool PrevButtons[SPACEMOUSE_BUTTONCOUNT];
 	bool Buttons[SPACEMOUSE_BUTTONCOUNT];
 
-	bool bWasOrbitCamera;
+	bool bWasOrbitCamera = false;
+	bool bWasRealtime = false;
 
 	TArray<FSpaceMouseDevice*> Devices;
 
@@ -88,7 +90,7 @@ private:
 	void UnregisterSettings();
 
 	void ManageActiveViewport();
-	void MoveActiveViewport(bool onmovestarted);
+	void MoveActiveViewport(bool onmovestarted, bool onmoveended);
 	const bool IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients);
 
 public:
