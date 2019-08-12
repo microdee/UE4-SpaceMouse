@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 1998-2019 David Morasz All Rights Reserved.
 
 
 #include "SpaceMouseConfig.h"

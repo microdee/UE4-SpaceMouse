@@ -5,23 +5,16 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 #include "TimerManager.h"
-#include "SmEditorManager.h"
-#include "LevelEditorViewport.h"
-#include "Hid.h"
-#include "SpaceMouseConfig.h"
-#include "SharedPointer.h"
 
 //General Log
 DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);
 
-class FSpaceMouseModule : public IModuleInterface
+#define SPACEMOUSE_BUTTONCOUNT 48
+
+#define BUTTONDOWN(id) (Buttons[id] && !PrevButtons[id])
+
+class FSpaceMouseRuntimeModule : public IModuleInterface
 {
-private:
-
-	bool HandleSettingsSaved();
-	void RegisterSettings();
-	void UnregisterSettings();
-
 public:
 
 	/** IModuleInterface implementation */
@@ -29,8 +22,5 @@ public:
 	virtual void ShutdownModule() override;
 	virtual bool SupportsDynamicReloading() override { return true; }
 	
-	FSmEditorManager SmManager;
 	class FSpaceMouseReaderModule* ReaderModule;
-
-	static USpaceMouseConfig* Settings;
 };

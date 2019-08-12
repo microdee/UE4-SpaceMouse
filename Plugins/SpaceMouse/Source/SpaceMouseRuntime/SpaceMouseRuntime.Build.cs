@@ -1,10 +1,10 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2019 David Morasz All Rights Reserved.
 
 using UnrealBuildTool;
 
-public class SpaceMouse : ModuleRules
+public class SpaceMouseRuntime : ModuleRules
 {
-	public SpaceMouse(ReadOnlyTargetRules Target) : base(Target)
+	public SpaceMouseRuntime(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         bEnableUndefinedIdentifierWarnings = false;
@@ -38,11 +38,6 @@ public class SpaceMouse : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"Slate",
-				"SlateCore",
-				"InputCore",
-				"UnrealEd",
-				"LevelEditor",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

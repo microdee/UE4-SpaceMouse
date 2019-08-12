@@ -1,10 +1,10 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2019 David Morasz All Rights Reserved.
 
 using UnrealBuildTool;
 
-public class SpaceMouse : ModuleRules
+public class SpaceMouseReader : ModuleRules
 {
-	public SpaceMouse(ReadOnlyTargetRules Target) : base(Target)
+	public SpaceMouseReader(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         bEnableUndefinedIdentifierWarnings = false;
@@ -26,8 +26,7 @@ public class SpaceMouse : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core",
-				"SpaceMouseReader"
+				"Core"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -37,18 +36,17 @@ public class SpaceMouse : ModuleRules
 			new string[]
 			{
 				"CoreUObject",
-				"Engine",
-				"Slate",
-				"SlateCore",
-				"InputCore",
-				"UnrealEd",
-				"LevelEditor",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
-		
-		
-		DynamicallyLoadedModuleNames.AddRange(
+
+        if (Target.bBuildEditor)
+        {
+            PrivateDependencyModuleNames.Add("Engine");
+        }
+
+
+        DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
 				// ... add any modules that your module loads dynamically here ...
