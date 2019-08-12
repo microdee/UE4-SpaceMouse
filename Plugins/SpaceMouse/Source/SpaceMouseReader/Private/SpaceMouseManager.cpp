@@ -31,10 +31,10 @@ void FSpaceMouseManager::Initialize()
 			unsigned int vidpid = JOIN_VIDPID((unsigned int)cinfo->vendor_id, (unsigned int)cinfo->product_id);
             if(elem.Key == vidpid)
             {
-                FSpaceMouseDevice smdevice = elem.Value;
-                smdevice.Initialize(cinfo, ii);
+                FSpaceMouseDevice* smdevice = new FSpaceMouseDevice(elem.Value);
+                smdevice->Initialize(cinfo, ii);
                 Devices.Add(smdevice);
-                if (smdevice.DeviceOpened)
+                if (smdevice->DeviceOpened)
                     DeviceOpened = true;
                 break;
             }
@@ -61,17 +61,17 @@ void FSpaceMouseManager::Tick()
 	OnMovementStartedFrame = false;
 	OnMovementEndedFrame = false;
     
-	for (FSpaceMouseDevice sm : Devices)
+	for (FSpaceMouseDevice* sm : Devices)
 	{
-        sm.bPrintDebug = bPrintDebug;
-		sm.Tick();
-		trans += sm.Translation;
-		rot += sm.Rotation;
-		OnMovementStartedFrame = OnMovementStartedFrame || sm.OnMovementStartedFrame;
-		OnMovementEndedFrame = OnMovementEndedFrame || sm.OnMovementEndedFrame;
+        sm->bPrintDebug = bPrintDebug;
+		sm->Tick();
+		trans += sm->Translation;
+		rot += sm->Rotation;
+		OnMovementStartedFrame = OnMovementStartedFrame || sm->OnMovementStartedFrame;
+		OnMovementEndedFrame = OnMovementEndedFrame || sm->OnMovementEndedFrame;
 
 		for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-			Buttons[i] = Buttons[i] || sm.Buttons[i];
+			Buttons[i] = Buttons[i] || sm->Buttons[i];
 	}
 	Translation = trans;
 	Rotation = rot;

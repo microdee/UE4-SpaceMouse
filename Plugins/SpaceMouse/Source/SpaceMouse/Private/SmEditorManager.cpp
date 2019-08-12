@@ -9,20 +9,20 @@
 void FSmEditorManager::Tick()
 {
 	bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
-	for (FSpaceMouseDevice sm : Devices)
+	for (FSpaceMouseDevice* sm : Devices)
 	{
-        sm.bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
-        sm.MaxReads = FSpaceMouseModule::Settings->MaxHidReadOperationsPerFrame;
+        sm->bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
+        sm->MaxReads = FSpaceMouseModule::Settings->MaxHidReadOperationsPerFrame;
 
-        sm.TranslationUnitsPerSec = FSpaceMouseModule::Settings->TranslationUnitsPerSec;
-        sm.XTranslationAxisMap = FSpaceMouseModule::Settings->XTranslationAxisMap;
-        sm.YTranslationAxisMap = FSpaceMouseModule::Settings->YTranslationAxisMap;
-        sm.ZTranslationAxisMap = FSpaceMouseModule::Settings->ZTranslationAxisMap;
+        sm->TranslationUnitsPerSec = FSpaceMouseModule::Settings->TranslationUnitsPerSec;
+        sm->XTranslationAxisMap = FSpaceMouseModule::Settings->XTranslationAxisMap;
+        sm->YTranslationAxisMap = FSpaceMouseModule::Settings->YTranslationAxisMap;
+        sm->ZTranslationAxisMap = FSpaceMouseModule::Settings->ZTranslationAxisMap;
 
-        sm.RotationDegreesPerSec = FSpaceMouseModule::Settings->RotationDegreesPerSec;
-        sm.PitchAxisMap = FSpaceMouseModule::Settings->PitchAxisMap;
-        sm.YawAxisMap = FSpaceMouseModule::Settings->YawAxisMap;
-        sm.RollAxisMap = FSpaceMouseModule::Settings->RollAxisMap;
+        sm->RotationDegreesPerSec = FSpaceMouseModule::Settings->RotationDegreesPerSec;
+        sm->PitchAxisMap = FSpaceMouseModule::Settings->PitchAxisMap;
+        sm->YawAxisMap = FSpaceMouseModule::Settings->YawAxisMap;
+        sm->RollAxisMap = FSpaceMouseModule::Settings->RollAxisMap;
 	}
     FSpaceMouseManager::Tick();
 
