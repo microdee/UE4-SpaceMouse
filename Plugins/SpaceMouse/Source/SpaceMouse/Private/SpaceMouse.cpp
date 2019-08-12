@@ -1,19 +1,14 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2019 David Morasz All Rights Reserved.
 
 #include "SpaceMouse.h"
-#include "App.h"
-#include "Object.h"
-
-#if WITH_EDITOR
 #include "Editor.h"
 #include "SEditorViewport.h"
+#include "App.h"
+#include "Object.h"
+#include "SpaceMouseReader.h"
 #include "ISettingsModule.h"
 #include "ISettingsSection.h"
 #include "ISettingsContainer.h"
-#else
-#include "EngineGlobals.h"
-#include "Engine/Engine.h"
-#endif
 
 //#define DEBUG_SM_VALUES 1
 
@@ -22,165 +17,8 @@
 //General Log
 DEFINE_LOG_CATEGORY(SpaceMouseEditor);
 
-void FSpaceMouseDevice::Tick()
-{
-	if (!DeviceOpened) return;
-
-	unsigned char* pOutput = (unsigned char*)&OutputBuffer;
-	int ctr = 0;
-
-	PrevMoving = Moving;
-	Moving = false;
-
-	int maxreads = FSpaceMouseModule::Settings->MaxHidReadOperationsPerFrame;
-
-	bool printdebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
-	bool drecieved = false;
-	FString dreport;
-
-	while (hid_read(Device, pOutput, 28) > 0 && ctr < maxreads)
-	{
-		drecieved = true;
-		if(printdebug)
-		{
-			dreport += FString::FromHexBlob(pOutput, 7);
-		}
-		unsigned char* pCurr = pOutput;
-		for (int i = 0; i < 4; i++)
-		{
-			unsigned char report = *pCurr;
-			/*int16 xx = *(pCurr + 1) | (uint16)(*(pCurr + 2)) << 8;
-			int16 yy = *(pCurr + 3) | (uint16)(*(pCurr + 4)) << 8;
-			int16 zz = *(pCurr + 5) | (uint16)(*(pCurr + 6)) << 8;*/
-
-			int16 xx = *(int16*)(pCurr + 1);
-			int16 yy = *(int16*)(pCurr + 3);
-			int16 zz = *(int16*)(pCurr + 5);
-
-			float fx = (float)xx / FSpaceMouseModule::gResolution;
-			float fy = (float)yy / FSpaceMouseModule::gResolution;
-			float fz = (float)zz / FSpaceMouseModule::gResolution;
-
-			if (report == 0 && printdebug)
-			{
-				dr0 = FString::FromHexBlob(pCurr, 7);
-			}
-
-			if (report == 1)
-			{
-				Moving = true;
-
-				FVector xmap = FSpaceMouseModule::Settings->XTranslationAxisMap;
-				FVector ymap = FSpaceMouseModule::Settings->YTranslationAxisMap;
-				FVector zmap = FSpaceMouseModule::Settings->ZTranslationAxisMap;
-
-				Translation = FVector(
-					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
-					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
-					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
-				) * FSpaceMouseModule::Settings->TranslationUnitsPerSec * FApp::GetDeltaTime();
-
-				if(printdebug) dr1 = FString::FromHexBlob(pCurr, 7);
-			}
-			else if (report == 2)
-			{
-				Moving = true;
-
-				FVector xmap = FSpaceMouseModule::Settings->PitchAxisMap;
-				FVector ymap = FSpaceMouseModule::Settings->YawAxisMap;
-				FVector zmap = FSpaceMouseModule::Settings->RollAxisMap;
-				Rotation = FRotator(
-					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
-					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
-					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
-				) * FSpaceMouseModule::Settings->RotationDegreesPerSec * FApp::GetDeltaTime();
-
-				if (printdebug) dr2 = FString::FromHexBlob(pCurr, 7);
-			}
-			else if (report == 3)
-			{
-				int ii = 0;
-				for (int j = 0; j < 6; j++)
-				{
-					for (int k = 0; k < 8; k++)
-					{
-						Buttons[ii] = (1 << k & (unsigned char)*(pCurr + 1 + j)) > 0;
-						ii++;
-					}
-				}
-
-				if (printdebug) dr3 = FString::FromHexBlob(pCurr, 7);
-			}
-			pCurr += 7;
-		}
-		ctr++;
-	}
-	if (printdebug && drecieved)
-	{
-		FString message = "Device: ";
-		message += "Serial: " + FString(DeviceInfo->serial_number) + "\n";
-		message += "VID: " + FString::FromInt(DeviceInfo->vendor_id) + "\n";
-		message += "PID: " + FString::FromInt(DeviceInfo->product_id) + "\n";
-		message += "Report:\n    ";
-		message += dreport + "\n";
-		message += "Sorted:\n    " + dr0 + "\n    " + dr1 + "\n    " + dr2 + "\n    " + dr3;
-		GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, message);
-	}
-
-	OnMovementStartedFrame = Moving && !PrevMoving;
-	OnMovementEndedFrame = !Moving && PrevMoving;
-}
-
-float FSpaceMouseModule::gResolution;
 USpaceMouseConfig* FSpaceMouseModule::Settings;
 
-void FSpaceMouseModule::OnTick()
-{
-	FSpaceMouseModule::gResolution = Resolution;
-
-	Translation = FVector::ZeroVector;
-	Rotation = FRotator::ZeroRotator;
-
-	for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-	{
-		PrevButtons[i] = Buttons[i];
-		Buttons[i] = false;
-	}
-
-	bool onmovestarted = false;
-	bool onmoveended = false;
-
-	for (FSpaceMouseDevice* sm : Devices)
-	{
-		sm->Tick();
-		Translation += sm->Translation;
-		Rotation += sm->Rotation;
-		onmovestarted = onmovestarted || sm->OnMovementStartedFrame;
-		onmoveended = onmoveended || sm->OnMovementEndedFrame;
-
-		for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-			Buttons[i] = Buttons[i] || sm->Buttons[i];
-	}
-
-	bool printdebug = Settings->DisplayDebugInformation;
-	if (printdebug)
-	{
-		//FString message = "Connected SpaceMice: " + FString::FromInt(Devices.Num());
-		GEngine->AddOnScreenDebugMessage(
-			2000, 1.0, FColor::Cyan,
-			"Connected SpaceMice: " + FString::FromInt(Devices.Num())
-		);
-	}
-
-#if WITH_EDITOR
-	ManageActiveViewport();
-	MoveActiveViewport(onmovestarted, onmoveended);
-
-	if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
-#endif
-}
-
-#if WITH_EDITOR
 bool FSpaceMouseModule::HandleSettingsSaved()
 {
 	Settings = GetMutableDefault<USpaceMouseConfig>();
@@ -190,7 +28,6 @@ bool FSpaceMouseModule::HandleSettingsSaved()
 
 void FSpaceMouseModule::RegisterSettings()
 {
-
 	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
 	{
 		// Create the new category
@@ -225,156 +62,28 @@ void FSpaceMouseModule::UnregisterSettings()
 	}
 }
 
-void FSpaceMouseModule::ManageActiveViewport()
-{
-	TArray<FEditorViewportClient*> AllViewportClients = GEditor->GetAllViewportClients();
-
-	if (IsActiveViewportInvalid(AllViewportClients)) ActiveViewportClient = nullptr;
-
-	for (FEditorViewportClient* cvp : AllViewportClients)
-	{
-		if (!cvp) continue;
-		if (!cvp->GetEditorViewportWidget().Get()) continue;
-		if (cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
-		{
-			if (cvp->IsVisible() && cvp->IsPerspective())
-			{
-				if (cvp != ActiveViewportClient)
-				{
-					if (ActiveViewportClient)
-					{
-						ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
-						ActiveViewportClient->SetRealtime(bWasRealtime);
-					}
-					bWasOrbitCamera = cvp->ShouldOrbitCamera();
-					bWasRealtime = cvp->IsRealtime();
-					cvp->ToggleOrbitCamera(false);
-					cvp->SetRealtime(true);
-				}
-				ActiveViewportClient = cvp;
-			}
-		}
-	}
-}
-
-void FSpaceMouseModule::MoveActiveViewport(bool onmovestarted, bool onmoveended)
-{
-	if (onmovestarted && ActiveViewportClient)
-	{
-		bWasRealtime = ActiveViewportClient->IsRealtime();
-		ActiveViewportClient->ToggleOrbitCamera(false);
-		ActiveViewportClient->SetRealtime(true);
-	}
-
-	/*if (onmoveended && ActiveViewportClient)
-	{
-		ActiveViewportClient->SetRealtime(bWasRealtime);
-	}*/
-
-	if (ActiveViewportClient && Enabled)
-	{
-		if (ActiveViewportClient->IsVisible())
-		{
-			if (ActiveViewportClient->IsPerspective())
-			{
-				float camspeed = ActiveViewportClient->GetCameraSpeedSetting();
-				if (BUTTONDOWN(Settings->DecreaseSpeedButtonID))
-				{
-					ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
-				}
-				if (BUTTONDOWN(Settings->IncreaseSpeedButtonID))
-				{
-					ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
-				}
-				if (BUTTONDOWN(Settings->ResetSpeedButtonID))
-				{
-					ActiveViewportClient->SetCameraSpeedSetting(4);
-				}
-
-				float speedexp = FMath::Max(ActiveViewportClient->GetCameraSpeedSetting() - 8, 0);
-				speedexp += FMath::Min(ActiveViewportClient->GetCameraSpeedSetting(), 0);
-				float speedmul = FMath::Pow(2, speedexp);
-
-				FRotator currRot = ActiveViewportClient->GetViewRotation();
-				FVector currPos = ActiveViewportClient->GetViewLocation();
-				currPos += currRot.RotateVector(Translation * ActiveViewportClient->GetCameraSpeed()) * speedmul;
-				currRot = FRotator(FQuat(currRot) * FQuat(Rotation));
-				ActiveViewportClient->SetViewLocation(currPos);
-				ActiveViewportClient->SetViewRotation(currRot);
-			}
-		}
-	}
-}
-
-const bool FSpaceMouseModule::IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients)
-{
-	bool activeViewportInvalid = true;
-	for (FEditorViewportClient* cvp : AllViewportClients)
-	{
-		if (cvp == ActiveViewportClient) return false;
-	}
-	return true;
-}
-#endif
-
 void FSpaceMouseModule::StartupModule()
 {
-	OnTickDel = OnTickDel.CreateLambda([this]() { OnTick(); });
-
-#if WITH_EDITOR
 	RegisterSettings();
-#else
-	Settings = GetMutableDefault<USpaceMouseConfig>();
-#endif
-	bWasOrbitCamera = false;
-	bWasRealtime = false;
 
-	hid_init();
-	DeviceInfos = hid_enumerate(0x46D, 0);
-	hid_device_info* cinfo = DeviceInfos;
-
-	for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-	{
-		PrevButtons[i] = false;
-		Buttons[i] = false;
-	}
-
-	int ii = 0;
-	while (cinfo)
-	{
-		auto manfstr = FString((TCHAR*)cinfo->manufacturer_string);
-		if(manfstr.Contains("3Dconnexion", ESearchCase::IgnoreCase, ESearchDir::FromStart))
-		{
-			auto smdevice = new FSpaceMouseDevice(cinfo, ii);
-			Devices.Add(smdevice);
-			if (smdevice->DeviceOpened)
-				DeviceOpened = true;
-		}
-		cinfo = cinfo->next;
-		ii++;
-	}
-
-	Enabled = true;
-
-#if WITH_EDITOR
-	GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
-#endif
+	if(FModuleManager::Get().IsModuleLoaded("SpaceMouseReader"))
+		ReaderModule = FModuleManager::GetModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
+	else
+    {
+		ReaderModule = FModuleManager::LoadModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
+        //ReaderModule->StartupModule();
+    }
+	
+	SmManager.Initialize();
+	SmManager.Start();
 }
 
 void FSpaceMouseModule::ShutdownModule()
 {
-	//hid_free_enumeration(DeviceInfos);
-
-#if WITH_EDITOR
 	if(UObjectInitialized())
 	{
 		UnregisterSettings();
 	}
-#endif
-
-	Enabled = false;
-	Devices.Empty();
-	hid_exit();
 }
 
 #undef LOCTEXT_NAMESPACE
