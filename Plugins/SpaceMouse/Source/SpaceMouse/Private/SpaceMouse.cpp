@@ -1,13 +1,19 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #include "SpaceMouse.h"
-#include "Editor.h"
-#include "SEditorViewport.h"
 #include "App.h"
 #include "Object.h"
+
+#if WITH_EDITOR
+#include "Editor.h"
+#include "SEditorViewport.h"
 #include "ISettingsModule.h"
 #include "ISettingsSection.h"
 #include "ISettingsContainer.h"
+#else
+#include "EngineGlobals.h"
+#include "Engine/Engine.h"
+#endif
 
 //#define DEBUG_SM_VALUES 1
 
@@ -166,12 +172,15 @@ void FSpaceMouseModule::OnTick()
 		);
 	}
 
+#if WITH_EDITOR
 	ManageActiveViewport();
 	MoveActiveViewport(onmovestarted, onmoveended);
 
 	if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
+#endif
 }
 
+#if WITH_EDITOR
 bool FSpaceMouseModule::HandleSettingsSaved()
 {
 	Settings = GetMutableDefault<USpaceMouseConfig>();
@@ -306,12 +315,17 @@ const bool FSpaceMouseModule::IsActiveViewportInvalid(const TArray<FEditorViewpo
 	}
 	return true;
 }
+#endif
 
 void FSpaceMouseModule::StartupModule()
 {
 	OnTickDel = OnTickDel.CreateLambda([this]() { OnTick(); });
 
+#if WITH_EDITOR
 	RegisterSettings();
+#else
+	Settings = GetMutableDefault<USpaceMouseConfig>();
+#endif
 	bWasOrbitCamera = false;
 	bWasRealtime = false;
 
@@ -341,17 +355,22 @@ void FSpaceMouseModule::StartupModule()
 	}
 
 	Enabled = true;
+
+#if WITH_EDITOR
 	GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
+#endif
 }
 
 void FSpaceMouseModule::ShutdownModule()
 {
 	//hid_free_enumeration(DeviceInfos);
 
+#if WITH_EDITOR
 	if(UObjectInitialized())
 	{
 		UnregisterSettings();
 	}
+#endif
 
 	Enabled = false;
 	Devices.Empty();

@@ -37,17 +37,26 @@ public class SpaceMouse : ModuleRules
 			{
 				"CoreUObject",
 				"Engine",
-				"Slate",
-				"SlateCore",
 				"InputCore",
-				"UnrealEd",
-				"LevelEditor",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
-		
-		
-		DynamicallyLoadedModuleNames.AddRange(
+
+        if (Target.bBuildEditor)
+        {
+            PrivateDependencyModuleNames.AddRange(
+                new string[]
+                {
+                    "Slate",
+                    "SlateCore",
+                    "UnrealEd",
+                    "LevelEditor",
+                    // ... add private dependencies that you statically link with here ...	
+                }
+            );
+        }
+
+        DynamicallyLoadedModuleNames.AddRange(
 			new string[]
 			{
 				// ... add any modules that your module loads dynamically here ...

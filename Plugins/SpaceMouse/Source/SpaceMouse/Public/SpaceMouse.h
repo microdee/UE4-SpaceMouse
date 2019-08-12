@@ -5,10 +5,13 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 #include "TimerManager.h"
-#include "LevelEditorViewport.h"
 #include "Hid.h"
 #include "SpaceMouseConfig.h"
 #include "SharedPointer.h"
+
+#if WITH_EDITOR
+#include "LevelEditorViewport.h"
+#endif
 
 //General Log
 DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);
@@ -47,6 +50,9 @@ public:
 
 	explicit FSpaceMouseDevice(hid_device_info* dev, int iid)
 	{
+		for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
+			Buttons[i] = false;
+
 		InternalID = iid;
 		PrevMoving = false;
 		Moving = false;
@@ -81,9 +87,10 @@ private:
 
 	TArray<FSpaceMouseDevice*> Devices;
 
-	// We're only supplied with a pointer so we can't create a TWeakPtr :(
+#if WITH_EDITOR
+
+private:
 	FEditorViewportClient* ActiveViewportClient = nullptr;
-	FString focusedVpType = "";
 
 	bool HandleSettingsSaved();
 	void RegisterSettings();
@@ -92,6 +99,12 @@ private:
 	void ManageActiveViewport();
 	void MoveActiveViewport(bool onmovestarted, bool onmoveended);
 	const bool IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients);
+
+	FString focusedVpType = "";
+public:
+
+#endif
+
 
 public:
 

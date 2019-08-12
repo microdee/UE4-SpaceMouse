@@ -16,7 +16,7 @@
 	"Modules": [
     {
       "Name": "SpaceMouse",
-      "Type": "Editor",
+      "Type": "Runtime",
       "LoadingPhase": "PostEngineInit"
     }
 	]
