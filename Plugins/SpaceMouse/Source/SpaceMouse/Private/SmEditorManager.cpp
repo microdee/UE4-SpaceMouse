@@ -3,10 +3,10 @@
 #include "SpaceMouse.h"
 #include "Editor.h"
 #include "SEditorViewport.h"
-#include "App.h"
-#include "Object.h"
+//#include "Runtime/Core/Public/Misc/App.h"
+//#include "Object.h"
 
-void FSmEditorManager::Tick()
+void FSmEditorManager::Tick(float DeltaSecs)
 {
 	bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
 	for (FSpaceMouseDevice* sm : Devices)
@@ -24,7 +24,7 @@ void FSmEditorManager::Tick()
         sm->YawAxisMap = FSpaceMouseModule::Settings->YawAxisMap;
         sm->RollAxisMap = FSpaceMouseModule::Settings->RollAxisMap;
 	}
-    FSpaceMouseManager::Tick();
+    FSpaceMouseManager::Tick(DeltaSecs);
 
 	ManageActiveViewport();
 	MoveActiveViewport(Translation, Rotation);
@@ -55,6 +55,7 @@ void FSmEditorManager::ManageActiveViewport()
 		if (!cvp->GetEditorViewportWidget().Get()) continue;
 		if (cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
 		{
+			if(cvp == ActiveViewportClient) break;
 			if (cvp->IsVisible() && cvp->IsPerspective())
 			{
 				if (cvp != ActiveViewportClient)
@@ -68,8 +69,9 @@ void FSmEditorManager::ManageActiveViewport()
 					bWasRealtime = cvp->IsRealtime();
 					cvp->ToggleOrbitCamera(false);
 					cvp->SetRealtime(true);
+					ActiveViewportClient = cvp;
+					break;
 				}
-				ActiveViewportClient = cvp;
 			}
 		}
 	}
