@@ -9,7 +9,6 @@
 #include "LevelEditorViewport.h"
 #include "Hid.h"
 #include "SpaceMouseConfig.h"
-#include "SharedPointer.h"
 
 //General Log
 DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);

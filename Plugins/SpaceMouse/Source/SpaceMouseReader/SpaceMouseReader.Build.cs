@@ -36,14 +36,10 @@ public class SpaceMouseReader : ModuleRules
 			new string[]
 			{
 				"CoreUObject",
+                "Engine"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
-
-        if (Target.bBuildEditor)
-        {
-            PrivateDependencyModuleNames.Add("Engine");
-        }
 
 
         DynamicallyLoadedModuleNames.AddRange(

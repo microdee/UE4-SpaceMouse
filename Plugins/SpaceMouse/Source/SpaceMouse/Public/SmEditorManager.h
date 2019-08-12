@@ -3,6 +3,7 @@
 #pragma once
 
 #include "SpaceMouseManager.h"
+#include "App.h"
 
 class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager
 {
@@ -28,12 +29,15 @@ public:
 	{
 		FSpaceMouseManager::Initialize();
 
-		OnTickDel = OnTickDel.CreateLambda([this]() { Tick(); });
+		OnTickDel = OnTickDel.CreateLambda([this]()
+		{
+			Tick(FApp::GetDeltaTime());
+		});
 		bWasOrbitCamera = false;
 		bWasRealtime = false;
 	}
 
-	virtual void Tick() override;
+	virtual void Tick(float DeltaSecs) override;
 	void Start();
 	void ManageActiveViewport();
 	void MoveActiveViewport(FVector trans, FRotator rot);

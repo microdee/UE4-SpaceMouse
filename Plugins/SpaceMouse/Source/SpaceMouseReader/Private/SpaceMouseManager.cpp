@@ -2,8 +2,6 @@
 
 #include "SpaceMouseManager.h"
 #include "SpaceMouseReader.h"
-#include "App.h"
-#include "Object.h"
 
 #if WITH_EDITOR
 #include "EngineGlobals.h"
@@ -45,7 +43,7 @@ void FSpaceMouseManager::Initialize()
     Enabled = true;
 }
 
-void FSpaceMouseManager::Tick()
+void FSpaceMouseManager::Tick(float DeltaSecs)
 {
 	//Translation = FVector::ZeroVector;
 	//Rotation = FRotator::ZeroRotator;
@@ -64,7 +62,7 @@ void FSpaceMouseManager::Tick()
 	for (FSpaceMouseDevice* sm : Devices)
 	{
         sm->bPrintDebug = bPrintDebug;
-		sm->Tick();
+		sm->Tick(DeltaSecs);
 		trans += sm->Translation;
 		rot += sm->Rotation;
 		OnMovementStartedFrame = OnMovementStartedFrame || sm->OnMovementStartedFrame;

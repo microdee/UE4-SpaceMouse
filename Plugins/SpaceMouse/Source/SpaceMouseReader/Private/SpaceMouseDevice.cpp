@@ -1,14 +1,14 @@
 // Copyright 1998-2019 David Morasz All Rights Reserved.
 
 #include "SpaceMouseDevice.h"
-#include "App.h"
+//#include "App.h"
 
 #if WITH_EDITOR
 #include "EngineGlobals.h"
 #include "Engine/Engine.h"
 #endif
 
-void FSpaceMouseDevice::Tick()
+void FSpaceMouseDevice::Tick(float DeltaSecs)
 {
 	if (!DeviceOpened) return;
 
@@ -61,7 +61,7 @@ void FSpaceMouseDevice::Tick()
 					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
 					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
-				) * TranslationUnitsPerSec * FApp::GetDeltaTime();
+				) * TranslationUnitsPerSec * DeltaSecs;
 
 				if(bPrintDebug) dr1 = FString::FromHexBlob(pCurr, 7);
 			}
@@ -76,7 +76,7 @@ void FSpaceMouseDevice::Tick()
 					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
 					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
-				) * RotationDegreesPerSec * FApp::GetDeltaTime();
+				) * RotationDegreesPerSec * DeltaSecs;
 
 				if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, 7);
 			}

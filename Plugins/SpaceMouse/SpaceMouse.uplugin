@@ -14,16 +14,20 @@
 	"IsBetaVersion": true,
 	"Installed": false,
 	"Modules": [
-		{
-			"Name": "SpaceMouseReader",
-			"Type": "Runtime",
-			"LoadingPhase": "PreDefault"
-		},
+    {
+      "Name": "SpaceMouseReader",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault",
+      "AdditionalDependencies": [
+        "Core"
+      ]
+    },
     {
       "Name": "SpaceMouseRuntime",
       "Type": "Runtime",
       "LoadingPhase": "Default",
       "AdditionalDependencies": [
+        "Core",
         "SpaceMouseReader"
       ]
     },
@@ -32,6 +36,7 @@
       "Type": "Editor",
       "LoadingPhase": "PostEngineInit",
       "AdditionalDependencies": [
+        "Core",
         "SpaceMouseReader"
       ]
     }

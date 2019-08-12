@@ -1,8 +1,8 @@
 // Copyright 1998-2019 David Morasz All Rights Reserved.
 
 #include "SpaceMouseRuntime.h"
-#include "App.h"
-#include "Object.h"
+//#include "App.h"
+//#include "Object.h"
 #include "SpaceMouseReader.h"
 
 //#define DEBUG_SM_VALUES 1

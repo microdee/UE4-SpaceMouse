@@ -37,7 +37,7 @@ public:
 	}
 
 	bool Enabled = false;
-	virtual void Tick();
+	virtual void Tick(float DeltaSecs);
     virtual void Initialize();
 
 	int LastErrorCode;

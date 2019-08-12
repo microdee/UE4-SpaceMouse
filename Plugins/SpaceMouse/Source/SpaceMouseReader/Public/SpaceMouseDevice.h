@@ -47,7 +47,7 @@ public:
 	bool OnMovementEndedFrame = false;
 	bool Moving = false;
 
-	virtual void Tick();
+	virtual void Tick(float DeltaSecs);
 
     void Initialize(hid_device_info* dev, int iid)
 	{
