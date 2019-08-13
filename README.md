@@ -1,7 +1,7 @@
 ## SpaceMouse camera controller for UE4 editor viewports
 
 **Compatible with UE 4.22 and probably below**  
-**Download plugin from releases**
+# [DOWNLOAD](https://github.com/microdee/UE4-SpaceMouse/releases/latest)
 
 Demo video: https://youtu.be/Qibig0gQWvE
 
