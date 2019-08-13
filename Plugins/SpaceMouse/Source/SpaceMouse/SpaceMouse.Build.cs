@@ -27,7 +27,11 @@ public class SpaceMouse : ModuleRules
 			new string[]
 			{
 				"Core",
-				"SpaceMouseReader"
+                "CoreUObject",
+                "Engine",
+                "InputCore",
+
+                "SpaceMouseReader"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -36,16 +40,13 @@ public class SpaceMouse : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"CoreUObject",
-				"Engine",
-				"InputCore",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
 
         if (Target.bBuildEditor)
         {
-            PrivateDependencyModuleNames.AddRange(
+            PublicDependencyModuleNames.AddRange(
                 new string[]
                 {
                     "Slate",

@@ -26,7 +26,9 @@ public class SpaceMouseReader : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core"
+                "Core",
+                "CoreUObject",
+                "Engine"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -35,8 +37,6 @@ public class SpaceMouseReader : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"CoreUObject",
-                "Engine"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
