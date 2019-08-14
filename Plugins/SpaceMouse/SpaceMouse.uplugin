@@ -1,25 +1,30 @@
 {
-	"FileVersion": 3,
-	"Version": 1,
-	"VersionName": "1.0",
-	"FriendlyName": "SpaceMouse",
-	"Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
-	"Category": "Input",
-	"CreatedBy": "microdee",
-	"CreatedByURL": "http://mcro.de",
-	"DocsURL": "",
-	"MarketplaceURL": "",
-	"SupportURL": "",
-	"CanContainContent": false,
-	"IsBetaVersion": true,
-	"Installed": false,
-	"Modules": [
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "1.0",
+  "FriendlyName": "SpaceMouse",
+  "Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
+  "Category": "Input Devices",
+  "EnabledByDefault": true,
+  "CreatedBy": "microdee",
+  "CreatedByURL": "http://mcro.de",
+  "DocsURL": "https://github.com/microdee/UE4-SpaceMouse",
+  "MarketplaceURL": "",
+  "SupportURL": "https://github.com/microdee/UE4-SpaceMouse/issues",
+  "CanContainContent": false,
+  "IsBetaVersion": false,
+  "Installed": true,
+  "RequiresBuildPlatform": false,
+  "Modules": [
     {
       "Name": "SpaceMouseReader",
       "Type": "Runtime",
       "LoadingPhase": "PreDefault",
       "AdditionalDependencies": [
         "Core"
+      ],
+      "WhitelistPlatforms": [
+        "Win64"
       ]
     },
     {
@@ -29,6 +34,9 @@
       "AdditionalDependencies": [
         "Core",
         "SpaceMouseReader"
+      ],
+      "WhitelistPlatforms": [
+        "Win64"
       ]
     },
     {
@@ -38,7 +46,10 @@
       "AdditionalDependencies": [
         "Core",
         "SpaceMouseReader"
+      ],
+      "WhitelistPlatforms": [
+        "Win64"
       ]
     }
-	]
+  ]
 }

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "SpaceMouseManager.h"
-#include "App.h"
+#include "Misc/App.h"
 
 class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager
 {
