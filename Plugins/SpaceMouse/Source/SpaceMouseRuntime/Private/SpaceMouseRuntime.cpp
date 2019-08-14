@@ -4,6 +4,7 @@
 //#include "App.h"
 //#include "Object.h"
 #include "SpaceMouseReader.h"
+#include "SpaceMouseData.h"
 
 //#define DEBUG_SM_VALUES 1
 
@@ -21,6 +22,8 @@ void FSpaceMouseRuntimeModule::StartupModule()
 		ReaderModule = FModuleManager::LoadModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
         //ReaderModule->StartupModule();
     }
+
+	USpaceMouseData::Manager.Initialize();
 }
 
 void FSpaceMouseRuntimeModule::ShutdownModule()
