@@ -2,11 +2,14 @@
 
 #include "SpaceMouseReader.h"
 
+#include "Hid.h"
+
 TMap<unsigned int, FSpaceMouseDevice> FSpaceMouseReaderModule::Prototypes = TMap<unsigned int, FSpaceMouseDevice>();
 
 void FSpaceMouseReaderModule::StartupModule()
 {
     // https://github.com/FreeSpacenav/spacenavd/blob/a9eccf34e7cac969ee399f625aef827f4f4aaec6/src/dev.c#L202
+	// https://www.3dconnexion.fr/nc/service/faqs/faq/how-can-i-check-if-my-usb-3d-mouse-is-recognized-by-windows.html
 
     ADD_PROTOTYPE(0x046d, 0xc603); // spacemouse plus XT
     ADD_PROTOTYPE(0x046d, 0xc605); // cadman
@@ -20,13 +23,14 @@ void FSpaceMouseReaderModule::StartupModule()
     ADD_PROTOTYPE(0x046d, 0xc629); // space pilot pro
     ADD_PROTOTYPE(0x046d, 0xc62b); // space mouse pro
     ADD_PROTOTYPE(0x046d, 0xc640); // nulooq
-    ADD_PROTOTYPE(0x256f, 0xc603); // spacemouse wireless (USB cable)
-    ADD_PROTOTYPE(0x256f, 0xc603); // spacemouse wireless (receiver)
-    ADD_PROTOTYPE(0x256f, 0xc603); // spacemouse pro wireless (USB cable)
-    ADD_PROTOTYPE(0x256f, 0xc603); // spacemouse pro wireless (receiver)
-    ADD_PROTOTYPE(0x256f, 0xc603); // spacemouse enterprise
+    ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse wireless (USB cable)
+    ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse wireless (receiver)
+	ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse pro wireless (USB cable)
+	ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse pro wireless (receiver)
+	ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse enterprise
     ADD_PROTOTYPE(0x256f, 0xc603); // spacemouse compact
-    ADD_PROTOTYPE(0x256f, 0xc636); // spacemouse module
+	ADD_PROTOTYPE(0x256f, 0xc636); // spacemouse module
+	ADD_PROTOTYPE_DERIV(0x256f, 0xc652, FSingleReportPosRotSmDevice); // universal receiver
 
 	hid_init();
 }

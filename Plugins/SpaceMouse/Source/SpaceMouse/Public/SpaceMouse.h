@@ -7,7 +7,6 @@
 #include "TimerManager.h"
 #include "SmEditorManager.h"
 #include "LevelEditorViewport.h"
-#include "Hid.h"
 #include "SpaceMouseConfig.h"
 
 //General Log

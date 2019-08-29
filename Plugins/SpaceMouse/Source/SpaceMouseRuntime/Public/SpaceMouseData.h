@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Object.h"
+#include "UObject/Object.h"
 #include "TimerManager.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "SpaceMouseManager.h"
 #include "Misc/App.h"
+#include "SpaceMouseManager.h"
 
 #include "SpaceMouseData.generated.h"
 

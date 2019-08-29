@@ -8,7 +8,7 @@
 
 //#define DEBUG_SM_VALUES 1
 
-#define LOCTEXT_NAMESPACE "FSpaceMouseRuntimeModule"
+//#define LOCTEXT_NAMESPACE "FSpaceMouseRuntimeModule"
 
 //General Log
 //DEFINE_LOG_CATEGORY(SpaceMouseRuntime);
@@ -30,6 +30,6 @@ void FSpaceMouseRuntimeModule::ShutdownModule()
 {
 }
 
-#undef LOCTEXT_NAMESPACE
+//#undef LOCTEXT_NAMESPACE
 	
 IMPLEMENT_MODULE(FSpaceMouseRuntimeModule, SpaceMouseRuntime)

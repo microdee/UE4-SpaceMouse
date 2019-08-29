@@ -24,7 +24,6 @@
  code repository located at:
 		http://github.com/signal11/hidapi .
 ********************************************************/
-
 #include <windows.h>
 
 #ifndef _NTDEF_

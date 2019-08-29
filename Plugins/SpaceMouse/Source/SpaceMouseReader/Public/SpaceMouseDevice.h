@@ -3,14 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Hid.h"
 
 #define SPACEMOUSE_BUTTONCOUNT 48
 #define SPACEMOUSE_AXIS_RESOLUTION 350
 
+struct hid_device_;
+typedef struct hid_device_ hid_device;
+
+struct hid_device_info;
+
 class SPACEMOUSEREADER_API FSpaceMouseDevice
 {
-private:
+protected:
 	bool PrevMoving;
 
 	FString dr0;
@@ -47,26 +51,13 @@ public:
 	bool OnMovementEndedFrame = false;
 	bool Moving = false;
 
+	virtual FSpaceMouseDevice* NewDevice() { return new FSpaceMouseDevice(); }
+
+	virtual int GetReportSize() { return 7; }
+
 	virtual void Tick(float DeltaSecs);
 
-    void Initialize(hid_device_info* dev, int iid)
-	{
-		Translation = FVector::ZeroVector;
-		Rotation = FRotator::ZeroRotator;
-
-		InternalID = iid;
-		PrevMoving = false;
-		Moving = false;
-		OnMovementStartedFrame = false;
-		DeviceInfo = dev;
-		Device = hid_open_path(dev->path);
-		DeviceOpened = Device != nullptr;
-
-		Buttons.Empty(SPACEMOUSE_BUTTONCOUNT);
-		Buttons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
-
-		if (DeviceOpened) hid_set_nonblocking(Device, 1);
-    }
+	void Initialize(hid_device_info* dev, int iid);
 
 	FSpaceMouseDevice() { }
     //FSpaceMouseDevice( FSpaceMouseDevice& other ) { };
@@ -76,4 +67,13 @@ public:
 		/*if(DeviceOpened)
 			hid_close(Device);*/
 	}
+};
+
+class SPACEMOUSEREADER_API FSingleReportPosRotSmDevice : public FSpaceMouseDevice
+{
+	virtual FSpaceMouseDevice* NewDevice() override { return new FSingleReportPosRotSmDevice(); }
+
+	virtual int GetReportSize() override { return 13; }
+
+	virtual void Tick(float DeltaSecs) override;
 };
