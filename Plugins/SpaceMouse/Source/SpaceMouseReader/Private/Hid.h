@@ -22,10 +22,6 @@
 		http://github.com/signal11/hidapi .
 ********************************************************/
 
-/** @file
- * @defgroup API hidapi API
- */
-
 #include <wchar.h>
 
 struct hid_device_;
