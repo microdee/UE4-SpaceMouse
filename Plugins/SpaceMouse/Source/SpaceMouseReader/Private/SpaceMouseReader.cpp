@@ -23,12 +23,12 @@ void FSpaceMouseReaderModule::StartupModule()
     ADD_PROTOTYPE(0x046d, 0xc629); // space pilot pro
     ADD_PROTOTYPE(0x046d, 0xc62b); // space mouse pro
     ADD_PROTOTYPE(0x046d, 0xc640); // nulooq
-    ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse wireless (USB cable)
-    ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse wireless (receiver)
-	ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse pro wireless (USB cable)
-	ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse pro wireless (receiver)
-	ADD_PROTOTYPE_DERIV(0x256f, 0xc603, FSingleReportPosRotSmDevice); // spacemouse enterprise
-    ADD_PROTOTYPE(0x256f, 0xc603); // spacemouse compact
+    ADD_PROTOTYPE_DERIV(0x256f, 0xc62e, FSingleReportPosRotSmDevice); // spacemouse wireless (USB cable)
+    ADD_PROTOTYPE_DERIV(0x256f, 0xc62f, FSingleReportPosRotSmDevice); // spacemouse wireless (receiver)
+	ADD_PROTOTYPE_DERIV(0x256f, 0xc631, FSingleReportPosRotSmDevice); // spacemouse pro wireless (USB cable)
+	ADD_PROTOTYPE_DERIV(0x256f, 0xc632, FSingleReportPosRotSmDevice); // spacemouse pro wireless (receiver)
+	ADD_PROTOTYPE_DERIV(0x256f, 0xc633, FSingleReportPosRotSmDevice); // spacemouse enterprise
+    ADD_PROTOTYPE(0x256f, 0xc635); // spacemouse compact
 	ADD_PROTOTYPE(0x256f, 0xc636); // spacemouse module
 	ADD_PROTOTYPE_DERIV(0x256f, 0xc652, FSingleReportPosRotSmDevice); // universal receiver
 
