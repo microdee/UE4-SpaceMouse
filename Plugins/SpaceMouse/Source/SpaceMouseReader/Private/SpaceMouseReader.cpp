@@ -4,7 +4,7 @@
 
 #include "Hid.h"
 
-TMap<unsigned int, FSpaceMouseDevice> FSpaceMouseReaderModule::Prototypes = TMap<unsigned int, FSpaceMouseDevice>();
+TMap<unsigned int, FSpaceMouseDevice*> FSpaceMouseReaderModule::Prototypes = TMap<unsigned int, FSpaceMouseDevice*>();
 
 void FSpaceMouseReaderModule::StartupModule()
 {
@@ -37,6 +37,7 @@ void FSpaceMouseReaderModule::StartupModule()
 
 void FSpaceMouseReaderModule::ShutdownModule()
 {
+	Prototypes.Empty();
     hid_exit();
 }
 

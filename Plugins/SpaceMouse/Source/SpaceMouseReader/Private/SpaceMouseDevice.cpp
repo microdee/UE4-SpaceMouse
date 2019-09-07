@@ -249,3 +249,12 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 	OnMovementStartedFrame = Moving && !PrevMoving;
 	OnMovementEndedFrame = !Moving && PrevMoving;
 }
+
+void FTestSmDevice::Tick(float DeltaSecs)
+{
+	FSpaceMouseDevice::Tick(DeltaSecs);
+
+#if WITH_EDITOR
+	GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, "TESTING DEVICE TYPE");
+#endif
+}

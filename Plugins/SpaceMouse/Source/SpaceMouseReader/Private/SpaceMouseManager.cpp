@@ -31,7 +31,7 @@ void FSpaceMouseManager::Initialize()
 			unsigned int vidpid = JOIN_VIDPID((unsigned int)cinfo->vendor_id, (unsigned int)cinfo->product_id);
             if(elem.Key == vidpid)
             {
-                FSpaceMouseDevice* smdevice = elem.Value.NewDevice();
+                FSpaceMouseDevice* smdevice = elem.Value->NewDevice();
                 smdevice->Initialize(cinfo, ii);
                 Devices.Add(smdevice);
                 if (smdevice->DeviceOpened)
