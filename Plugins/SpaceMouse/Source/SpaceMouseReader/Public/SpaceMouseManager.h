@@ -16,7 +16,7 @@ protected:
 	TArray<bool> PrevButtons;
 	TArray<bool> Buttons;
 
-	TArray<FSpaceMouseDevice*> Devices;
+	TArray<TSharedPtr<FSpaceMouseDevice>> Devices;
 	hid_device_info * DeviceInfos;
 
 public:

@@ -3,13 +3,14 @@
 #include "SpaceMouse.h"
 #include "Editor.h"
 #include "SEditorViewport.h"
+#include "EditorViewportClient.h"
 //#include "Runtime/Core/Public/Misc/App.h"
 //#include "Object.h"
 
 void FSmEditorManager::Tick(float DeltaSecs)
 {
 	bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
-	for (FSpaceMouseDevice* sm : Devices)
+	for (auto sm : Devices)
 	{
         sm->bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
         sm->MaxReads = FSpaceMouseModule::Settings->MaxHidReadOperationsPerFrame;

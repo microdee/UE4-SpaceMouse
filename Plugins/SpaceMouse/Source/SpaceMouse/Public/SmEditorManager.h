@@ -4,6 +4,9 @@
 
 #include "SpaceMouseManager.h"
 #include "Misc/App.h"
+#include "TimerManager.h"
+
+class FEditorViewportClient;
 
 class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager
 {
@@ -21,7 +24,7 @@ public:
 
 	static bool bStarted;
 
-	int LastErrorCode;
+	int LastErrorCode = 0;
 
 	FSmEditorManager() : FSpaceMouseManager() { }
 

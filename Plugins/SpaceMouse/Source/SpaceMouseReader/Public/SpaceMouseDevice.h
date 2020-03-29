@@ -51,7 +51,7 @@ public:
 	bool OnMovementEndedFrame = false;
 	bool Moving = false;
 
-	virtual FSpaceMouseDevice* NewDevice() { return new FSpaceMouseDevice(); }
+	virtual TSharedPtr<FSpaceMouseDevice> NewDevice() { return MakeShared<FSpaceMouseDevice>(); }
 
 	virtual int GetReportSize() { return 7; }
 
@@ -71,7 +71,7 @@ public:
 
 class SPACEMOUSEREADER_API FSingleReportPosRotSmDevice : public FSpaceMouseDevice
 {
-	virtual FSpaceMouseDevice* NewDevice() override { return new FSingleReportPosRotSmDevice(); }
+	virtual TSharedPtr<FSpaceMouseDevice> NewDevice() override { return MakeShared<FSingleReportPosRotSmDevice>(); }
 
 	virtual int GetReportSize() override { return 13; }
 
@@ -80,7 +80,7 @@ class SPACEMOUSEREADER_API FSingleReportPosRotSmDevice : public FSpaceMouseDevic
 
 class SPACEMOUSEREADER_API FTestSmDevice : public FSpaceMouseDevice
 {
-	virtual FSpaceMouseDevice* NewDevice() override { return new FTestSmDevice(); }
+	virtual TSharedPtr<FSpaceMouseDevice> NewDevice() override { return MakeShared<FTestSmDevice>(); }
 
 	virtual int GetReportSize() override
 	{

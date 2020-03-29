@@ -28,10 +28,10 @@ void FSpaceMouseManager::Initialize()
     {
         for(auto& elem : FSpaceMouseReaderModule::Prototypes)
         {
-			unsigned int vidpid = JOIN_VIDPID((unsigned int)cinfo->vendor_id, (unsigned int)cinfo->product_id);
+			uint32 vidpid = JOIN_VIDPID(static_cast<uint32>(cinfo->vendor_id), static_cast<uint32>(cinfo->product_id));
             if(elem.Key == vidpid)
             {
-                FSpaceMouseDevice* smdevice = elem.Value->NewDevice();
+                auto smdevice = elem.Value->NewDevice();
                 smdevice->Initialize(cinfo, ii);
                 Devices.Add(smdevice);
                 if (smdevice->DeviceOpened)
@@ -61,7 +61,7 @@ void FSpaceMouseManager::Tick(float DeltaSecs)
 	OnMovementStartedFrame = false;
 	OnMovementEndedFrame = false;
     
-	for (FSpaceMouseDevice* sm : Devices)
+	for (auto sm : Devices)
 	{
         sm->bPrintDebug = bPrintDebug;
 		sm->Tick(DeltaSecs);
