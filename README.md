@@ -21,14 +21,21 @@ This plugin works with the HID device directly so no 3DxWare service is needed t
 
 [Discussion at UE4 forum](https://forums.unrealengine.com/unreal-engine/feedback-for-epic/437-support-for-space-navigator-3d-mouse?p=1609440#post1609440)
 
-## Would be nice to have:
-
-* Add ability to remap buttons to different actions, so one can potentially use all the buttons on their SpaceMouse Pro
-* Add feature to lock camera roll.
-* Add Orbit mode (and figure out how to solve its interaction with the world) (probably ain't gonna happen)
-
 ## Known issues:
 
-* ~~Upon exiting the editor the engine crashes. I know why it does that but I didn't figure it out quite yet how to prevent it.~~  
-  FIXED
+* "Focus selected" is broken while this plugin is loaded
+* "Piloting" is not working with the SpaceMouse
+* ~~Upon exiting the editor the engine crashes. I know why it does that but I didn't figure it out quite yet how to prevent it.~~
+  * FIXED
+
+## Known nuances
 * Only free-fly mode is supported and every orbitting perspective viewport in focus is forced to be free-fly while any spacemice operates on them.
+* Camera roll is not reset when one tries to navigate viewport with traditional methods
+  * Maya style Alt + Right-drag dollying resets camera roll
+
+## Would be nice to have:
+
+* ~~Add ability to remap buttons to different actions, so one can potentially use all the buttons on their SpaceMouse Pro~~
+  * Implemented in Editor config, however it would be still nice to have a "learn button ID" button
+* Add feature to lock camera roll.
+* Add Orbit mode (probably ain't gonna happen soon)
