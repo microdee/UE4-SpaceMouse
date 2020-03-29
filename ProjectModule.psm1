@@ -1,5 +1,11 @@
-$packagePluginFolder = .\Plugins\SpaceMouse
-Export-ModuleMember -Variable packagePluginFolder
+$pluginFolder = ".\Plugins\SpaceMouse"
+Export-ModuleMember -Variable pluginFolder
+
+$pluginName = "SpaceMouse"
+Export-ModuleMember -Variable pluginName
+
+$testProjectName = "SpaceMouseTest"
+Export-ModuleMember -Variable testProjectName
 
 function TestUe4Path {
     param (
@@ -92,7 +98,13 @@ Export-ModuleMember -Function Assert-Exception
 
 function Get-Ue4Path
 {
-    Get-InternalUe4Path
+    param (
+        [Parameter()]
+        [string]
+        $Ue4DirName
+    )
+
+    Get-InternalUe4Path $Ue4DirName
 
     if(-not (Test-Path $global:ue4Path)) {
         Assert-Exception "Unreal Engine installation folder could not be found.

@@ -44,7 +44,7 @@ public class SpaceMouse : ModuleRules
 			}
 			);
 
-        if (Target.bBuildEditor)
+        if (Target.Type == TargetType.Editor)
         {
             PublicDependencyModuleNames.AddRange(
                 new string[]
