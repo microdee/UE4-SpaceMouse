@@ -125,3 +125,22 @@ function Clear-OrCreate {
     }
 }
 Export-ModuleMember -Function Clear-OrCreate
+
+function Import-SevenZip {
+    try {
+        Import-Module 7Zip4Powershell
+    }
+    catch {
+        # trying to import 7Zip4Powershell
+        try {
+            "Installing 7Zip4Powershell module"
+            Install-Module -Scope CurrentUser -Name 7Zip4Powershell -Force
+            Import-Module 7Zip4Powershell
+        }
+        catch {
+            Write-Error $_
+            Assert-Exception "Error installing/importing 7Zip module"
+        }
+    }
+}
+Export-ModuleMember -Function Import-SevenZip

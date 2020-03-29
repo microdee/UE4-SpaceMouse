@@ -4,24 +4,9 @@ param (
 
 Import-Module .\ProjectModule.psm1
 
-[string] $buildConfig = "Development"
+Write-Section "DEPLOYING $global:pluginName $global:pluginVersion for $ue4PathArg"
 
-if(Test-EnvironmentVariable "CI_BUILD_REF_SLUG") {
-    "This script is running in a Gitlab CI/CD environment. It should immediately exit on error."
-} else {
-    "This script is assumed to be running attended."
-}
-
-# trying to import 7Zip4Powershell
-try {
-    "Installing 7Zip4Powershell module"
-    Install-Module -Scope CurrentUser -Name 7Zip4Powershell -Force
-    Import-Module 7Zip4Powershell
-}
-catch {
-    Write-Error $_
-    Assert-Exception "Error installing/importing 7Zip module"
-}
+Import-SevenZip
 
 # initialize environment
 Get-Ue4Path $ue4PathArg
@@ -30,7 +15,6 @@ $pluginCopyTargetDir = "$(Get-Location)\__deploy\$ue4PathArg"
 $deployDir = "$(Get-Location)\deploy"
 
 Clear-OrCreate $pluginCopyTargetDir
-Clear-OrCreate $deployDir
 
 # building:
 .\GenerateProjects.ps1 $ue4PathArg
