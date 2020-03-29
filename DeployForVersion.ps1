@@ -54,7 +54,7 @@ Copy-Item -Path $pluginFolder -Destination "$pluginCopyTargetDir\$pluginName" -F
 try {
     "7Zipping plugin"
     Compress-7Zip -Path $pluginCopyTargetDir `
-        -ArchiveFileName "$deployDir\$pluginName-$ue4PathArg.7z"
+        -ArchiveFileName "$deployDir\$pluginName-$pluginVersion-$ue4PathArg.7z"
 }
 catch {
     Write-Error $_

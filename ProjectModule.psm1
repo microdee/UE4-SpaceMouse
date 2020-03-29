@@ -1,6 +1,9 @@
 $pluginFolder = ".\Plugins\SpaceMouse"
 Export-ModuleMember -Variable pluginFolder
 
+$pluginVersion = "0.7.0"
+Export-ModuleMember -Variable pluginName
+
 $pluginName = "SpaceMouse"
 Export-ModuleMember -Variable pluginName
 
