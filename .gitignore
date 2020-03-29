@@ -13,3 +13,5 @@ Saved
 *.xcodeproj
 *.xcworkspace
 *.log
+/__deploy
+/deploy

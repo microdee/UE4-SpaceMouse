@@ -1,14 +1,7 @@
-$pluginFolder = ".\Plugins\SpaceMouse"
-Export-ModuleMember -Variable pluginFolder
-
-$pluginVersion = "0.7.0"
-Export-ModuleMember -Variable pluginName
-
-$pluginName = "SpaceMouse"
-Export-ModuleMember -Variable pluginName
-
-$testProjectName = "SpaceMouseTest"
-Export-ModuleMember -Variable testProjectName
+$global:pluginFolder = ".\Plugins\SpaceMouse"
+$global:pluginVersion = "0.7.0"
+$global:pluginName = "SpaceMouse"
+$global:testProjectName = "SpaceMouseTest"
 
 function TestUe4Path {
     param (

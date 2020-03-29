@@ -35,26 +35,27 @@ Clear-OrCreate $deployDir
 # building:
 .\GenerateProjects.ps1 $ue4PathArg
 
-Write-Section "BUILDING $testProjectName EDITOR"
+Write-Section "BUILDING $global:testProjectName EDITOR"
 
 $ue4Bt = "$global:ue4Path\Engine\Binaries\DotNET\UnrealBuildTool.exe"
 $ue4BtArgs = `
-    "$($testProjectName)Editor", "Win64", "Development", `
-    "-Project=`"$(Get-Location)\$testProjectName.uproject`""
+    "$($global:testProjectName)Editor", "Win64", "Development", `
+    "-Project=`"$(Get-Location)\$global:testProjectName.uproject`""
 
 & $ue4Bt $ue4BtArgs
 
 Assert-ErrorCode "Building the editor has failed"
 
 # copy files and create archive
-Write-Section "COPY $pluginName TO DEPLOYMENT FOLDER"
+Write-Section "COPY $global:pluginName TO DEPLOYMENT FOLDER"
 
-Copy-Item -Path $pluginFolder -Destination "$pluginCopyTargetDir\$pluginName" -Force -Recurse
+Copy-Item -Path $global:pluginFolder -Destination "$pluginCopyTargetDir\$global:pluginName" -Force -Recurse -Exclude @("*\Intermediate\", "*.pdb")
+Remove-Item -Path "$pluginCopyTargetDir\$global:pluginName\Intermediate" -Force -Recurse
 
 try {
     "7Zipping plugin"
     Compress-7Zip -Path $pluginCopyTargetDir `
-        -ArchiveFileName "$deployDir\$pluginName-$pluginVersion-$ue4PathArg.7z"
+        -ArchiveFileName "$deployDir\$global:pluginName-$global:pluginVersion-$ue4PathArg.7z"
 }
 catch {
     Write-Error $_
