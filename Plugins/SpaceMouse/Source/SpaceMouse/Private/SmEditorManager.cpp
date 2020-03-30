@@ -46,7 +46,11 @@ void FSmEditorManager::Start()
 
 void FSmEditorManager::ManageActiveViewport()
 {
+#if ENGINE_MINOR_VERSION >= 22
 	TArray<FEditorViewportClient*> AllViewportClients = GEditor->GetAllViewportClients();
+#else
+	TArray<FEditorViewportClient*> AllViewportClients = GEditor->AllViewportClients;
+#endif
 
 	if (IsActiveViewportInvalid(AllViewportClients)) ActiveViewportClient = nullptr;
 

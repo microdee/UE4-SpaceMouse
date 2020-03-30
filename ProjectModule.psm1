@@ -1,5 +1,5 @@
 $global:pluginFolder = ".\Plugins\SpaceMouse"
-$global:pluginVersion = "0.7.1"
+$global:pluginVersion = "0.7.2"
 $global:pluginName = "SpaceMouse"
 $global:testProjectName = "SpaceMouseTest"
 
