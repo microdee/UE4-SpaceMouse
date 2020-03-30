@@ -1,3 +1,5 @@
+
+$global:ue4Path = ""
 Import-Module .\ProjectModule.psm1
 
 if(Test-EnvironmentVariable "CI_BUILD_REF_SLUG") {

@@ -2,6 +2,8 @@ param (
     [string] $ue4PathArg = "UE_4.24"
 )
 
+# urgh wugly, ugly but barely works
+$global:ue4Path = ""
 Import-Module .\ProjectModule.psm1
 
 Write-Section "DEPLOYING $global:pluginName $global:pluginVersion for $ue4PathArg"
@@ -30,6 +32,9 @@ $ue4Bt = "$global:ue4Path\Engine\Binaries\DotNET\UnrealBuildTool.exe"
 $ue4BtArgs = `
     "$($global:testProjectName)Editor", "Win64", "Development", `
     "-Project=`"$(Get-Location)\$global:testProjectName.uproject`""
+
+"Executing: $ue4Bt"
+"with arguments: $ue4BtArgs"
 
 & $ue4Bt $ue4BtArgs
 
