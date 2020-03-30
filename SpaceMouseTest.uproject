@@ -3,7 +3,6 @@
 	"EngineAssociation": "4.24",
 	"Category": "",
 	"Description": "",
-	"Enterprise": true,
 	"Modules": [
 		{
 			"Name": "SpaceMouseTest",

@@ -385,7 +385,7 @@ typedef LONG NTSTATUS;
 				struct hid_device_info *tmp;
 				PHIDP_PREPARSED_DATA pp_data = NULL;
 				HIDP_CAPS caps;
-				BOOLEAN res;
+				// BOOLEAN res;
 				NTSTATUS nt_res;
 				wchar_t wstr[WSTR_LEN]; /* TODO: Determine Size */
 				size_t len;

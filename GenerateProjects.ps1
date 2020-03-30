@@ -8,6 +8,8 @@ Get-Ue4Path $ue4PathArg
 
 Write-Section "Generating $global:testProjectName"
 
+Set-ProjectAssociatedUe $ue4PathArg
+
 $ue4Bt = "$global:ue4Path\Engine\Binaries\DotNET\UnrealBuildTool.exe"
 $ue4BtArgs = `
     "-projectfiles", `

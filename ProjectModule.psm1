@@ -1,5 +1,5 @@
 $global:pluginFolder = ".\Plugins\SpaceMouse"
-$global:pluginVersion = "0.7.0"
+$global:pluginVersion = "0.7.1"
 $global:pluginName = "SpaceMouse"
 $global:testProjectName = "SpaceMouseTest"
 
@@ -144,3 +144,60 @@ function Import-SevenZip {
     }
 }
 Export-ModuleMember -Function Import-SevenZip
+
+function Get-UeVersionFromDirName {
+    param (
+        [string] $dirName
+    )
+    if($dirName -match "4\.\d\d") {
+        return $Matches.0
+    }
+    else {
+        Assert-Exception "UE4 version cannot be derived from its directory name."
+    }
+}
+Export-ModuleMember -Function Get-UeVersionFromDirName
+
+function Set-ProjectAssociatedUe {
+    param (
+        [string] $dirName
+    )
+    $ueVersion = Get-UeVersionFromDirName $dirName
+    if([string]::IsNullOrWhiteSpace($ueVersion)) {
+        Assert-Exception "Cannot decide on associated UE4 version."
+    }
+    else {
+        [string] $projectPath = "$(Get-Location)\$global:testProjectName.uproject"
+        $ueProject = [System.IO.File]::ReadAllText($projectPath);
+        $output = ($ueProject -replace "`"EngineAssociation`"\:\s?`"4\.\d\d`"", "`"EngineAssociation`": `"$ueVersion`"")
+        [System.IO.File]::WriteAllText($projectPath, $output)
+    }
+}
+Export-ModuleMember -Function Set-ProjectAssociatedUe
+
+function Clear-PreviousBuild {
+
+    if(Test-Path .\Intermediate) {
+        "Clearing Intermediate of $global:testProjectName"
+        Remove-Item .\Intermediate -Recurse -Force
+    }
+    if(Test-Path .\Binaries) {
+        "Clearing Binaries of $global:testProjectName"
+        Remove-Item .\Binaries -Recurse -Force
+    }
+
+    Push-Location $global:pluginFolder
+
+    if(Test-Path .\Intermediate) {
+        "Clearing Intermediate of $global:pluginName"
+        Remove-Item .\Intermediate -Recurse -Force
+    }
+    if(Test-Path .\Binaries) {
+        "Clearing Binaries of $global:pluginName"
+        Remove-Item .\Binaries -Recurse -Force
+    }
+
+    Pop-Location
+
+}
+Export-ModuleMember -Function Clear-PreviousBuild

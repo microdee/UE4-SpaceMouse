@@ -14,7 +14,12 @@ Get-Ue4Path $ue4PathArg
 $pluginCopyTargetDir = "$(Get-Location)\__deploy\$ue4PathArg"
 $deployDir = "$(Get-Location)\deploy"
 
+if(-not (Test-Path $deployDir)) {
+    New-Item -Path $deployDir -ItemType Directory
+}
+
 Clear-OrCreate $pluginCopyTargetDir
+Clear-PreviousBuild
 
 # building:
 .\GenerateProjects.ps1 $ue4PathArg
