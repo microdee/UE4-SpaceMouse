@@ -43,19 +43,19 @@ public:
 	UPROPERTY(EditAnywhere, Config, Category = HID)
 		bool DisplayDebugInformation = false;
 
-	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping, meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = ButtonMapping, meta = (InlineEditConditionToggle))
 		bool LearnIncreaseSpeed = false;
 
 	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping, meta = (EditCondition = "LearnIncreaseSpeed", ToolTip = "Press button to map when enabled."))
 		int IncreaseSpeedButtonID = 1;
 
-	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping, meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = ButtonMapping, meta = (InlineEditConditionToggle))
 		bool LearnDecreaseSpeed = false;
 
 	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping, meta = (EditCondition = "LearnDecreaseSpeed", ToolTip = "Press button to map when enabled."))
 		int DecreaseSpeedButtonID = 0;
 
-	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping, meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = ButtonMapping, meta = (InlineEditConditionToggle))
 		bool LearnResetSpeed = false;
 
 	UPROPERTY(EditAnywhere, Config, Category = ButtonMapping, meta = (EditCondition = "LearnResetSpeed", ToolTip = "Press button to map when enabled."))

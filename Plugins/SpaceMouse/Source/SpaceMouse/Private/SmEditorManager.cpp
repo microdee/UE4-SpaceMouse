@@ -4,7 +4,7 @@
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
-#include "CameraController.h"
+#include "Misc/ConfigCacheIni.h"
 //#include "Runtime/Core/Public/Misc/App.h"
 //#include "Object.h"
 
@@ -60,6 +60,8 @@ void FSmEditorManager::LearnButtonMappings()
 
 void FSmEditorManager::LearnButtonMapping(int& target)
 {
+	static const FString DefaultEditorPath = FString::Printf(TEXT("%sDefaultEditor.ini"), *FPaths::SourceConfigDir());
+	
 	bool learnt = false;
 	for(int i=0; i<Buttons.Num(); i++)
 	{
@@ -73,6 +75,7 @@ void FSmEditorManager::LearnButtonMapping(int& target)
 	if(learnt)
 	{
 		FSpaceMouseModule::Settings->SaveConfig();
+		FSpaceMouseModule::Settings->SaveConfig(CPF_Config, *DefaultEditorPath);
 	}
 }
 
