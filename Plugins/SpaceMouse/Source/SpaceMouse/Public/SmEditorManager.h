@@ -20,6 +20,8 @@ private:
 	FEditorViewportClient* ActiveViewportClient = nullptr;
 	FString focusedVpType = "";
 
+	static bool UseForceSetView(FEditorViewportClient* cvp);
+
 public:
 
 	static bool bStarted;

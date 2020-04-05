@@ -4,6 +4,7 @@
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
+#include "CameraController.h"
 //#include "Runtime/Core/Public/Misc/App.h"
 //#include "Object.h"
 
@@ -82,6 +83,17 @@ void FSmEditorManager::ManageActiveViewport()
 	}
 }
 
+bool FSmEditorManager::UseForceSetView(FEditorViewportClient* cvp)
+{
+	static TSet<FName> ForceSetViewTable =
+	{
+		FName("SStaticMeshEditorViewport")
+	};
+
+	FName widgetType = cvp->GetEditorViewportWidget()->GetType();
+	return ForceSetViewTable.Contains(widgetType);
+}
+
 void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 {
 	if (OnMovementStartedFrame && ActiveViewportClient)
@@ -118,16 +130,29 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 					ActiveViewportClient->SetCameraSpeedSetting(4);
 				}
 
-				float speedexp = FMath::Max(ActiveViewportClient->GetCameraSpeedSetting() - 8, 0);
-				speedexp += FMath::Min(ActiveViewportClient->GetCameraSpeedSetting(), 0);
-				float speedmul = FMath::Pow(2, speedexp);
+				if(!trans.IsNearlyZero(SMALL_NUMBER) || !rot.IsNearlyZero(SMALL_NUMBER))
+				{
+					float speedexp = FMath::Max(ActiveViewportClient->GetCameraSpeedSetting() - 8, 0);
+					speedexp += FMath::Min(ActiveViewportClient->GetCameraSpeedSetting(), 0);
+					float speedmul = FMath::Pow(2, speedexp);
+					
+					FRotator currRot = ActiveViewportClient->GetViewRotation();
+					FVector posDelta = currRot.RotateVector(trans * ActiveViewportClient->GetCameraSpeed()) * speedmul;
 
-				FRotator currRot = ActiveViewportClient->GetViewRotation();
-				FVector currPos = ActiveViewportClient->GetViewLocation();
-				currPos += currRot.RotateVector(trans * ActiveViewportClient->GetCameraSpeed()) * speedmul;
-				currRot = FRotator(FQuat(currRot) * FQuat(rot));
-				ActiveViewportClient->SetViewLocation(currPos);
-				ActiveViewportClient->SetViewRotation(currRot);
+					if(UseForceSetView(ActiveViewportClient))
+					{
+						FVector currPos = ActiveViewportClient->GetViewLocation();
+						currPos += posDelta;
+						currRot = FRotator(FQuat(currRot) * FQuat(rot));
+						ActiveViewportClient->SetViewLocation(currPos);
+						ActiveViewportClient->SetViewRotation(currRot);
+					}
+					else
+					{
+						FRotator rotDelta = FRotator(FQuat(currRot) * FQuat(rot)) - currRot;
+						ActiveViewportClient->MoveViewportCamera(posDelta, rotDelta);
+					}
+				}
 			}
 		}
 	}

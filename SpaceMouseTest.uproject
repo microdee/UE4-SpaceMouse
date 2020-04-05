@@ -10,6 +10,12 @@
 			"LoadingPhase": "Default"
 		}
 	],
+	"Plugins": [
+		{
+			"Name": "UdpMessaging",
+			"Enabled": false
+		}
+	],
 	"TargetPlatforms": [
 		"AllDesktop",
 		"LinuxNoEditor",
