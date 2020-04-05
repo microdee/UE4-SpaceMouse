@@ -30,6 +30,7 @@ void FSmEditorManager::Tick(float DeltaSecs)
 
 	ManageActiveViewport();
 	MoveActiveViewport(Translation, Rotation);
+	LearnButtonMappings();
     
 	if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
 }
@@ -42,6 +43,36 @@ void FSmEditorManager::Start()
 	{
 		bStarted = true;
 		GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
+	}
+}
+
+void FSmEditorManager::LearnButtonMappings()
+{
+	if(FSpaceMouseModule::Settings->LearnDecreaseSpeed)
+		LearnButtonMapping(FSpaceMouseModule::Settings->DecreaseSpeedButtonID);
+
+	if (FSpaceMouseModule::Settings->LearnIncreaseSpeed)
+		LearnButtonMapping(FSpaceMouseModule::Settings->IncreaseSpeedButtonID);
+
+	if (FSpaceMouseModule::Settings->LearnResetSpeed)
+		LearnButtonMapping(FSpaceMouseModule::Settings->ResetSpeedButtonID);
+}
+
+void FSmEditorManager::LearnButtonMapping(int& target)
+{
+	bool learnt = false;
+	for(int i=0; i<Buttons.Num(); i++)
+	{
+		if(BUTTONDOWN(i))
+		{
+			target = i;
+			learnt = true;
+			break;
+		}
+	}
+	if(learnt)
+	{
+		FSpaceMouseModule::Settings->SaveConfig();
 	}
 }
 
@@ -118,12 +149,12 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 				if (BUTTONDOWN(FSpaceMouseModule::Settings->DecreaseSpeedButtonID))
 				{
 					ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
-					UE_LOG(LogTemp, Display, TEXT("Speed --"));
+					//UE_LOG(LogTemp, Display, TEXT("Speed --"));
 				}
 				if (BUTTONDOWN(FSpaceMouseModule::Settings->IncreaseSpeedButtonID))
 				{
 					ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
-					UE_LOG(LogTemp, Display, TEXT("Speed ++"));
+					//UE_LOG(LogTemp, Display, TEXT("Speed ++"));
 				}
 				if (BUTTONDOWN(FSpaceMouseModule::Settings->ResetSpeedButtonID))
 				{

@@ -44,6 +44,8 @@ public:
 
 	virtual void Tick(float DeltaSecs) override;
 	void Start();
+	void LearnButtonMappings();
+	void LearnButtonMapping(int& target);
 	void ManageActiveViewport();
 	void MoveActiveViewport(FVector trans, FRotator rot);
 	const bool IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients);
