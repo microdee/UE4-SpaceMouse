@@ -20,11 +20,13 @@ void FSmEditorManager::Tick(float DeltaSecs)
         sm->XTranslationAxisMap = FSpaceMouseModule::Settings->XTranslationAxisMap;
         sm->YTranslationAxisMap = FSpaceMouseModule::Settings->YTranslationAxisMap;
         sm->ZTranslationAxisMap = FSpaceMouseModule::Settings->ZTranslationAxisMap;
+		sm->TranslationCurve = FSpaceMouseModule::Settings->TranslationCurve.GetRichCurveConst();
 
         sm->RotationDegreesPerSec = FSpaceMouseModule::Settings->RotationDegreesPerSec;
         sm->PitchAxisMap = FSpaceMouseModule::Settings->PitchAxisMap;
         sm->YawAxisMap = FSpaceMouseModule::Settings->YawAxisMap;
         sm->RollAxisMap = FSpaceMouseModule::Settings->RollAxisMap;
+		sm->RotationCurve = FSpaceMouseModule::Settings->RotationCurve.GetRichCurveConst();
 	}
     FSpaceMouseManager::Tick(DeltaSecs);
 

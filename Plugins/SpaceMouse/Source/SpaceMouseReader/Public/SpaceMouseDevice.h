@@ -8,6 +8,7 @@
 #define SPACEMOUSE_AXIS_RESOLUTION 350
 
 struct hid_device_;
+struct FRichCurve;
 typedef struct hid_device_ hid_device;
 
 struct hid_device_info;
@@ -30,11 +31,13 @@ public:
     FVector XTranslationAxisMap = FVector(0, -1,  0);
     FVector YTranslationAxisMap = FVector(1,  0,  0);
     FVector ZTranslationAxisMap = FVector(0,  0, -1);
+	const FRichCurve* TranslationCurve = nullptr;
     
     float RotationDegreesPerSec = 270;
     FVector PitchAxisMap = FVector(1,  0,  0);
     FVector YawAxisMap   = FVector(0,  0,  1);
     FVector RollAxisMap  = FVector(0, -1,  0);
+	const FRichCurve* RotationCurve = nullptr;
 
 	int InternalID = 0;
 	hid_device* Device;
@@ -50,6 +53,8 @@ public:
 	bool OnMovementStartedFrame = false;
 	bool OnMovementEndedFrame = false;
 	bool Moving = false;
+
+	static float GetCurvedFloat(const FRichCurve* curve, float ff);
 
 	virtual TSharedPtr<FSpaceMouseDevice> NewDevice() { return MakeShared<FSpaceMouseDevice>(); }
 

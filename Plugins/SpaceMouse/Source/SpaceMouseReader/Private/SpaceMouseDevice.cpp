@@ -1,6 +1,7 @@
 // Copyright 1998-2019 David Morasz All Rights Reserved.
 
 #include "SpaceMouseDevice.h"
+#include "Curves/CurveFloat.h"
 //#include "App.h"
 
 #if WITH_EDITOR
@@ -9,6 +10,13 @@
 #endif
 
 #include "Hid.h"
+
+float FSpaceMouseDevice::GetCurvedFloat(const FRichCurve* curve, float ff)
+{
+	if(curve && FMath::Abs(ff) > SMALL_NUMBER)
+		return curve->Eval(FMath::Abs(ff)) * FMath::Sign(ff);
+	else return ff;
+}
 
 void FSpaceMouseDevice::Tick(float DeltaSecs)
 {
@@ -59,6 +67,10 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 				FVector ymap = YTranslationAxisMap;
 				FVector zmap = ZTranslationAxisMap;
 
+				fx = GetCurvedFloat(TranslationCurve, fx);
+				fy = GetCurvedFloat(TranslationCurve, fy);
+				fz = GetCurvedFloat(TranslationCurve, fz);
+
 				Translation = FVector(
 					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
@@ -74,6 +86,11 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 				FVector xmap = PitchAxisMap;
 				FVector ymap = YawAxisMap;
 				FVector zmap = RollAxisMap;
+
+				fx = GetCurvedFloat(RotationCurve, fx);
+				fy = GetCurvedFloat(RotationCurve, fy);
+				fz = GetCurvedFloat(RotationCurve, fz);
+				
 				Rotation = FRotator(
 					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
@@ -173,12 +190,12 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 			int16 ryy = *(int16*)(pCurr + 9);
 			int16 rzz = *(int16*)(pCurr + 11);
 
-			float fx = (float)xx / SPACEMOUSE_AXIS_RESOLUTION;
-			float fy = (float)yy / SPACEMOUSE_AXIS_RESOLUTION;
-			float fz = (float)zz / SPACEMOUSE_AXIS_RESOLUTION;
-			float rfx = (float)rxx / SPACEMOUSE_AXIS_RESOLUTION;
-			float rfy = (float)ryy / SPACEMOUSE_AXIS_RESOLUTION;
-			float rfz = (float)rzz / SPACEMOUSE_AXIS_RESOLUTION;
+			float fx = GetCurvedFloat(TranslationCurve, (float)xx / SPACEMOUSE_AXIS_RESOLUTION);
+			float fy = GetCurvedFloat(TranslationCurve, (float)yy / SPACEMOUSE_AXIS_RESOLUTION);
+			float fz = GetCurvedFloat(TranslationCurve, (float)zz / SPACEMOUSE_AXIS_RESOLUTION);
+			float rfx = GetCurvedFloat(RotationCurve, (float)rxx / SPACEMOUSE_AXIS_RESOLUTION);
+			float rfy = GetCurvedFloat(RotationCurve, (float)ryy / SPACEMOUSE_AXIS_RESOLUTION);
+			float rfz = GetCurvedFloat(RotationCurve, (float)rzz / SPACEMOUSE_AXIS_RESOLUTION);
 
 			if (report == 0 && bPrintDebug)
 			{

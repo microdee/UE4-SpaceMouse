@@ -16,7 +16,11 @@ On default speeds (speed setting = 4) transition velocity is 1000 units/sec by d
 
 ![Alt text](/ReadmeMedia/settings.png?raw=true "Coordinates")
 
-**Axis mappings** are conversions between the space of spacemice and the space of UE4. You can invert rotations and translations here by flipping the sign. The default values are my subjective preferences (as you can see in the coordinate system image above). **Display Debug Information** prints HID data onto the viewport. You don't need to change **Max Hid Read Operations Per Frame**. Just ignore it.
+**Axis mappings** are conversions between the space of spacemice and the space of UE4. You can invert rotations and translations here by flipping the sign. The default values are my subjective preferences (as you can see in the coordinate system image above).
+
+**Rotation/Translation Curve** are defining the 0..1 curvature from resting state to fully pushed/pulled state of the SpaceMouse puck. Dead-zone, clamping, exponent or other less useful transformations can be expressed with this. Default is 0..1 linear curve, which means no effect.
+
+**Display Debug Information** prints HID data onto the viewport. You don't need to change **Max Hid Read Operations Per Frame**. Just ignore it.
 
 With **Button mappings** one can remap some functionalities to SpaceMouse buttons. currently they are Increase, Decrease and Reset camera speed. Activate the toggle button next to the property to learn the desired button mapping for said function.
 
