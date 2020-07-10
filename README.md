@@ -49,3 +49,10 @@ This plugin works with the HID device directly so no 3DxWare service is needed t
     * SpaceMouse plugin can now learn buttons by just pushing them
 * Add feature to lock camera roll.
 * Add Orbit mode (probably ain't gonna happen soon)
+
+## Credits:
+
+* [HIDAPI](https://github.com/libusb/hidapi)
+* From UE4 forums:
+  * **enzo_molinari** for the plugin icon
+  * **adlord** for testing with wireless devices
