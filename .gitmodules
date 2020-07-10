@@ -1,0 +1,4 @@
+[submodule "Plugins/HIDUE"]
+	path = Plugins/HIDUE
+	url = https://github.com/microdee/HIDUE.git
+	branch = master
