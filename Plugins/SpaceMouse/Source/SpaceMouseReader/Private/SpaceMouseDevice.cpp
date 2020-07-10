@@ -9,7 +9,7 @@
 #include "Engine/Engine.h"
 #endif
 
-#include "Hid.h"
+#include "hidapi.h"
 
 float FSpaceMouseDevice::GetCurvedFloat(const FRichCurve* curve, float ff)
 {

@@ -2,7 +2,7 @@
 
 #include "SpaceMouseReader.h"
 
-#include "Hid.h"
+#include "hidapi.h"
 
 TMap<unsigned int, FSpaceMouseDevice*> FSpaceMouseReaderModule::Prototypes = TMap<unsigned int, FSpaceMouseDevice*>();
 

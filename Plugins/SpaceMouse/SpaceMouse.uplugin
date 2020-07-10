@@ -15,16 +15,20 @@
   "IsBetaVersion": false,
   "Installed": true,
   "RequiresBuildPlatform": false,
+  "Plugins": [
+    {
+      "Name": "HIDUE",
+      "Enabled": true
+    }
+  ],
   "Modules": [
     {
       "Name": "SpaceMouseReader",
       "Type": "Runtime",
       "LoadingPhase": "PreDefault",
       "AdditionalDependencies": [
-        "Core"
-      ],
-      "WhitelistPlatforms": [
-        "Win64"
+        "Core",
+        "HIDUE"
       ]
     },
     {
@@ -34,9 +38,6 @@
       "AdditionalDependencies": [
         "Core",
         "SpaceMouseReader"
-      ],
-      "WhitelistPlatforms": [
-        "Win64"
       ]
     },
     {
@@ -46,9 +47,6 @@
       "AdditionalDependencies": [
         "Core",
         "SpaceMouseReader"
-      ],
-      "WhitelistPlatforms": [
-        "Win64"
       ]
     }
   ]

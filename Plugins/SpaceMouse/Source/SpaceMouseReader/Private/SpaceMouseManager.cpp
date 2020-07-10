@@ -3,7 +3,7 @@
 #include "SpaceMouseManager.h"
 #include "SpaceMouseReader.h"
 
-#include "Hid.h"
+#include "hidapi.h"
 
 #if WITH_EDITOR
 #include "EngineGlobals.h"
