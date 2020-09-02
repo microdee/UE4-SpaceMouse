@@ -1,5 +1,4 @@
-$global:pluginFolder = ".\Plugins\SpaceMouse"
-$global:pluginVersion = "0.8.1"
+$global:pluginVersion = "0.10.0"
 $global:pluginName = "SpaceMouse"
 $global:testProjectName = "SpaceMouseTest"
 
@@ -186,18 +185,67 @@ function Clear-PreviousBuild {
         Remove-Item .\Binaries -Recurse -Force
     }
 
-    Push-Location $global:pluginFolder
+    Get-ChildItem "$PSScriptRoot\Plugins" | ForEach-Object {
+        Push-Location $_.FullName
 
-    if(Test-Path .\Intermediate) {
-        "Clearing Intermediate of $global:pluginName"
-        Remove-Item .\Intermediate -Recurse -Force
-    }
-    if(Test-Path .\Binaries) {
-        "Clearing Binaries of $global:pluginName"
-        Remove-Item .\Binaries -Recurse -Force
-    }
+        if(Test-Path .\Intermediate) {
+            "Clearing Intermediate of $($_.BaseName)"
+            Remove-Item .\Intermediate -Recurse -Force
+        }
+        if(Test-Path .\Binaries) {
+            "Clearing Binaries of $($_.BaseName)"
+            Remove-Item .\Binaries -Recurse -Force
+        }
 
-    Pop-Location
+        Pop-Location
+    }
 
 }
 Export-ModuleMember -Function Clear-PreviousBuild
+
+function Clear-PluginFromEngine
+{
+    param (
+        [string] $PluginName
+    )
+    $enginePluginPath = "$global:ue4Path\Engine\Plugins\Marketplace\$PluginName";
+
+    if(Test-Path $enginePluginPath) {
+        "Removing $PluginName instance from Engine plugins"
+        Remove-Item $enginePluginPath -Recurse -Force
+    }
+}
+Export-ModuleMember -Function Clear-PluginFromEngine
+
+function Build-Plugin {
+    param (
+        [string] $PluginName
+    )
+    
+    Write-Section "PACKAGING $PluginName $global:pluginVersion"
+
+    $enginePluginPath = "$global:ue4Path\Engine\Plugins\Marketplace\$PluginName";
+    $packagedOutputPath = "$PSScriptRoot\__deploy\temp\$PluginName";
+    
+    if(Test-Path $packagedOutputPath) {
+        "Clearing previous packaged instance of $PluginName"
+        Remove-Item $packagedOutputPath -Recurse -Force
+    }
+
+    $ue4At = "$global:ue4Path\Engine\Binaries\DotNET\AutomationTool.exe"
+    $ue4AtArgs = `
+        "BuildPlugin", `
+        "-Plugin=`"$PSScriptRoot\Plugins\$PluginName\$PluginName.uplugin`"", `
+        "-Package=`"$packagedOutputPath`"", `
+        "-CreateSubFolder"
+    
+    "Executing: $ue4At"
+    "with arguments: $ue4AtArgs"
+    
+    & $ue4At $ue4AtArgs
+    
+    Assert-ErrorCode "Packaging $PluginName has failed"
+
+    Copy-Item -Path $packagedOutputPath -Destination $enginePluginPath -Force -Recurse
+}
+Export-ModuleMember -Function Build-Plugin

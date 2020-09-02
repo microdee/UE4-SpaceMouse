@@ -1,5 +1,5 @@
 param (
-    [string] $ue4PathArg = "UE_4.24"
+    [string] $ue4PathArg = "UE_4.25"
 )
 
 # urgh wugly, ugly but barely works
@@ -13,38 +13,29 @@ Import-SevenZip
 # initialize environment
 Get-Ue4Path $ue4PathArg
 
-$pluginCopyTargetDir = "$(Get-Location)\__deploy\$ue4PathArg"
-$deployDir = "$(Get-Location)\deploy"
+Write-Section "SWITCHING TO $ue4PathArg"
+
+$pluginCopyTargetDir = "$PSScriptRoot\__deploy\$ue4PathArg"
+$pluginTempDir = "$PSScriptRoot\__deploy\temp"
+$deployDir = "$PSScriptRoot\deploy"
 
 if(-not (Test-Path $deployDir)) {
     New-Item -Path $deployDir -ItemType Directory
 }
 
 Clear-OrCreate $pluginCopyTargetDir
+Clear-OrCreate $pluginTempDir
 Clear-PreviousBuild
 
 # building:
-.\GenerateProjects.ps1 $ue4PathArg
 
-Write-Section "BUILDING $global:testProjectName EDITOR"
+Clear-PluginFromEngine $global:pluginName
+Clear-PluginFromEngine "HIDUE"
+Build-Plugin "HIDUE"
+Copy-Item -Path "$PSScriptRoot\__deploy\temp\HIDUE" -Destination "$pluginCopyTargetDir\HIDUE" -Force -Recurse
 
-$ue4Bt = "$global:ue4Path\Engine\Binaries\DotNET\UnrealBuildTool.exe"
-$ue4BtArgs = `
-    "$($global:testProjectName)Editor", "Win64", "Development", `
-    "-Project=`"$(Get-Location)\$global:testProjectName.uproject`""
-
-"Executing: $ue4Bt"
-"with arguments: $ue4BtArgs"
-
-& $ue4Bt $ue4BtArgs
-
-Assert-ErrorCode "Building the editor has failed"
-
-# copy files and create archive
-Write-Section "COPY $global:pluginName TO DEPLOYMENT FOLDER"
-
-Copy-Item -Path $global:pluginFolder -Destination "$pluginCopyTargetDir\$global:pluginName" -Force -Recurse -Exclude @("*\Intermediate\", "*.pdb")
-Remove-Item -Path "$pluginCopyTargetDir\$global:pluginName\Intermediate" -Force -Recurse
+Build-Plugin $global:pluginName
+Copy-Item -Path "$PSScriptRoot\__deploy\temp\$global:pluginName" -Destination "$pluginCopyTargetDir\$global:pluginName" -Force -Recurse
 
 try {
     "7Zipping plugin"
