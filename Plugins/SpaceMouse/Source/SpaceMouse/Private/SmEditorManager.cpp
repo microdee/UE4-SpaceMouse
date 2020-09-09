@@ -4,8 +4,6 @@
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
-#include "Misc/ConfigCacheIni.h"
-//#include "Runtime/Core/Public/Misc/App.h"
 //#include "Object.h"
 
 void FSmEditorManager::Tick(float DeltaSecs)
@@ -58,6 +56,9 @@ void FSmEditorManager::LearnButtonMappings()
 
 	if (FSpaceMouseModule::Settings->LearnResetSpeed)
 		LearnButtonMapping(FSpaceMouseModule::Settings->ResetSpeedButtonID);
+
+	if (FSpaceMouseModule::Settings->LearnResetRoll)
+		LearnButtonMapping(FSpaceMouseModule::Settings->ResetRollButtonID);
 }
 
 void FSmEditorManager::LearnButtonMapping(int& target)
@@ -130,6 +131,42 @@ bool FSmEditorManager::UseForceSetView(FEditorViewportClient* cvp)
 	return ForceSetViewTable.Contains(widgetType);
 }
 
+FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
+{
+	if(OnMovementStartedFrame)
+	{
+		auto world = ActiveViewportClient->GetWorld();
+		FHitResult hit;
+		float traceLength = FSpaceMouseModule::Settings->OrbitingLineTraceLength;
+		FVector startpoint = ActiveViewportClient->GetViewLocation();
+		FVector endpoint = startpoint +
+			ActiveViewportClient->GetViewRotation().RotateVector({1, 0, 0}) * traceLength;
+		
+		if(world->LineTraceSingleByChannel(hit, startpoint, endpoint, ECC_Visibility))
+		{
+			LastOrbitDistance = hit.Distance;
+		}
+	}
+
+	float rotspeed = FSpaceMouseModule::Settings->RotationDegreesPerSec;
+	float transspeed = FSpaceMouseModule::Settings->TranslationUnitsPerSec;
+	float deltatime = static_cast<float>(FApp::GetDeltaTime());
+	
+	if (FSpaceMouseModule::Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingNoRoll)
+	{
+		float yawcorr = FMath::Abs(FMath::Cos(FMath::DegreesToRadians(ActiveViewportClient->GetViewRotation().Pitch)));
+		return { 0,
+			rotDelta.Yaw * LastOrbitDistance * deltatime * yawcorr,
+			rotDelta.Pitch * LastOrbitDistance * deltatime
+		};
+	}
+
+	return { 0,
+		rotDelta.Yaw * LastOrbitDistance * deltatime,
+		rotDelta.Pitch * LastOrbitDistance * deltatime
+	};
+}
+
 void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 {
 	if (OnMovementStartedFrame && ActiveViewportClient)
@@ -165,28 +202,102 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 				{
 					ActiveViewportClient->SetCameraSpeedSetting(4);
 				}
+				if (BUTTONDOWN(FSpaceMouseModule::Settings->ResetRollButtonID))
+				{
+					ActiveViewportClient->RemoveCameraRoll();
+				}
 
 				if(!trans.IsNearlyZero(SMALL_NUMBER) || !rot.IsNearlyZero(SMALL_NUMBER))
 				{
 					float speedexp = FMath::Max(ActiveViewportClient->GetCameraSpeedSetting() - 8, 0);
 					speedexp += FMath::Min(ActiveViewportClient->GetCameraSpeedSetting(), 0);
 					float speedmul = FMath::Pow(2, speedexp);
+					speedmul *= ActiveViewportClient->GetCameraSpeed();
+
+					bool orbitMovesObject = FSpaceMouseModule::Settings->OrbittingMovesObject;
+					bool orbitRotatesObject = FSpaceMouseModule::Settings->OrbittingRotatesObject;
+
+					if(FSpaceMouseModule::Settings->CameraBehavior >= ESpaceMouseCameraBehavior::OrbittingWithRoll)
+					{
+						trans = GetOrbitingPosDeltaOffset(orbitRotatesObject ? rot : rot.GetInverse()) / speedmul + (orbitMovesObject ? -trans : trans);
+					}
 					
 					FRotator currRot = ActiveViewportClient->GetViewRotation();
-					FVector posDelta = currRot.RotateVector(trans * ActiveViewportClient->GetCameraSpeed()) * speedmul;
+					FVector posDelta = currRot.RotateVector(trans) * speedmul;
 
 					if(UseForceSetView(ActiveViewportClient))
 					{
 						FVector currPos = ActiveViewportClient->GetViewLocation();
 						currPos += posDelta;
-						currRot = FRotator(FQuat(currRot) * FQuat(rot));
+						switch (FSpaceMouseModule::Settings->CameraBehavior)
+						{
+						case ESpaceMouseCameraBehavior::CameraDeltaWithRoll:
+							currRot = FRotator(FQuat(currRot) * FQuat(rot));
+							break;
+							
+						case ESpaceMouseCameraBehavior::CameraDeltaNoRoll:
+							if (OnMovementStartedFrame)
+							{
+								ActiveViewportClient->RemoveCameraRoll();
+							}
+							currRot = FRotator(
+								FQuat(FRotator(0, rot.Yaw, 0)) *
+								FQuat(currRot) *
+								FQuat(FRotator(rot.Pitch, 0, 0))
+							);
+							break;
+							
+						case ESpaceMouseCameraBehavior::OrbittingWithRoll:
+							currRot = FRotator(FQuat(currRot) * (orbitRotatesObject ? FQuat(rot).Inverse() : FQuat(rot)));
+							break;
+							
+						case ESpaceMouseCameraBehavior::OrbittingNoRoll:
+							if (OnMovementStartedFrame)
+							{
+								ActiveViewportClient->RemoveCameraRoll();
+							}
+							currRot = FRotator(
+                                FQuat(FRotator(0, orbitRotatesObject ? -rot.Yaw : rot.Yaw, 0)) *
+                                FQuat(currRot) *
+                                FQuat(FRotator(orbitRotatesObject ? -rot.Pitch : rot.Pitch, 0, 0))
+                            );
+							break;
+						default: ;
+						}
 						ActiveViewportClient->SetViewLocation(currPos);
 						ActiveViewportClient->SetViewRotation(currRot);
 					}
 					else
 					{
-						FRotator rotDelta = FRotator(FQuat(currRot) * FQuat(rot)) - currRot;
-						ActiveViewportClient->MoveViewportCamera(posDelta, rotDelta);
+						auto localRotDelta = FRotator(FQuat(currRot) * FQuat(rot)) - currRot;
+						switch (FSpaceMouseModule::Settings->CameraBehavior)
+						{
+						case ESpaceMouseCameraBehavior::CameraDeltaWithRoll:
+							ActiveViewportClient->MoveViewportCamera(posDelta, localRotDelta);
+							break;
+							
+						case ESpaceMouseCameraBehavior::CameraDeltaNoRoll:
+							if(OnMovementStartedFrame)
+							{
+								ActiveViewportClient->RemoveCameraRoll();
+							}
+							ActiveViewportClient->MoveViewportCamera(posDelta, FRotator(rot.Pitch, rot.Yaw, 0));
+							break;
+						case ESpaceMouseCameraBehavior::OrbittingWithRoll:
+							ActiveViewportClient->MoveViewportCamera(posDelta, orbitRotatesObject ? localRotDelta.GetInverse() : localRotDelta);
+							break;
+						case ESpaceMouseCameraBehavior::OrbittingNoRoll:
+							{
+								if (OnMovementStartedFrame)
+								{
+									ActiveViewportClient->RemoveCameraRoll();
+								}
+								FRotator orbitRot = FRotator(-rot.Pitch, -rot.Yaw, 0);
+								ActiveViewportClient->MoveViewportCamera(posDelta, orbitRotatesObject ? orbitRot : orbitRot.GetInverse());
+							}
+							break;
+						default:;
+						}
 					}
 				}
 			}

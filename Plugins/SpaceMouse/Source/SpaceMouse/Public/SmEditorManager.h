@@ -16,11 +16,13 @@ private:
 
 	bool bWasOrbitCamera = false;
 	bool bWasRealtime = false;
+	float LastOrbitDistance = 300;
 
 	FEditorViewportClient* ActiveViewportClient = nullptr;
 	FString focusedVpType = "";
 
 	static bool UseForceSetView(FEditorViewportClient* cvp);
+	FVector GetOrbitingPosDeltaOffset(FRotator rotDelta);
 
 public:
 

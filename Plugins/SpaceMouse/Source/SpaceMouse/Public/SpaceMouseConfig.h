@@ -5,7 +5,17 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "Curves/CurveFloat.h"
+
 #include "SpaceMouseConfig.generated.h"
+
+UENUM()
+enum class ESpaceMouseCameraBehavior : uint8
+{
+	CameraDeltaWithRoll,
+	CameraDeltaNoRoll,
+	OrbittingWithRoll,
+	OrbittingNoRoll
+};
 
 UCLASS(Config=Editor, defaultconfig)
 class USpaceMouseConfig : public UObject
@@ -13,6 +23,18 @@ class USpaceMouseConfig : public UObject
 	GENERATED_BODY()
 public:
 	USpaceMouseConfig(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+		ESpaceMouseCameraBehavior CameraBehavior = ESpaceMouseCameraBehavior::CameraDeltaWithRoll;
+
+	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+		bool OrbittingMovesObject = false;
+
+	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+		bool OrbittingRotatesObject = false;
+	
+	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+		float OrbitingLineTraceLength = 200000; // 2 Km
 
 	UPROPERTY(EditAnywhere, Config, Category = "Rotation")
 		float RotationDegreesPerSec = 270;
@@ -71,4 +93,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping", meta = (EditCondition = "LearnResetSpeed", ToolTip = "Press button to map when enabled."))
 		int ResetSpeedButtonID = 2;
+
+	UPROPERTY(EditAnywhere, Category = "ButtonMapping", meta = (InlineEditConditionToggle))
+		bool LearnResetRoll = false;
+
+	UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping", meta = (EditCondition = "LearnResetRoll", ToolTip = "Press button to map when enabled."))
+		int ResetRollButtonID = 3;
 };
