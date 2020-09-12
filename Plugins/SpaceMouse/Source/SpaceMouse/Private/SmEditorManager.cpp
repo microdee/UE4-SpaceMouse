@@ -4,6 +4,7 @@
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
+#include "HAL/PlatformApplicationMisc.h"
 //#include "Object.h"
 
 void FSmEditorManager::Tick(float DeltaSecs)
@@ -173,6 +174,11 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 
 void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 {
+	if(!FSpaceMouseModule::Settings->ActiveInBackground)
+	{
+		if(!FPlatformApplicationMisc::IsThisApplicationForeground()) return;
+	}
+	
 	if (OnMovementStartedFrame && ActiveViewportClient)
 	{
 		bWasRealtime = ActiveViewportClient->IsRealtime();

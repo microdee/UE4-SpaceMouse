@@ -53,6 +53,7 @@ public class SpaceMouse : ModuleRules
                     "SlateCore",
                     "UnrealEd",
                     "LevelEditor",
+					"ApplicationCore"
                     // ... add private dependencies that you statically link with here ...	
                 }
             );

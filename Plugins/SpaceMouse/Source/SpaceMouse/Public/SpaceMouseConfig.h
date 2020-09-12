@@ -25,6 +25,9 @@ public:
 	USpaceMouseConfig(const FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+		bool ActiveInBackground = false;
+
+	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
 		ESpaceMouseCameraBehavior CameraBehavior = ESpaceMouseCameraBehavior::CameraDeltaWithRoll;
 
 	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
