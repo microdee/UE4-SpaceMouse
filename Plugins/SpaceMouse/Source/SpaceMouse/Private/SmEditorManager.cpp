@@ -133,7 +133,7 @@ bool FSmEditorManager::UseForceSetView(FEditorViewportClient* cvp)
 
 FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 {
-	if(OnMovementStartedFrame)
+	if(OnMovementStartedFrame && !FSpaceMouseModule::Settings->OrbittingAtFixedPivot)
 	{
 		auto world = ActiveViewportClient->GetWorld();
 		FHitResult hit;
@@ -148,6 +148,10 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 		}
 	}
 
+	float orbitDistance = FSpaceMouseModule::Settings->OrbittingAtFixedPivot ?
+		FSpaceMouseModule::Settings->OrbittingAtFixedPivotDistance :
+		LastOrbitDistance;
+
 	float rotspeed = FSpaceMouseModule::Settings->RotationDegreesPerSec;
 	float transspeed = FSpaceMouseModule::Settings->TranslationUnitsPerSec;
 	float deltatime = static_cast<float>(FApp::GetDeltaTime());
@@ -156,14 +160,14 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 	{
 		float yawcorr = FMath::Abs(FMath::Cos(FMath::DegreesToRadians(ActiveViewportClient->GetViewRotation().Pitch)));
 		return { 0,
-			rotDelta.Yaw * LastOrbitDistance * deltatime * yawcorr,
-			rotDelta.Pitch * LastOrbitDistance * deltatime
+			rotDelta.Yaw * orbitDistance * deltatime * yawcorr,
+			rotDelta.Pitch * orbitDistance * deltatime
 		};
 	}
 
 	return { 0,
-		rotDelta.Yaw * LastOrbitDistance * deltatime,
-		rotDelta.Pitch * LastOrbitDistance * deltatime
+		rotDelta.Yaw * orbitDistance * deltatime,
+		rotDelta.Pitch * orbitDistance * deltatime
 	};
 }
 

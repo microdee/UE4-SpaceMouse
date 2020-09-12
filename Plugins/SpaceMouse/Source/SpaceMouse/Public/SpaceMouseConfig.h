@@ -32,6 +32,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
 		bool OrbittingRotatesObject = false;
+
+	UPROPERTY(EditAnywhere, Config, Category = "Behavior", meta = (InlineEditConditionToggle))
+		bool OrbittingAtFixedPivot = false;
+
+	UPROPERTY(EditAnywhere, Config, Category = "Behavior", meta = (EditCondition = "OrbittingAtFixedPivot"))
+		float OrbittingAtFixedPivotDistance = 300;
 	
 	UPROPERTY(EditAnywhere, Config, Category = "Behavior")
 		float OrbitingLineTraceLength = 200000; // 2 Km
