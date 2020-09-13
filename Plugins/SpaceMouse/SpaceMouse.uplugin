@@ -29,7 +29,8 @@
       "AdditionalDependencies": [
         "Core",
         "HIDUE"
-      ]
+      ],
+      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
     },
     {
       "Name": "SpaceMouseRuntime",
@@ -38,7 +39,8 @@
       "AdditionalDependencies": [
         "Core",
         "SpaceMouseReader"
-      ]
+      ],
+      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
     },
     {
       "Name": "SpaceMouse",
@@ -47,7 +49,8 @@
       "AdditionalDependencies": [
         "Core",
         "SpaceMouseReader"
-      ]
+      ],
+      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
     }
   ]
 }
