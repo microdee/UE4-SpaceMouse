@@ -5,6 +5,7 @@
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
 #include "HAL/PlatformApplicationMisc.h"
+#include "Framework/Application/SlateApplication.h"
 //#include "Object.h"
 
 void FSmEditorManager::Tick(float DeltaSecs)
@@ -246,11 +247,13 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 					if(mapping.LearnSpaceMouseButtonID) continue;
 					if(BUTTONDOWN(mapping.SpaceMouseButtonID))
 					{
-						FSlateApplication::Get().ProcessKeyDownEvent(GetKeyEventFromKey(mapping.TargetKey));
+						auto keyEvent = GetKeyEventFromKey(mapping.TargetKey);
+						FSlateApplication::Get().ProcessKeyDownEvent(keyEvent);
 					}
 					if(BUTTONUP(mapping.SpaceMouseButtonID))
 					{
-						FSlateApplication::Get().ProcessKeyUpEvent(GetKeyEventFromKey(mapping.TargetKey));
+						auto keyEvent = GetKeyEventFromKey(mapping.TargetKey);
+						FSlateApplication::Get().ProcessKeyUpEvent(keyEvent);
 					}
 				}
 

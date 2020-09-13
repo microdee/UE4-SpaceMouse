@@ -4,6 +4,7 @@
 
 #include "SpaceMouseManager.h"
 #include "Misc/App.h"
+#include "Input/Events.h"
 #include "TimerManager.h"
 
 struct FInputActionKeyMapping;
@@ -22,9 +23,9 @@ private:
 	FEditorViewportClient* ActiveViewportClient = nullptr;
 	FString focusedVpType = "";
 
+	static FKeyEvent GetKeyEventFromKey(const FInputActionKeyMapping& mapping);
 	static bool UseForceSetView(FEditorViewportClient* cvp);
 	FVector GetOrbitingPosDeltaOffset(FRotator rotDelta);
-	FKeyEvent GetKeyEventFromKey(const FInputActionKeyMapping& mapping);
 
 public:
 
