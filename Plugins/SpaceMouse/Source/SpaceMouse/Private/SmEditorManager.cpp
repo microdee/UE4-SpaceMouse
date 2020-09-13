@@ -60,6 +60,12 @@ void FSmEditorManager::LearnButtonMappings()
 
 	if (FSpaceMouseModule::Settings->LearnResetRoll)
 		LearnButtonMapping(FSpaceMouseModule::Settings->ResetRollButtonID);
+
+	for(auto& mapping : FSpaceMouseModule::Settings->CustomKeyMappings)
+	{
+		if(mapping.LearnSpaceMouseButtonID)
+			LearnButtonMapping(mapping.SpaceMouseButtonID);
+	}
 }
 
 void FSmEditorManager::LearnButtonMapping(int& target)
@@ -172,6 +178,24 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 	};
 }
 
+FKeyEvent FSmEditorManager::GetKeyEventFromKey(const FInputActionKeyMapping& mapping)
+{
+	const uint32* kc;
+	const uint32* cc;
+	FInputKeyManager::Get().GetCodesFromKey(mapping.Key, kc, cc);
+	
+	return FKeyEvent(
+		mapping.Key, FModifierKeysState(
+			mapping.bShift, false,
+			mapping.bCtrl, false,
+			mapping.bAlt, false,
+			mapping.bCmd, false,
+			false
+		),
+		0, false, cc ? *cc : 0, kc ? *kc : 0
+	);
+}
+
 void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 {
 	if(!FSpaceMouseModule::Settings->ActiveInBackground)
@@ -215,6 +239,19 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 				if (BUTTONDOWN(FSpaceMouseModule::Settings->ResetRollButtonID))
 				{
 					ActiveViewportClient->RemoveCameraRoll();
+				}
+				
+				for (const auto& mapping : FSpaceMouseModule::Settings->CustomKeyMappings)
+				{
+					if(mapping.LearnSpaceMouseButtonID) continue;
+					if(BUTTONDOWN(mapping.SpaceMouseButtonID))
+					{
+						FSlateApplication::Get().ProcessKeyDownEvent(GetKeyEventFromKey(mapping.TargetKey));
+					}
+					if(BUTTONUP(mapping.SpaceMouseButtonID))
+					{
+						FSlateApplication::Get().ProcessKeyUpEvent(GetKeyEventFromKey(mapping.TargetKey));
+					}
 				}
 
 				if(!trans.IsNearlyZero(SMALL_NUMBER) || !rot.IsNearlyZero(SMALL_NUMBER))

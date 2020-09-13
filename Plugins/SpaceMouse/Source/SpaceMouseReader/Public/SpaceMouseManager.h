@@ -6,6 +6,7 @@
 #include "SpaceMouseDevice.h"
 
 #define BUTTONDOWN(id) (Buttons[id] && !PrevButtons[id])
+#define BUTTONUP(id) (!Buttons[id] && PrevButtons[id])
 
 class SPACEMOUSEREADER_API FSpaceMouseManager
 {

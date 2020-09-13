@@ -6,6 +6,7 @@
 #include "Misc/App.h"
 #include "TimerManager.h"
 
+struct FInputActionKeyMapping;
 class FEditorViewportClient;
 
 class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager
@@ -23,6 +24,7 @@ private:
 
 	static bool UseForceSetView(FEditorViewportClient* cvp);
 	FVector GetOrbitingPosDeltaOffset(FRotator rotDelta);
+	FKeyEvent GetKeyEventFromKey(const FInputActionKeyMapping& mapping);
 
 public:
 

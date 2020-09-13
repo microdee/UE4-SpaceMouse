@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "Curves/CurveFloat.h"
+#include "GameFramework/PlayerInput.h"
 
 #include "SpaceMouseConfig.generated.h"
 
@@ -15,6 +16,21 @@ enum class ESpaceMouseCameraBehavior : uint8
 	CameraDeltaNoRoll,
 	OrbittingWithRoll,
 	OrbittingNoRoll
+};
+
+USTRUCT(BlueprintType)
+struct FSpaceMouseKeyMapping
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping", meta = (EditCondition = "LearnSpaceMouseButtonID", ToolTip = "Press button to map when enabled."))
+		int SpaceMouseButtonID = 1;
+
+	UPROPERTY(EditAnywhere, Category = "ButtonMapping", meta = (InlineEditConditionToggle))
+		bool LearnSpaceMouseButtonID = false;
+
+	UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
+		FInputActionKeyMapping TargetKey;
 };
 
 UCLASS(Config=Editor, defaultconfig)
@@ -108,4 +124,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping", meta = (EditCondition = "LearnResetRoll", ToolTip = "Press button to map when enabled."))
 		int ResetRollButtonID = 3;
+
+	UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
+		TArray<FSpaceMouseKeyMapping> CustomKeyMappings;
 };
