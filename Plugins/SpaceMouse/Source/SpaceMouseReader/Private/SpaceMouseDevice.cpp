@@ -18,6 +18,15 @@ float FSpaceMouseDevice::GetCurvedFloat(const FRichCurve* curve, float ff)
 	else return ff;
 }
 
+#define CHECK_AXES() \
+	(  xx <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& yy <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& zz <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& -xx >= -SPACEMOUSE_AXIS_RESOLUTION \
+	&& -yy >= -SPACEMOUSE_AXIS_RESOLUTION \
+	&& -zz >= -SPACEMOUSE_AXIS_RESOLUTION \
+	)
+
 void FSpaceMouseDevice::Tick(float DeltaSecs)
 {
 	if (!DeviceOpened) return;
@@ -59,7 +68,7 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 				dr0 = FString::FromHexBlob(pCurr, 7);
 			}
 
-			if (report == 1)
+			if (report == 1 && CHECK_AXES())
 			{
 				Moving = true;
 
@@ -79,7 +88,7 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 
 				if(bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
 			}
-			else if (report == 2)
+			if (report == 2 && CHECK_AXES())
 			{
 				Moving = true;
 
@@ -99,7 +108,7 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 
 				if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
 			}
-			else if (report == 3)
+			if (report == 3)
 			{
 				int ii = 0;
 				for (int j = 0; j < 6; j++)
@@ -136,6 +145,8 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 	OnMovementEndedFrame = !Moving && PrevMoving;
 }
 
+#undef CHECK_AXES
+
 void FSpaceMouseDevice::Initialize(hid_device_info* dev, int iid)
 {
 	Translation = FVector::ZeroVector;
@@ -154,6 +165,21 @@ void FSpaceMouseDevice::Initialize(hid_device_info* dev, int iid)
 
 	if (DeviceOpened) hid_set_nonblocking(Device, 1);
 }
+
+#define CHECK_AXES() \
+	(  xx <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& yy <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& zz <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& rxx <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& ryy <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& rzz <= SPACEMOUSE_AXIS_RESOLUTION \
+	&& -xx >= -SPACEMOUSE_AXIS_RESOLUTION \
+	&& -yy >= -SPACEMOUSE_AXIS_RESOLUTION \
+	&& -zz >= -SPACEMOUSE_AXIS_RESOLUTION \
+	&& -rxx >= -SPACEMOUSE_AXIS_RESOLUTION \
+	&& -ryy >= -SPACEMOUSE_AXIS_RESOLUTION \
+	&& -rzz >= -SPACEMOUSE_AXIS_RESOLUTION \
+	)
 
 void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 {
@@ -202,7 +228,7 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 				dr0 = FString::FromHexBlob(pCurr, GetReportSize());
 			}
 
-			if (report == 1)
+			if (report == 1 && CHECK_AXES())
 			{
 				Moving = true;
 
@@ -266,6 +292,8 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 	OnMovementStartedFrame = Moving && !PrevMoving;
 	OnMovementEndedFrame = !Moving && PrevMoving;
 }
+
+#undef CHECK_AXES
 
 void FTestSmDevice::Tick(float DeltaSecs)
 {
