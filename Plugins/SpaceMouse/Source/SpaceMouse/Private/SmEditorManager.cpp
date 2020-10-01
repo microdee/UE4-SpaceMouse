@@ -316,6 +316,7 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 						}
 						ActiveViewportClient->SetViewLocation(currPos);
 						ActiveViewportClient->SetViewRotation(currRot);
+						ActiveViewportClient->Viewport->InvalidateHitProxy();
 					}
 					else
 					{
@@ -348,6 +349,7 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 							break;
 						default:;
 						}
+						ActiveViewportClient->Viewport->InvalidateHitProxy();
 					}
 				}
 			}
