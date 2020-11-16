@@ -1,4 +1,4 @@
-$global:pluginVersion = "1.0.1"
+$global:pluginVersion = "1.0.2"
 $global:pluginName = "SpaceMouse"
 $global:testProjectName = "SpaceMouseTest"
 

@@ -40,6 +40,9 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 	bool drecieved = false;
 	FString dreport;
 
+	Translation = {0,0,0};
+	Rotation = {0,0,0};
+
 	while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < MaxReads)
 	{
 		drecieved = true;
@@ -80,13 +83,17 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 				fy = GetCurvedFloat(TranslationCurve, fy);
 				fz = GetCurvedFloat(TranslationCurve, fz);
 
-				Translation = FVector(
+				auto NewTrl = FVector(
 					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
 					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
 				) * TranslationUnitsPerSec * DeltaSecs;
 
-				if(bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
+				if(NewTrl.Size() > Translation.Size())
+				{
+					Translation = NewTrl;
+					if(bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
+				}
 			}
 			if (report == 2 && CHECK_AXES())
 			{
@@ -100,13 +107,17 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 				fy = GetCurvedFloat(RotationCurve, fy);
 				fz = GetCurvedFloat(RotationCurve, fz);
 				
-				Rotation = FRotator(
+				auto NewRot = FRotator(
 					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
 					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
 				) * RotationDegreesPerSec * DeltaSecs;
 
-				if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
+				if(NewRot.Euler().Size() > Rotation.Euler().Size())
+				{
+					Rotation = NewRot;
+					if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
+				}
 			}
 			if (report == 3)
 			{
@@ -194,6 +205,9 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 	bool drecieved = false;
 	FString dreport;
 
+	Translation = {0,0,0};
+	Rotation = {0,0,0};
+
 	while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < MaxReads)
 	{
 		drecieved = true;
@@ -236,25 +250,34 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 				FVector ymap = YTranslationAxisMap;
 				FVector zmap = ZTranslationAxisMap;
 
-				Translation = FVector(
+				auto NewTrl = FVector(
 					fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
 					fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
 					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
 				) * TranslationUnitsPerSec * DeltaSecs;
 
-				if (bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
+				if(NewTrl.Size() > Translation.Size())
+				{
+					Translation = NewTrl;
+					if(bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
+				}
 
 				xmap = PitchAxisMap;
 				ymap = YawAxisMap;
 				zmap = RollAxisMap;
 
-				Rotation = FRotator(
+				auto NewRot = FRotator(
 					rfx * xmap.X + rfy * xmap.Y + rfz * xmap.Z,
 					rfx * ymap.X + rfy * ymap.Y + rfz * ymap.Z,
 					rfx * zmap.X + rfy * zmap.Y + rfz * zmap.Z
 				) * RotationDegreesPerSec * DeltaSecs;
+				
 
-				if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
+				if(NewRot.Euler().Size() > Rotation.Euler().Size())
+				{
+					Rotation = NewRot;
+					if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
+				}
 			}
 			else if (report == 3)
 			{
