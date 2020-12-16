@@ -30,17 +30,10 @@ void FSpaceMouseModule::RegisterSettings()
 {
 	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
 	{
-		// Create the new category
-		ISettingsContainerPtr SettingsContainer = SettingsModule->GetContainer("Editor");
-
-		SettingsContainer->DescribeCategory("SpaceMouse",
-			LOCTEXT("RuntimeWDCategoryName", "SpaceMouse"),
-			LOCTEXT("RuntimeWDCategoryDescription", "Configure SpaceMice for the editor"));
-
 		Settings = GetMutableDefault<USpaceMouseConfig>();
-		// Register the settings
-		ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings("Editor", "SpaceMouse", "General",
-			LOCTEXT("RuntimeGeneralSettingsName", "General"),
+
+		ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings("Editor", "Plugins", "SpaceMouse",
+			LOCTEXT("RuntimeGeneralSettingsName", "SpaceMouse"),
 			LOCTEXT("RuntimeGeneralSettingsDescription", "Configure SpaceMice for the editor"),
 			Settings
 		);
@@ -58,7 +51,7 @@ void FSpaceMouseModule::UnregisterSettings()
 {
 	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
 	{
-		SettingsModule->UnregisterSettings("Editor", "SpaceMouse", "General");
+		SettingsModule->UnregisterSettings("Editor", "Plugins", "SpaceMouse");
 	}
 }
 

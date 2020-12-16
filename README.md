@@ -11,8 +11,9 @@ Demo video: https://youtu.be/Qibig0gQWvE
 
 Upon updating from prior versions please delete both HIDUE and SpaceMouse plugins from your Engine or Project plugins folder!
 
-1. HIDUE is now demoted to a module instead of an entire plugin
-2. This repository now only contains the plugin itself which you can also directly submodule now in your code projects if you wish.
+1. Editor settings is moved to Plugins -> SpaceMouse to follow conventions
+2. HIDUE is now demoted to a module instead of an entire plugin
+3. This repository now only contains the plugin itself which you can also directly submodule now in your code projects if you wish.
 
 # About
 
