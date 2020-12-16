@@ -20,7 +20,7 @@
 			"Name": "HIDUE",
 			"Type": "Runtime",
 			"LoadingPhase": "PreDefault",
-      "WhitelistPlatforms": ["Win64", "Linux", "Mac"]
+      "WhitelistPlatforms": ["Win64"]
 		},
     {
       "Name": "SpaceMouseReader",
@@ -30,7 +30,7 @@
         "Core",
         "HIDUE"
       ],
-      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
+      "WhitelistPlatforms": ["Win64"] 
     },
     {
       "Name": "SpaceMouseRuntime",
@@ -40,7 +40,7 @@
         "Core",
         "SpaceMouseReader"
       ],
-      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
+      "WhitelistPlatforms": ["Win64"] 
     },
     {
       "Name": "SpaceMouse",
@@ -50,7 +50,7 @@
         "Core",
         "SpaceMouseReader"
       ],
-      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
+      "WhitelistPlatforms": ["Win64"] 
     }
   ]
 }
