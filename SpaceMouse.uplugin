@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
   "Version": 1,
-  "VersionName": "1.0.0",
+  "VersionName": "1.1.0",
   "FriendlyName": "SpaceMouse",
   "Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
   "Category": "Input Devices",
@@ -15,13 +15,13 @@
   "IsBetaVersion": false,
   "Installed": true,
   "RequiresBuildPlatform": false,
-  "Plugins": [
-    {
-      "Name": "HIDUE",
-      "Enabled": true
-    }
-  ],
   "Modules": [
+		{
+			"Name": "HIDUE",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+      "WhitelistPlatforms": ["Win64"]
+		},
     {
       "Name": "SpaceMouseReader",
       "Type": "Runtime",
@@ -30,7 +30,7 @@
         "Core",
         "HIDUE"
       ],
-      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
+      "WhitelistPlatforms": ["Win64"] 
     },
     {
       "Name": "SpaceMouseRuntime",
@@ -40,7 +40,7 @@
         "Core",
         "SpaceMouseReader"
       ],
-      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
+      "WhitelistPlatforms": ["Win64"] 
     },
     {
       "Name": "SpaceMouse",
@@ -50,7 +50,7 @@
         "Core",
         "SpaceMouseReader"
       ],
-      "WhitelistPlatforms": ["Win64", "Linux", "Mac"] 
+      "WhitelistPlatforms": ["Win64"] 
     }
   ]
 }

@@ -1,4 +1,4 @@
-[submodule "Plugins/HIDUE"]
-	path = Plugins/HIDUE
+[submodule "Source/HIDUE"]
+	path = Source/HIDUE
 	url = https://github.com/microdee/HIDUE.git
-	branch = master
+	branch = topic/marketplace-compat

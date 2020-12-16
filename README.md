@@ -1,10 +1,21 @@
 ## SpaceMouse camera controller for UE4 editor viewports
 
-**Compatible with UE 4.25 and below**  
-**Compiled for UE 4.21 .. 4.25.**
+**Compatible with UE 4.26 and below**  
+**Compiled for UE 4.23 .. 4.26.**
 # [DOWNLOAD](https://github.com/microdee/UE4-SpaceMouse/releases/latest)
 
 Demo video: https://youtu.be/Qibig0gQWvE
+
+# IMPORTANT!
+## Major changes from version 1.1
+
+Upon updating from prior versions please delete both HIDUE and SpaceMouse plugins from your Engine or Project plugins folder!
+
+1. Editor settings is moved to Plugins -> SpaceMouse to follow conventions
+2. HIDUE is now demoted to a module instead of an entire plugin
+3. This repository now only contains the plugin itself which you can also directly submodule now in your code projects if you wish.
+
+# About
 
 You can control any 3D editor viewport currently in focus (user clicked on it). There are multiple control schemes, check below. See the picture for the default transition and rotation axis (although you can change it in Editor Preferences):
 
@@ -49,6 +60,8 @@ With **Button mappings** one can remap some functionalities to SpaceMouse button
 
 This plugin works with the HID device directly so no 3DxWare service is needed to run (similar how Blender does it). And I highly recommend to disable said service because it's a big pile of steaming hot garbage imo. It doesn't need you to install any drivers at all in theory. However it shouldn't interfere with a running 3DxWare service in case you need it for other less fortunate programs.
 
+[Report bugs](https://github.com/microdee/UE4-SpaceMouse/issues)
+
 [Have any feedback or ideas? Go to Discussions!](https://github.com/microdee/UE4-SpaceMouse/discussions)
 
 [UE4 forum (please prefer Github Discussions)](https://forums.unrealengine.com/unreal-engine/feedback-for-epic/437-support-for-space-navigator-3d-mouse?p=1609440#post1609440)
@@ -61,6 +74,8 @@ This plugin works with the HID device directly so no 3DxWare service is needed t
   * FIXED
 * ~~Upon exiting the editor the engine crashes. I know why it does that but I didn't figure it out quite yet how to prevent it.~~
   * FIXED
+* Jumping forward periodically when leaning / going forward with the camera
+  * This is most probably caused by the scroll-wheel emulation of 3DxWare. Disable it in the per-application settings, or uninstall it.
 
 ## Known nuances
 * ~~Only free-fly mode is supported and every orbitting perspective viewport in focus is forced to be free-fly while any spacemice operates on them.~~
