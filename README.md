@@ -60,6 +60,8 @@ With **Button mappings** one can remap some functionalities to SpaceMouse button
 
 This plugin works with the HID device directly so no 3DxWare service is needed to run (similar how Blender does it). And I highly recommend to disable said service because it's a big pile of steaming hot garbage imo. It doesn't need you to install any drivers at all in theory. However it shouldn't interfere with a running 3DxWare service in case you need it for other less fortunate programs.
 
+[Report bugs](https://github.com/microdee/UE4-SpaceMouse/issues)
+
 [Have any feedback or ideas? Go to Discussions!](https://github.com/microdee/UE4-SpaceMouse/discussions)
 
 [UE4 forum (please prefer Github Discussions)](https://forums.unrealengine.com/unreal-engine/feedback-for-epic/437-support-for-space-navigator-3d-mouse?p=1609440#post1609440)
