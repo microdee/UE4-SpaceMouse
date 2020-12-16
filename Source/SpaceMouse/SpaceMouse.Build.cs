@@ -1,4 +1,5 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright 2018-2020 David Morasz All Rights Reserved.
+// This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 using UnrealBuildTool;
 
