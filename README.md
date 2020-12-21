@@ -2,7 +2,10 @@
 
 **Compatible with UE 4.26 and below**  
 **Compiled for UE 4.23 .. 4.26.**
-# [DOWNLOAD](https://github.com/microdee/UE4-SpaceMouse/releases/latest)
+
+**[Download manually for free](https://github.com/microdee/UE4-SpaceMouse/releases/latest)**
+
+**[Buy it via the Marketplace](https://www.unrealengine.com/marketplace/en-US/product/spacemouse-for-unreal-engine)**
 
 Demo video: https://youtu.be/Qibig0gQWvE
 
@@ -17,15 +20,15 @@ Upon updating from prior versions please delete both HIDUE and SpaceMouse plugin
 
 # About
 
-You can control any 3D editor viewport currently in focus (user clicked on it). There are multiple control schemes, check below. See the picture for the default transition and rotation axis (although you can change it in Editor Preferences):
+You can control any 3D editor viewport currently in focus (user clicked on it). There are multiple control schemes, check below.
 
-![Alt text](/ReadmeMedia/coordinates.jpg?raw=true "Coordinates")
+![Alt text](/ReadmeMedia/featured.png?raw=true "Coordinates")
 
 Transition speed is controllable via the camera speed setting and the camera speed scalar of the viewport. Camera speed can be increased or decreased with configurable buttons on the spacemice. Multiple devices are supported however their data is merged together into a global context.
 
 On default speeds (speed setting = 4) transition velocity is 1000 units/sec by default and rotation speed is 270°/sec by default. Rotation speed is not affected by camera speed settings. You can change these in the **Editor Preference** under SpaceMouse section.
 
-![Alt text](/ReadmeMedia/settings.png?raw=true "Coordinates")
+![Alt text](/ReadmeMedia/settings.png?raw=true "Settings")
 
 **Active in Background** When false, only control the camera of UE4 while the editor is the foreground application.
 
@@ -85,16 +88,11 @@ This plugin works with the HID device directly so no 3DxWare service is needed t
   * There are camera behaviors now which should not introduce roll
   * In case the SpaceMouse becomes unavailable Maya style Alt + Right-drag dollying resets camera roll
 
-## Would be nice to have:
+## Roadmap:
 
-* ~~Add ability to remap buttons to different actions, so one can potentially use all the buttons on their SpaceMouse Pro~~
-  * ~~Implemented in Editor config, however it would be still nice to have a "learn button ID" button~~
-    * SpaceMouse plugin can now learn buttons by just pushing them
-* ~~Add feature to lock camera roll.~~
-  * DONE!
-* ~~Add Orbit mode~~
-  * DONE!
-* Marketplace release!
+* Actively maintained cross platform support of HIDUE for MacOS and Linux (coming after mid-January)
+* Default bindings for connected device and friendlier button name display (coming after mid-January)
+* More intuitive and usable implementation of the Orbiting mode.
 
 ## Credits:
 
