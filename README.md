@@ -9,14 +9,7 @@
 
 Demo video: https://youtu.be/Qibig0gQWvE
 
-# IMPORTANT!
-## Major changes from version 1.1
-
-Upon updating from prior versions please delete both HIDUE and SpaceMouse plugins from your Engine or Project plugins folder!
-
-1. Editor settings is moved to Plugins -> SpaceMouse to follow conventions
-2. HIDUE is now demoted to a module instead of an entire plugin
-3. This repository now only contains the plugin itself which you can also directly submodule now in your code projects if you wish.
+## [Disclaimer about the new official plugin shipped by 3DConnexion](DISCLAIMER.md)
 
 # About
 
@@ -69,6 +62,14 @@ This plugin works with the HID device directly so no 3DxWare service is needed t
 
 [UE4 forum (please prefer Github Discussions)](https://forums.unrealengine.com/unreal-engine/feedback-for-epic/437-support-for-space-navigator-3d-mouse?p=1609440#post1609440)
 
+## Major changes from version 1.1
+
+Upon updating from prior versions please delete both HIDUE and SpaceMouse plugins from your Engine or Project plugins folder!
+
+1. Editor settings is moved to Plugins -> SpaceMouse to follow conventions
+2. HIDUE is now demoted to a module instead of an entire plugin
+3. This repository now only contains the plugin itself which you can also directly submodule now in your code projects if you wish.
+
 ## Known issues:
 
 * ~~"Focus selected" is broken while this plugin is loaded~~
@@ -79,6 +80,8 @@ This plugin works with the HID device directly so no 3DxWare service is needed t
   * FIXED
 * Jumping forward periodically when leaning / going forward with the camera
   * This is most probably caused by the scroll-wheel emulation of 3DxWare. Disable it in the per-application settings, or uninstall it.
+* If you install or update 3DxWare with their new plugin (TDxUnrealEditor), and you had this plugin before, you might experience undefined interaction glitches.
+  * Remove either this or the 3DConnexion plugin (TDxUnrealEditor) according to your preference.
 
 ## Known nuances
 * ~~Only free-fly mode is supported and every orbitting perspective viewport in focus is forced to be free-fly while any spacemice operates on them.~~
