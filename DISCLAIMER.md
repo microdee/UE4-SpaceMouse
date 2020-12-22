@@ -10,13 +10,15 @@ TDxUnrealEditor is installed automatically when you install or update the offici
 | Full 3DxWare feature support <sup>[2](#f2)</sup> (obviously) | Doesn't know about 3DxWare |
 | Only controls the main editor viewport | It can control any 3D viewport in the editor <sup>[3](#f3)</sup> |
 | Better orbit/object mode implementation | Orbit/object mode is experimental |
+| I guess cross-platform at least on macOS <sup>[4](#f4)</sup> | So far Windows only |
 | Configurable via 3DxWare | Configurable from UE4 Editor Preferences |
 | Inherits all the buttons functionality 3DxWare provides | Only speed increase/decrease and keyboard shortcuts are bindable to buttons |
 | Speed is configurable via 3DxWare | Reads and modifies camera speed set for the viewport |
-| No curvature or deadzone configuration <sup>[4](#f4)</sup> | Configure deadzone or curvature from Editor Preferences |
+| No curvature or deadzone configuration <sup>[5](#f5)</sup> | Configure deadzone or curvature from Editor Preferences |
 
 * This is not a complete list, and it might change with updates
 * <a name="f1">1</a> because of this I couldn't compare implementation differences
 * <a name="f2">2</a> This also allows you to sync your preferences accross multiple applications, SpaceMouse for UE obviously cannot provide or read that.
 * <a name="f3">3</a> Including skeletal and static mesh editors, material preview, niagara editors, or really anything which provides a camera to control
-* <a name="f4">4</a> Not to my knowledge anyway.
+* <a name="f4">4</a> This is only an assumption of mine.
+* <a name="f5">5</a> Not to my knowledge anyway.
