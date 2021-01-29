@@ -15,6 +15,7 @@ TDxUnrealEditor is installed automatically when you install or update the offici
 | Inherits all the buttons functionality 3DxWare provides | Only speed increase/decrease and keyboard shortcuts are bindable to buttons |
 | Speed is configurable via 3DxWare | Reads and modifies camera speed set for the viewport |
 | No curvature or deadzone configuration <sup>[5](#f5)</sup> | Configure deadzone or curvature from Editor Preferences |
+| Only functions in Editor | Functions both in Editor and Runtime via a BP node |
 
 * This is not a complete list, and it might change with updates
 * <a name="f1">1</a> because of this I couldn't compare implementation differences
