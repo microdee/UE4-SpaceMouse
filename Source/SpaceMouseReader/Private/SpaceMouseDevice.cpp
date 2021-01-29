@@ -35,7 +35,7 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 	unsigned char* pOutput = (unsigned char*)&OutputBuffer;
 	int ctr = 0;
 
-	PrevMoving = Moving;
+	PrevMoving = MovementTimed > 0;
 	Moving = false;
 
 	bool drecieved = false;
@@ -153,8 +153,10 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 	}
 #endif
 
-	OnMovementStartedFrame = Moving && !PrevMoving;
-	OnMovementEndedFrame = !Moving && PrevMoving;
+	if(Moving) MovementTimed = MovementTimeTolerance;
+	OnMovementStartedFrame = MovementTimed > 0 && !PrevMoving;
+	OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
+	MovementTimed -= DeltaSecs;
 }
 
 #undef CHECK_AXES
@@ -197,17 +199,17 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 {
 	if (!DeviceOpened) return;
 
-	unsigned char* pOutput = (unsigned char*)& OutputBuffer;
+	unsigned char* pOutput = (unsigned char*)&OutputBuffer;
 	int ctr = 0;
 
-	PrevMoving = Moving;
+	PrevMoving = MovementTimed > 0;
 	Moving = false;
 
 	bool drecieved = false;
 	FString dreport;
 
-	Translation = {0,0,0};
-	Rotation = {0,0,0};
+	Translation = { 0,0,0 };
+	Rotation = { 0,0,0 };
 
 	while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < MaxReads)
 	{
@@ -257,10 +259,10 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 					fx * zmap.X + fy * zmap.Y + fz * zmap.Z
 				) * TranslationUnitsPerSec * DeltaSecs;
 
-				if(NewTrl.Size() > Translation.Size())
+				if (NewTrl.Size() > Translation.Size())
 				{
 					Translation = NewTrl;
-					if(bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
+					if (bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
 				}
 
 				xmap = PitchAxisMap;
@@ -272,9 +274,9 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 					rfx * ymap.X + rfy * ymap.Y + rfz * ymap.Z,
 					rfx * zmap.X + rfy * zmap.Y + rfz * zmap.Z
 				) * RotationDegreesPerSec * DeltaSecs;
-				
 
-				if(NewRot.Euler().Size() > Rotation.Euler().Size())
+
+				if (NewRot.Euler().Size() > Rotation.Euler().Size())
 				{
 					Rotation = NewRot;
 					if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
@@ -287,7 +289,7 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 				{
 					for (int k = 0; k < 8; k++)
 					{
-						Buttons[ii] = (1 << k & (unsigned char) * (pCurr + 1 + j)) > 0;
+						Buttons[ii] = (1 << k & (unsigned char)*(pCurr + 1 + j)) > 0;
 						ii++;
 					}
 				}
@@ -313,8 +315,10 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 	}
 #endif
 
-	OnMovementStartedFrame = Moving && !PrevMoving;
-	OnMovementEndedFrame = !Moving && PrevMoving;
+	if (Moving) MovementTimed = MovementTimeTolerance;
+	OnMovementStartedFrame = MovementTimed > 0 && !PrevMoving;
+	OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
+	MovementTimed -= DeltaSecs;
 }
 
 #undef CHECK_AXES

@@ -23,11 +23,14 @@ protected:
 	FString dr1;
 	FString dr2;
 	FString dr3;
+
+	float MovementTimed = 0.0f;
 public:
 
     bool bPrintDebug = false;
 
     int MaxReads = 2048;
+	float MovementTimeTolerance = 0.25;
     float TranslationUnitsPerSec = 1000;
     FVector XTranslationAxisMap = FVector(0, -1,  0);
     FVector YTranslationAxisMap = FVector(1,  0,  0);
