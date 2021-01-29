@@ -275,13 +275,18 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 
 					bool orbitMovesObject = FSpaceMouseModule::Settings->OrbittingMovesObject;
 					bool orbitRotatesObject = FSpaceMouseModule::Settings->OrbittingRotatesObject;
+					FRotator currRot = ActiveViewportClient->GetViewRotation();
 
 					if(FSpaceMouseModule::Settings->CameraBehavior >= ESpaceMouseCameraBehavior::OrbittingWithRoll)
 					{
-						trans = GetOrbitingPosDeltaOffset(orbitRotatesObject ? rot : rot.GetInverse()) / speedmul + (orbitMovesObject ? -trans : trans);
+						auto OrbRot = rot;
+						if(FSpaceMouseModule::Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingNoRoll)
+						{
+						    OrbRot.Pitch *= currRot.Pitch > -80 && currRot.Pitch < 80;
+						}
+						trans = GetOrbitingPosDeltaOffset(orbitRotatesObject ? OrbRot : OrbRot.GetInverse()) / speedmul + (orbitMovesObject ? -trans : trans);
 					}
 					
-					FRotator currRot = ActiveViewportClient->GetViewRotation();
 					FVector posDelta = currRot.RotateVector(trans) * speedmul;
 
 					FVector currPos = ActiveViewportClient->GetViewLocation();
@@ -297,11 +302,13 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 						{
 							ActiveViewportClient->RemoveCameraRoll();
 						}
+						currRot.Pitch = FMath::Clamp(currRot.Pitch, -80.0f, 80.0f);
 						currRot = FRotator(
 							FQuat(FRotator(0, rot.Yaw, 0)) *
 							FQuat(currRot) *
 							FQuat(FRotator(rot.Pitch, 0, 0))
 						);
+						currRot.Roll = 0;
 						break;
 						
 					case ESpaceMouseCameraBehavior::OrbittingWithRoll:
@@ -313,11 +320,13 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 						{
 							ActiveViewportClient->RemoveCameraRoll();
 						}
+						currRot.Pitch = FMath::Clamp(currRot.Pitch, -80.0f, 80.0f);
 						currRot = FRotator(
                             FQuat(FRotator(0, orbitRotatesObject ? -rot.Yaw : rot.Yaw, 0)) *
                             FQuat(currRot) *
                             FQuat(FRotator(orbitRotatesObject ? -rot.Pitch : rot.Pitch, 0, 0))
                         );
+						currRot.Roll = 0;
 						break;
 					default: ;
 					}
