@@ -20,6 +20,8 @@ private:
 	bool bWasOrbitCamera = false;
 	bool bWasRealtime = false;
 	float LastOrbitDistance = 300;
+	FVector LastOrbitPivot = FVector::ZeroVector;
+	FVector LastOrbitPivotView = FVector::ZeroVector;
 
 	FEditorViewportClient* ActiveViewportClient = nullptr;
 	FString focusedVpType = "";

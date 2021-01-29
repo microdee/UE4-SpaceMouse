@@ -2,6 +2,8 @@
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #include "SmEditorManager.h"
+
+#include "CameraController.h"
 #include "SpaceMouse.h"
 #include "Editor.h"
 #include "SEditorViewport.h"
@@ -18,6 +20,7 @@ void FSmEditorManager::Tick(float DeltaSecs)
         sm->bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
         sm->MaxReads = FSpaceMouseModule::Settings->MaxHidReadOperationsPerFrame;
 
+		sm->MovementTimeTolerance = FSpaceMouseModule::Settings->MovementSecondsTolerance;
         sm->TranslationUnitsPerSec = FSpaceMouseModule::Settings->TranslationUnitsPerSec;
         sm->XTranslationAxisMap = FSpaceMouseModule::Settings->XTranslationAxisMap;
         sm->YTranslationAxisMap = FSpaceMouseModule::Settings->YTranslationAxisMap;
@@ -143,7 +146,7 @@ bool FSmEditorManager::UseForceSetView(FEditorViewportClient* cvp)
 
 FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 {
-	if(OnMovementStartedFrame && !FSpaceMouseModule::Settings->OrbittingAtFixedPivot)
+	if(OnMovementStartedFrame)
 	{
 		auto world = ActiveViewportClient->GetWorld();
 		FHitResult hit;
@@ -151,34 +154,38 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 		FVector startpoint = ActiveViewportClient->GetViewLocation();
 		FVector endpoint = startpoint +
 			ActiveViewportClient->GetViewRotation().RotateVector({1, 0, 0}) * traceLength;
-		
-		if(world->LineTraceSingleByChannel(hit, startpoint, endpoint, ECC_Visibility))
+
+		FCollisionQueryParams ColQuery;
+		ColQuery.bTraceComplex = true;
+
+		if(world->LineTraceSingleByChannel(hit, startpoint, endpoint, ECC_Visibility, ColQuery))
 		{
+			LastOrbitPivot = hit.ImpactPoint;
 			LastOrbitDistance = hit.Distance;
+
+			LastOrbitPivotView = LastOrbitPivot - ActiveViewportClient->GetViewLocation();
+			LastOrbitPivotView = ActiveViewportClient->GetViewRotation().GetInverse().RotateVector(LastOrbitPivotView);
 		}
 	}
 
-	float orbitDistance = FSpaceMouseModule::Settings->OrbittingAtFixedPivot ?
-		FSpaceMouseModule::Settings->OrbittingAtFixedPivotDistance :
-		LastOrbitDistance;
-
-	float rotspeed = FSpaceMouseModule::Settings->RotationDegreesPerSec;
-	float transspeed = FSpaceMouseModule::Settings->TranslationUnitsPerSec;
-	float deltatime = static_cast<float>(FApp::GetDeltaTime());
-	
 	if (FSpaceMouseModule::Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingNoRoll)
 	{
 		float yawcorr = FMath::Abs(FMath::Cos(FMath::DegreesToRadians(ActiveViewportClient->GetViewRotation().Pitch)));
-		return { 0,
-			rotDelta.Yaw * orbitDistance * deltatime * yawcorr,
-			rotDelta.Pitch * orbitDistance * deltatime
-		};
+		rotDelta.Yaw *= yawcorr;
 	}
 
-	return { 0,
-		rotDelta.Yaw * orbitDistance * deltatime,
-		rotDelta.Pitch * orbitDistance * deltatime
-	};
+	GEngine->AddOnScreenDebugMessage(
+	    13375,
+		FSpaceMouseModule::Settings->MovementSecondsTolerance,
+		FColor::Cyan,
+		FString::Printf(TEXT("Pivot distance: %f cm"), LastOrbitDistance)
+	);
+
+	FMatrix OrbitTr = FTransform(LastOrbitPivotView).ToMatrixWithScale()
+	    * FTransform(rotDelta).ToMatrixWithScale()
+        * FTransform(FVector(-LastOrbitDistance, 0, 0)).ToMatrixWithScale();
+
+	return OrbitTr.TransformPosition(FVector::ZeroVector);
 }
 
 FKeyEvent FSmEditorManager::GetKeyEventFromKey(const FInputActionKeyMapping& mapping)
