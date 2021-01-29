@@ -166,6 +166,14 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 			LastOrbitPivotView = LastOrbitPivot - ActiveViewportClient->GetViewLocation();
 			LastOrbitPivotView = ActiveViewportClient->GetViewRotation().GetInverse().RotateVector(LastOrbitPivotView);
 		}
+		if(FMath::IsNearlyZero(LastOrbitDistance))
+		{
+			LastOrbitDistance = 300;
+			LastOrbitPivotView = {LastOrbitDistance, 0, 0};
+
+			LastOrbitPivot = ActiveViewportClient->GetViewLocation() +
+				ActiveViewportClient->GetViewRotation().RotateVector(LastOrbitPivotView);
+		}
 	}
 
 	if (FSpaceMouseModule::Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingNoRoll)
@@ -185,7 +193,9 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 	    * FTransform(rotDelta).ToMatrixWithScale()
         * FTransform(FVector(-LastOrbitDistance, 0, 0)).ToMatrixWithScale();
 
-	return OrbitTr.TransformPosition(FVector::ZeroVector);
+	FVector ret = OrbitTr.TransformPosition(FVector::ZeroVector);
+	ret.X = 0;
+	return ret;
 }
 
 FKeyEvent FSmEditorManager::GetKeyEventFromKey(const FInputActionKeyMapping& mapping)
