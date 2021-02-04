@@ -142,14 +142,7 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 #if WITH_EDITOR
 	if (bPrintDebug && drecieved)
 	{
-		FString message = "Device: ";
-		message += "Serial: " + FString(DeviceInfo->serial_number) + "\n";
-		message += "VID: " + FString::FromInt(DeviceInfo->vendor_id) + "\n";
-		message += "PID: " + FString::FromInt(DeviceInfo->product_id) + "\n";
-		message += "Report:\n    ";
-		message += dreport + "\n";
-		message += "Sorted:\n    " + dr0 + "\n    " + dr1 + "\n    " + dr2 + "\n    " + dr3;
-		GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, message);
+	    PrintDebugInfo(dreport);
 	}
 #endif
 
@@ -157,6 +150,30 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 	OnMovementStartedFrame = MovementTimed > 0 && !PrevMoving;
 	OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
 	MovementTimed -= DeltaSecs;
+}
+
+void FSpaceMouseDevice::PrintDebugInfo(FString dreport)
+{
+	auto message = FString::Printf(
+		TEXT("Device: %s\n")
+		TEXT("  Serial: %s\n")
+		TEXT("  VID: 0x%04x\n")
+		TEXT("  PID: 0x%04x\n")
+		TEXT("  Report:\n")
+		TEXT("    %s\n")
+		TEXT("  Sorted:\n")
+		TEXT("    %s\n")
+		TEXT("    %s\n")
+		TEXT("    %s\n")
+		TEXT("    %s\n"),
+		*FriendlyDeviceName,
+		DeviceInfo->serial_number,
+		DeviceInfo->vendor_id,
+		DeviceInfo->product_id,
+		*dreport,
+		*dr0, *dr1, *dr2, *dr3
+	);
+	GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, message);
 }
 
 #undef CHECK_AXES
@@ -304,14 +321,7 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 #if WITH_EDITOR
 	if (bPrintDebug && drecieved)
 	{
-		FString message = "Device: ";
-		message += "Serial: " + FString(DeviceInfo->serial_number) + "\n";
-		message += "VID: " + FString::FromInt(DeviceInfo->vendor_id) + "\n";
-		message += "PID: " + FString::FromInt(DeviceInfo->product_id) + "\n";
-		message += "Report:\n    ";
-		message += dreport + "\n";
-		message += "Sorted:\n    " + dr0 + "\n    " + dr1 + "\n    " + dr2 + "\n    " + dr3;
-		GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, message);
+		PrintDebugInfo(dreport);
 	}
 #endif
 
@@ -328,6 +338,6 @@ void FTestSmDevice::Tick(float DeltaSecs)
 	FSpaceMouseDevice::Tick(DeltaSecs);
 
 #if WITH_EDITOR
-	GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, "TESTING DEVICE TYPE");
+	GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, TEXT("TESTING DEVICE TYPE"));
 #endif
 }

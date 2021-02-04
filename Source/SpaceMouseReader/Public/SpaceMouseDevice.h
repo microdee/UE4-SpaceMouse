@@ -58,6 +58,8 @@ public:
 	bool OnMovementEndedFrame = false;
 	bool Moving = false;
 
+	FString FriendlyDeviceName;
+
 	static float GetCurvedFloat(const FRichCurve* curve, float ff);
 
 	virtual TSharedPtr<FSpaceMouseDevice> NewDevice() { return MakeShared<FSpaceMouseDevice>(); }
@@ -66,7 +68,9 @@ public:
 
 	virtual void Tick(float DeltaSecs);
 
-	void Initialize(hid_device_info* dev, int iid);
+    virtual void PrintDebugInfo(FString dreport);
+
+    void Initialize(hid_device_info* dev, int iid);
 
 	FSpaceMouseDevice() { }
     //FSpaceMouseDevice( FSpaceMouseDevice& other ) { };
