@@ -22,64 +22,64 @@ USpaceMouseConfig* FSpaceMouseModule::Settings;
 
 bool FSpaceMouseModule::HandleSettingsSaved()
 {
-	Settings = GetMutableDefault<USpaceMouseConfig>();
-	Settings->SaveConfig();
-	return true;
+    Settings = GetMutableDefault<USpaceMouseConfig>();
+    Settings->SaveConfig();
+    return true;
 }
 
 void FSpaceMouseModule::RegisterSettings()
 {
-	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
-	{
-		Settings = GetMutableDefault<USpaceMouseConfig>();
+    if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
+    {
+        Settings = GetMutableDefault<USpaceMouseConfig>();
 
-		ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings("Editor", "Plugins", "SpaceMouse",
-			LOCTEXT("RuntimeGeneralSettingsName", "SpaceMouse"),
-			LOCTEXT("RuntimeGeneralSettingsDescription", "Configure SpaceMice for the editor"),
-			Settings
-		);
+        ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings("Editor", "Plugins", "SpaceMouse",
+            LOCTEXT("RuntimeGeneralSettingsName", "SpaceMouse"),
+            LOCTEXT("RuntimeGeneralSettingsDescription", "Configure SpaceMice for the editor"),
+            Settings
+        );
 
-		// Register the save handler to your settings, you might want to use it to
-		// validate those or just act to settings changes.
-		if (SettingsSection.IsValid())
-		{
-			SettingsSection->OnModified().BindRaw(this, &FSpaceMouseModule::HandleSettingsSaved);
-		}
-	}
+        // Register the save handler to your settings, you might want to use it to
+        // validate those or just act to settings changes.
+        if (SettingsSection.IsValid())
+        {
+            SettingsSection->OnModified().BindRaw(this, &FSpaceMouseModule::HandleSettingsSaved);
+        }
+    }
 }
 
 void FSpaceMouseModule::UnregisterSettings()
 {
-	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
-	{
-		SettingsModule->UnregisterSettings("Editor", "Plugins", "SpaceMouse");
-	}
+    if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
+    {
+        SettingsModule->UnregisterSettings("Editor", "Plugins", "SpaceMouse");
+    }
 }
 
 void FSpaceMouseModule::StartupModule()
 {
-	RegisterSettings();
+    RegisterSettings();
 
-	if(FModuleManager::Get().IsModuleLoaded("SpaceMouseReader"))
-		ReaderModule = FModuleManager::GetModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
-	else
+    if(FModuleManager::Get().IsModuleLoaded("SpaceMouseReader"))
+        ReaderModule = FModuleManager::GetModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
+    else
     {
-		ReaderModule = FModuleManager::LoadModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
+        ReaderModule = FModuleManager::LoadModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
         //ReaderModule->StartupModule();
     }
-	
-	SmManager.Initialize();
-	SmManager.Start();
+    
+    SmManager.Initialize();
+    SmManager.Start();
 }
 
 void FSpaceMouseModule::ShutdownModule()
 {
-	if(UObjectInitialized())
-	{
-		UnregisterSettings();
-	}
+    if(UObjectInitialized())
+    {
+        UnregisterSettings();
+    }
 }
 
 #undef LOCTEXT_NAMESPACE
-	
+    
 IMPLEMENT_MODULE(FSpaceMouseModule, SpaceMouse)

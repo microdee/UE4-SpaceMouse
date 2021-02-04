@@ -16,19 +16,19 @@ class FSpaceMouseModule : public IModuleInterface
 {
 private:
 
-	bool HandleSettingsSaved();
-	void RegisterSettings();
-	void UnregisterSettings();
+    bool HandleSettingsSaved();
+    void RegisterSettings();
+    void UnregisterSettings();
 
 public:
 
-	/** IModuleInterface implementation */
-	virtual void StartupModule() override;
-	virtual void ShutdownModule() override;
-	virtual bool SupportsDynamicReloading() override { return true; }
-	
-	FSmEditorManager SmManager;
-	class FSpaceMouseReaderModule* ReaderModule;
+    /** IModuleInterface implementation */
+    virtual void StartupModule() override;
+    virtual void ShutdownModule() override;
+    virtual bool SupportsDynamicReloading() override { return true; }
+    
+    FSmEditorManager SmManager;
+    class FSpaceMouseReaderModule* ReaderModule;
 
-	static USpaceMouseConfig* Settings;
+    static USpaceMouseConfig* Settings;
 };

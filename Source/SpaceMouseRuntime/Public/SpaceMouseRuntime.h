@@ -18,10 +18,10 @@ class FSpaceMouseRuntimeModule : public IModuleInterface
 {
 public:
 
-	/** IModuleInterface implementation */
-	virtual void StartupModule() override;
-	virtual void ShutdownModule() override;
-	virtual bool SupportsDynamicReloading() override { return true; }
-	
-	class FSpaceMouseReaderModule* ReaderModule;
+    /** IModuleInterface implementation */
+    virtual void StartupModule() override;
+    virtual void ShutdownModule() override;
+    virtual bool SupportsDynamicReloading() override { return true; }
+    
+    class FSpaceMouseReaderModule* ReaderModule;
 };

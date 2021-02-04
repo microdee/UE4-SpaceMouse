@@ -18,20 +18,24 @@
 UCLASS()
 class SPACEMOUSERUNTIME_API USpaceMouseData : public UBlueprintFunctionLibrary
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
-	static bool bFrameRequested;
+    static bool bFrameRequested;
 
-	static FTimerDelegate OnTickDel;
+    static FTimerDelegate OnTickDel;
 
-	static FSpaceMouseManager Manager;
+    static FSpaceMouseManager Manager;
 
-	UFUNCTION(BlueprintPure, Category="SpaceMouse", meta=(WorldContext="WorldContextObj"))
-	static void GetSpaceMouseData(
-		UObject* WorldContextObj,
+    UFUNCTION(
+        BlueprintPure,
+        Category = "SpaceMouse",
+        meta = ( WorldContext = "WorldContextObj" )
+    )
+    static void GetSpaceMouseData(
+        UObject* WorldContextObj,
 
-		FVector& DeltaTranslation,
-		FRotator& DeltaRotation,
-		TArray<bool>& Buttons
-	);
+        FVector& DeltaTranslation,
+        FRotator& DeltaRotation,
+        TArray<bool>& Buttons
+    );
 };

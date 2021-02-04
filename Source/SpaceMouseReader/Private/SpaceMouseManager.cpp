@@ -13,13 +13,13 @@
 
 void FSpaceMouseManager::Initialize()
 {
-	Translation = FVector::ZeroVector;
-	Rotation = FRotator::ZeroRotator;
+    Translation = FVector::ZeroVector;
+    Rotation = FRotator::ZeroRotator;
 
-	Buttons.Empty(SPACEMOUSE_BUTTONCOUNT);
-	Buttons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
-	PrevButtons.Empty(SPACEMOUSE_BUTTONCOUNT);
-	PrevButtons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
+    Buttons.Empty(SPACEMOUSE_BUTTONCOUNT);
+    Buttons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
+    PrevButtons.Empty(SPACEMOUSE_BUTTONCOUNT);
+    PrevButtons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
 
     DeviceInfos = hid_enumerate(0, 0);
     hid_device_info* cinfo = DeviceInfos;
@@ -29,7 +29,7 @@ void FSpaceMouseManager::Initialize()
     {
         for(auto& elem : FSpaceMouseReaderModule::Prototypes)
         {
-			uint32 vidpid = JOIN_VIDPID(static_cast<uint32>(cinfo->vendor_id), static_cast<uint32>(cinfo->product_id));
+            uint32 vidpid = JOIN_VIDPID(static_cast<uint32>(cinfo->vendor_id), static_cast<uint32>(cinfo->product_id));
             if(elem.Key == vidpid)
             {
                 auto smdevice = elem.Value->NewDevice();
@@ -48,42 +48,42 @@ void FSpaceMouseManager::Initialize()
 
 void FSpaceMouseManager::Tick(float DeltaSecs)
 {
-	//Translation = FVector::ZeroVector;
-	//Rotation = FRotator::ZeroRotator;
-	FVector trans = FVector::ZeroVector;
-	FRotator rot = FRotator::ZeroRotator;
+    //Translation = FVector::ZeroVector;
+    //Rotation = FRotator::ZeroRotator;
+    FVector trans = FVector::ZeroVector;
+    FRotator rot = FRotator::ZeroRotator;
     
-	for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-	{
-		PrevButtons[i] = Buttons[i];
-		Buttons[i] = false;
-	}
+    for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
+    {
+        PrevButtons[i] = Buttons[i];
+        Buttons[i] = false;
+    }
     
-	OnMovementStartedFrame = false;
-	OnMovementEndedFrame = false;
+    OnMovementStartedFrame = false;
+    OnMovementEndedFrame = false;
     
-	for (auto sm : Devices)
-	{
+    for (auto sm : Devices)
+    {
         sm->bPrintDebug = bPrintDebug;
-		sm->Tick(DeltaSecs);
-		trans += sm->Translation;
-		rot += sm->Rotation;
-		OnMovementStartedFrame = OnMovementStartedFrame || sm->OnMovementStartedFrame;
-		OnMovementEndedFrame = OnMovementEndedFrame || sm->OnMovementEndedFrame;
+        sm->Tick(DeltaSecs);
+        trans += sm->Translation;
+        rot += sm->Rotation;
+        OnMovementStartedFrame = OnMovementStartedFrame || sm->OnMovementStartedFrame;
+        OnMovementEndedFrame = OnMovementEndedFrame || sm->OnMovementEndedFrame;
 
-		for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-			Buttons[i] = Buttons[i] || sm->Buttons[i];
-	}
-	Translation = trans;
-	Rotation = rot;
+        for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
+            Buttons[i] = Buttons[i] || sm->Buttons[i];
+    }
+    Translation = trans;
+    Rotation = rot;
 
 #if WITH_EDITOR
-	if (bPrintDebug)
-	{
-		GEngine->AddOnScreenDebugMessage(
-			2000, 1.0, FColor::Cyan,
-			"Connected SpaceMice: " + FString::FromInt(Devices.Num())
-		);
-	}
+    if (bPrintDebug)
+    {
+        GEngine->AddOnScreenDebugMessage(
+            2000, 1.0, FColor::Cyan,
+            "Connected SpaceMice: " + FString::FromInt(Devices.Num())
+        );
+    }
 #endif
 }

@@ -16,15 +16,15 @@
 
 void FSpaceMouseRuntimeModule::StartupModule()
 {
-	if(FModuleManager::Get().IsModuleLoaded("SpaceMouseReader"))
-		ReaderModule = FModuleManager::GetModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
-	else
+    if(FModuleManager::Get().IsModuleLoaded("SpaceMouseReader"))
+        ReaderModule = FModuleManager::GetModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
+    else
     {
-		ReaderModule = FModuleManager::LoadModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
+        ReaderModule = FModuleManager::LoadModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
         //ReaderModule->StartupModule();
     }
 
-	USpaceMouseData::Manager.Initialize();
+    USpaceMouseData::Manager.Initialize();
 }
 
 void FSpaceMouseRuntimeModule::ShutdownModule()
@@ -32,5 +32,5 @@ void FSpaceMouseRuntimeModule::ShutdownModule()
 }
 
 //#undef LOCTEXT_NAMESPACE
-	
+    
 IMPLEMENT_MODULE(FSpaceMouseRuntimeModule, SpaceMouseRuntime)
