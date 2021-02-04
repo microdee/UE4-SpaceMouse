@@ -62,7 +62,7 @@ public:
 
     static float GetCurvedFloat(const FRichCurve* curve, float ff);
 
-    virtual TSharedPtr<FSpaceMouseDevice> NewDevice() { return MakeShared<FSpaceMouseDevice>(); }
+    virtual TSharedPtr<FSpaceMouseDevice> NewDevice();
 
     virtual int GetReportSize() { return 7; }
 
@@ -84,7 +84,7 @@ public:
 
 class SPACEMOUSEREADER_API FSingleReportPosRotSmDevice : public FSpaceMouseDevice
 {
-    virtual TSharedPtr<FSpaceMouseDevice> NewDevice() override { return MakeShared<FSingleReportPosRotSmDevice>(); }
+    virtual TSharedPtr<FSpaceMouseDevice> NewDevice() override;
 
     virtual int GetReportSize() override { return 13; }
 

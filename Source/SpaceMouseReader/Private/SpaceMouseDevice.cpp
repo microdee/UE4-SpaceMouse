@@ -19,6 +19,13 @@ float FSpaceMouseDevice::GetCurvedFloat(const FRichCurve* curve, float ff)
     else return ff;
 }
 
+TSharedPtr<FSpaceMouseDevice> FSpaceMouseDevice::NewDevice()
+{
+    auto res = MakeShared<FSpaceMouseDevice>();
+    res->FriendlyDeviceName = FriendlyDeviceName;
+    return res;
+}
+
 #define CHECK_AXES() \
     (  xx <= SPACEMOUSE_AXIS_RESOLUTION \
     && yy <= SPACEMOUSE_AXIS_RESOLUTION \
@@ -211,6 +218,13 @@ void FSpaceMouseDevice::Initialize(hid_device_info* dev, int iid)
     && -ryy >= -SPACEMOUSE_AXIS_RESOLUTION \
     && -rzz >= -SPACEMOUSE_AXIS_RESOLUTION \
     )
+
+TSharedPtr<FSpaceMouseDevice> FSingleReportPosRotSmDevice::NewDevice()
+{
+    auto res = MakeShared<FSingleReportPosRotSmDevice>();
+    res->FriendlyDeviceName = FriendlyDeviceName;
+    return res;
+}
 
 void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 {
