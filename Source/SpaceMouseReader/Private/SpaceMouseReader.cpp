@@ -10,35 +10,35 @@ TMap<unsigned int, FSpaceMouseDevice*> FSpaceMouseReaderModule::Prototypes = TMa
 void FSpaceMouseReaderModule::StartupModule()
 {
     // https://github.com/FreeSpacenav/spacenavd/blob/a9eccf34e7cac969ee399f625aef827f4f4aaec6/src/dev.c#L202
-	// https://www.3dconnexion.fr/nc/service/faqs/faq/how-can-i-check-if-my-usb-3d-mouse-is-recognized-by-windows.html
+    // https://www.3dconnexion.fr/nc/service/faqs/faq/how-can-i-check-if-my-usb-3d-mouse-is-recognized-by-windows.html
 
-    ADD_PROTOTYPE(0x046d, 0xc603); // spacemouse plus XT
-    ADD_PROTOTYPE(0x046d, 0xc605); // cadman
-    ADD_PROTOTYPE(0x046d, 0xc606); // spacemouse classic
-    ADD_PROTOTYPE(0x046d, 0xc621); // spaceball 5000
-    ADD_PROTOTYPE(0x046d, 0xc623); // space traveller
-    ADD_PROTOTYPE(0x046d, 0xc625); // space pilot
-    ADD_PROTOTYPE(0x046d, 0xc626); // space navigator
-    ADD_PROTOTYPE(0x046d, 0xc627); // space explorer
-    ADD_PROTOTYPE(0x046d, 0xc628); // space navigator for notebooks
-    ADD_PROTOTYPE(0x046d, 0xc629); // space pilot pro
-    ADD_PROTOTYPE(0x046d, 0xc62b); // space mouse pro
-    ADD_PROTOTYPE(0x046d, 0xc640); // nulooq
-    ADD_PROTOTYPE_DERIV(0x256f, 0xc62e, FSingleReportPosRotSmDevice); // spacemouse wireless (USB cable)
-    ADD_PROTOTYPE_DERIV(0x256f, 0xc62f, FSingleReportPosRotSmDevice); // spacemouse wireless (receiver)
-	ADD_PROTOTYPE_DERIV(0x256f, 0xc631, FSingleReportPosRotSmDevice); // spacemouse pro wireless (USB cable)
-	ADD_PROTOTYPE_DERIV(0x256f, 0xc632, FSingleReportPosRotSmDevice); // spacemouse pro wireless (receiver)
-	ADD_PROTOTYPE_DERIV(0x256f, 0xc633, FSingleReportPosRotSmDevice); // spacemouse enterprise
-    ADD_PROTOTYPE(0x256f, 0xc635); // spacemouse compact
-	ADD_PROTOTYPE(0x256f, 0xc636); // spacemouse module
-	ADD_PROTOTYPE_DERIV(0x256f, 0xc652, FSingleReportPosRotSmDevice); // universal receiver
+    AddPrototype(0x046d, 0xc603, TEXT("Space Mouse plus XT"));
+    AddPrototype(0x046d, 0xc605, TEXT("CAD Man"));
+    AddPrototype(0x046d, 0xc606, TEXT("Space Mouse classic"));
+    AddPrototype(0x046d, 0xc621, TEXT("SpaceBall 5000"));
+    AddPrototype(0x046d, 0xc623, TEXT("Space Traveller"));
+    AddPrototype(0x046d, 0xc625, TEXT("Space Pilot"));
+    AddPrototype(0x046d, 0xc626, TEXT("Space Navigator"));
+    AddPrototype(0x046d, 0xc627, TEXT("Space Explorer"));
+    AddPrototype(0x046d, 0xc628, TEXT("Space Navigator for Notebooks"));
+    AddPrototype(0x046d, 0xc629, TEXT("Space Pilot Pro"));
+    AddPrototype(0x046d, 0xc62b, TEXT("Space Mouse Pro"));
+    AddPrototype(0x046d, 0xc640, TEXT("nulooq"));
+    AddPrototype<FSingleReportPosRotSmDevice>(0x256f, 0xc62e, TEXT("Space Mouse Wireless (USB cable)"));
+    AddPrototype<FSingleReportPosRotSmDevice>(0x256f, 0xc62f, TEXT("Space Mouse Wireless (Receiver)"));
+    AddPrototype<FSingleReportPosRotSmDevice>(0x256f, 0xc631, TEXT("Space Mouse Pro Wireless (USB cable)"));
+    AddPrototype<FSingleReportPosRotSmDevice>(0x256f, 0xc632, TEXT("Space Mouse Pro Wireless (Receiver)"));
+    AddPrototype<FSingleReportPosRotSmDevice>(0x256f, 0xc633, TEXT("Space Mouse Enterprise"));
+    AddPrototype(0x256f, 0xc635, TEXT("Space Mouse Compact"));
+    AddPrototype(0x256f, 0xc636, TEXT("Space Mouse Module"));
+    AddPrototype<FSingleReportPosRotSmDevice>(0x256f, 0xc652, TEXT("Universal Receiver"));
 
-	hid_init();
+    hid_init();
 }
 
 void FSpaceMouseReaderModule::ShutdownModule()
 {
-	Prototypes.Empty();
+    Prototypes.Empty();
     hid_exit();
 }
 
