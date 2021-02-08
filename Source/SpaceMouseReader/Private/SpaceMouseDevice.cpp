@@ -12,6 +12,10 @@
 
 #include "hidapi.h"
 
+// SpacePilot Pro had troubles with filtering only the most significant axis data for a frame
+// So disabling first with a preprocessor in the hope that it won't cause trouble in other devices either.
+#define USE_MOST_SIGNIFICANT_AXES_ONLY 0
+
 float FSpaceMouseDevice::GetCurvedFloat(const FRichCurve* curve, float ff)
 {
     if(curve && FMath::Abs(ff) > SMALL_NUMBER)
@@ -48,8 +52,10 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
     bool drecieved = false;
     FString dreport;
 
+#if USE_MOST_SIGNIFICANT_AXES_ONLY
     Translation = {0,0,0};
     Rotation = {0,0,0};
+#endif
 
     while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < MaxReads)
     {
@@ -97,7 +103,9 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
                     fx * zmap.X + fy * zmap.Y + fz * zmap.Z
                 ) * TranslationUnitsPerSec * DeltaSecs;
 
+#if USE_MOST_SIGNIFICANT_AXES_ONLY
                 if(NewTrl.Size() > Translation.Size())
+#endif
                 {
                     Translation = NewTrl;
                     if(bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
@@ -121,7 +129,9 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
                     fx * zmap.X + fy * zmap.Y + fz * zmap.Z
                 ) * RotationDegreesPerSec * DeltaSecs;
 
+#if USE_MOST_SIGNIFICANT_AXES_ONLY
                 if(NewRot.Euler().Size() > Rotation.Euler().Size())
+#endif
                 {
                     Rotation = NewRot;
                     if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
@@ -239,8 +249,10 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
     bool drecieved = false;
     FString dreport;
 
+#if USE_MOST_SIGNIFICANT_AXES_ONLY
     Translation = { 0,0,0 };
     Rotation = { 0,0,0 };
+#endif
 
     while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < MaxReads)
     {
@@ -290,7 +302,9 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
                     fx * zmap.X + fy * zmap.Y + fz * zmap.Z
                 ) * TranslationUnitsPerSec * DeltaSecs;
 
+#if USE_MOST_SIGNIFICANT_AXES_ONLY
                 if (NewTrl.Size() > Translation.Size())
+#endif
                 {
                     Translation = NewTrl;
                     if (bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
@@ -305,9 +319,10 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
                     rfx * ymap.X + rfy * ymap.Y + rfz * ymap.Z,
                     rfx * zmap.X + rfy * zmap.Y + rfz * zmap.Z
                 ) * RotationDegreesPerSec * DeltaSecs;
-
-
+                
+#if USE_MOST_SIGNIFICANT_AXES_ONLY
                 if (NewRot.Euler().Size() > Rotation.Euler().Size())
+#endif
                 {
                     Rotation = NewRot;
                     if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
