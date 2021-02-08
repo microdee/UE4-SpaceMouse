@@ -5,10 +5,8 @@
 #include "Curves/CurveFloat.h"
 //#include "App.h"
 
-#if WITH_EDITOR
 #include "EngineGlobals.h"
 #include "Engine/Engine.h"
-#endif
 
 #include "hidapi.h"
 
