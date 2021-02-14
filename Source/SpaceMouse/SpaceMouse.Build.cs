@@ -9,6 +9,7 @@ public class SpaceMouse : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         bEnableUndefinedIdentifierWarnings = false;
+		CppStandard = CppStandardVersion.Cpp17;
 
         PublicIncludePaths.AddRange(
 			new string[] {
