@@ -27,9 +27,9 @@ FUserSettings USpaceMouseConfig::GetUserSettings()
             TranslationCurve.GetRichCurve()
         },
         {
-            RollAxisMap,
             PitchAxisMap,
             YawAxisMap,
+            RollAxisMap,
             RotationDegreesPerSec,
             RotationCurve.GetRichCurve()
         }

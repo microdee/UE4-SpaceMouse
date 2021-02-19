@@ -11,9 +11,9 @@ struct FMovementSettings
 {
     GENERATED_BODY()
     
-    FVector XAxisMap {0, -1,  0};
-    FVector YAxisMap {1,  0,  0};
-    FVector ZAxisMap {0,  0, -1};
+    FVector XAxisMap {0, -1,  0}; // Pitch
+    FVector YAxisMap {1,  0,  0}; // Yaw
+    FVector ZAxisMap {0,  0, -1}; // Roll
     
     float UnitsPerSec = 1000;
     
@@ -47,9 +47,9 @@ struct SPACEMOUSEREADER_API FUserSettings
     UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     FMovementSettings Rotation
     {
-        {0, -1,  0},
         {1,  0,  0},
         {0,  0,  1},
+        {0, -1,  0},
         270.0f
     };
 };

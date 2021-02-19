@@ -188,7 +188,7 @@ void FSpaceMouseDevice::ApplyTranslation(float fx, float fy, float fz, float Del
 
 void FSpaceMouseDevice::ApplyRotation(float fp, float fy, float fr, float DeltaSecs)
 {
-    SmDevDetails::ApplyMovement(this, fr, fp, fy, DeltaSecs, UserSettings.Rotation, Rotation);
+    SmDevDetails::ApplyMovement(this, fp, fy, fr, DeltaSecs, UserSettings.Rotation, Rotation);
 }
 
 void FSpaceMouseDevice::ApplyButtons(uint8* Report)
