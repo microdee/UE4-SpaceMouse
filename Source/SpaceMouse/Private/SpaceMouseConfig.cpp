@@ -11,3 +11,27 @@ USpaceMouseConfig::USpaceMouseConfig(const FObjectInitializer& ObjectInitializer
     RotationCurve.GetRichCurve()->AddKey(0.0, 0.0);
     RotationCurve.GetRichCurve()->AddKey(1.0, 1.0);
 }
+
+FUserSettings USpaceMouseConfig::GetUserSettings()
+{
+    return
+    {
+        DisplayDebugInformation,
+        MaxHidReadOperationsPerFrame,
+        MovementSecondsTolerance,
+        {
+            XTranslationAxisMap,
+            YTranslationAxisMap,
+            ZTranslationAxisMap,
+            TranslationUnitsPerSec,
+            TranslationCurve.GetRichCurve()
+        },
+        {
+            RollAxisMap,
+            PitchAxisMap,
+            YawAxisMap,
+            RotationDegreesPerSec,
+            RotationCurve.GetRichCurve()
+        }
+    };
+}
