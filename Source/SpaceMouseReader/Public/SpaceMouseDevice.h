@@ -17,12 +17,12 @@ struct hid_device_info;
 class SPACEMOUSEREADER_API FSpaceMouseDevice
 {
 protected:
-    bool PrevMoving;
+    bool PrevMoving = false;
 
-    FString dr0;
-    FString dr1;
-    FString dr2;
-    FString dr3;
+    FString dr0 {};
+    FString dr1 {};
+    FString dr2 {};
+    FString dr3 {};
 
     float MovementTimed = 0.0f;
 public:
@@ -32,33 +32,33 @@ public:
     int MaxReads = 2048;
     float MovementTimeTolerance = 0.25;
     float TranslationUnitsPerSec = 1000;
-    FVector XTranslationAxisMap = FVector(0, -1,  0);
-    FVector YTranslationAxisMap = FVector(1,  0,  0);
-    FVector ZTranslationAxisMap = FVector(0,  0, -1);
+    FVector XTranslationAxisMap {0, -1,  0};
+    FVector YTranslationAxisMap {1,  0,  0};
+    FVector ZTranslationAxisMap {0,  0, -1};
     const FRichCurve* TranslationCurve = nullptr;
     
     float RotationDegreesPerSec = 270;
-    FVector PitchAxisMap = FVector(1,  0,  0);
-    FVector YawAxisMap   = FVector(0,  0,  1);
-    FVector RollAxisMap  = FVector(0, -1,  0);
+    FVector PitchAxisMap {1,  0,  0};
+    FVector YawAxisMap   {0,  0,  1};
+    FVector RollAxisMap  {0, -1,  0};
     const FRichCurve* RotationCurve = nullptr;
 
     int InternalID = 0;
-    hid_device* Device;
-    hid_device_info* DeviceInfo;
+    hid_device* Device = nullptr;
+    hid_device_info* DeviceInfo = nullptr;
 
-    bool DeviceOpened;
+    bool DeviceOpened = false;
     unsigned char OutputBuffer[80];
 
-    FVector Translation;
-    FRotator Rotation;
+    FVector Translation {0,0,0};
+    FRotator Rotation {0,0,0};
     TArray<bool> Buttons;
 
     bool OnMovementStartedFrame = false;
     bool OnMovementEndedFrame = false;
     bool Moving = false;
 
-    FString FriendlyDeviceName;
+    FString FriendlyDeviceName {};
 
     static float GetCurvedFloat(const FRichCurve* curve, float ff);
 
