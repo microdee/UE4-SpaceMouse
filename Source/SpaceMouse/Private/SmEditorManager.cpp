@@ -17,21 +17,7 @@ void FSmEditorManager::Tick(float DeltaSecs)
     bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
     for (auto sm : Devices)
     {
-        sm->bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
-        sm->MaxReads = FSpaceMouseModule::Settings->MaxHidReadOperationsPerFrame;
-
-        sm->MovementTimeTolerance = FSpaceMouseModule::Settings->MovementSecondsTolerance;
-        sm->TranslationUnitsPerSec = FSpaceMouseModule::Settings->TranslationUnitsPerSec;
-        sm->XTranslationAxisMap = FSpaceMouseModule::Settings->XTranslationAxisMap;
-        sm->YTranslationAxisMap = FSpaceMouseModule::Settings->YTranslationAxisMap;
-        sm->ZTranslationAxisMap = FSpaceMouseModule::Settings->ZTranslationAxisMap;
-        sm->TranslationCurve = FSpaceMouseModule::Settings->TranslationCurve.GetRichCurveConst();
-
-        sm->RotationDegreesPerSec = FSpaceMouseModule::Settings->RotationDegreesPerSec;
-        sm->PitchAxisMap = FSpaceMouseModule::Settings->PitchAxisMap;
-        sm->YawAxisMap = FSpaceMouseModule::Settings->YawAxisMap;
-        sm->RollAxisMap = FSpaceMouseModule::Settings->RollAxisMap;
-        sm->RotationCurve = FSpaceMouseModule::Settings->RotationCurve.GetRichCurveConst();
+        sm->UserSettings = FSpaceMouseModule::Settings->GetUserSettings();
     }
     FSpaceMouseManager::Tick(DeltaSecs);
 

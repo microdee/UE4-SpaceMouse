@@ -5,6 +5,8 @@
 
 #include "CoreMinimal.h"
 
+#include "UserSettings.h"
+
 #define SPACEMOUSE_BUTTONCOUNT 48
 #define SPACEMOUSE_AXIS_RESOLUTION 350
 
@@ -27,28 +29,14 @@ protected:
     float MovementTimed = 0.0f;
 public:
 
-    bool bPrintDebug = false;
-
-    int MaxReads = 2048;
-    float MovementTimeTolerance = 0.25;
-    float TranslationUnitsPerSec = 1000;
-    FVector XTranslationAxisMap {0, -1,  0};
-    FVector YTranslationAxisMap {1,  0,  0};
-    FVector ZTranslationAxisMap {0,  0, -1};
-    const FRichCurve* TranslationCurve = nullptr;
-    
-    float RotationDegreesPerSec = 270;
-    FVector PitchAxisMap {1,  0,  0};
-    FVector YawAxisMap   {0,  0,  1};
-    FVector RollAxisMap  {0, -1,  0};
-    const FRichCurve* RotationCurve = nullptr;
+    FUserSettings UserSettings {};
 
     int InternalID = 0;
     hid_device* Device = nullptr;
     hid_device_info* DeviceInfo = nullptr;
 
     bool DeviceOpened = false;
-    unsigned char OutputBuffer[80];
+    uint8 OutputBuffer[80];
 
     FVector Translation {0,0,0};
     FRotator Rotation {0,0,0};
@@ -67,8 +55,13 @@ public:
     virtual int GetReportSize() { return 7; }
 
     virtual void Tick(float DeltaSecs);
+    void TickMovementState(float DeltaSecs);
 
     virtual void PrintDebugInfo(FString dreport);
+
+    void ApplyTranslation(float fx, float fy, float fz, float DeltaSecs);
+    void ApplyRotation(float fp, float fy, float fr, float DeltaSecs);
+    void ApplyButtons(uint8* Report);
 
     void Initialize(hid_device_info* dev, int iid);
 
