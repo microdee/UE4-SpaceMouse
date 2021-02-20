@@ -119,17 +119,6 @@ void FSmEditorManager::ManageActiveViewport()
     }
 }
 
-bool FSmEditorManager::UseForceSetView(FEditorViewportClient* cvp)
-{
-    static TSet<FName> ForceSetViewTable =
-    {
-        FName("SStaticMeshEditorViewport")
-    };
-
-    FName widgetType = cvp->GetEditorViewportWidget()->GetType();
-    return ForceSetViewTable.Contains(widgetType);
-}
-
 FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
 {
     if(OnMovementStartedFrame)

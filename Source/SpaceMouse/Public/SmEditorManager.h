@@ -27,7 +27,6 @@ private:
     FString focusedVpType = "";
 
     static FKeyEvent GetKeyEventFromKey(const FInputActionKeyMapping& mapping);
-    static bool UseForceSetView(FEditorViewportClient* cvp);
     FVector GetOrbitingPosDeltaOffset(FRotator rotDelta);
 
 public:
