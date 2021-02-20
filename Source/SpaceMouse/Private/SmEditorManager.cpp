@@ -4,6 +4,7 @@
 #include "SmEditorManager.h"
 
 #include "CameraController.h"
+#include "CommonBehaviors.h"
 #include "SpaceMouse.h"
 #include "Editor.h"
 #include "SEditorViewport.h"
@@ -151,12 +152,6 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
         }
     }
 
-    if (FSpaceMouseModule::Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingNoRoll)
-    {
-        float yawcorr = FMath::Abs(FMath::Cos(FMath::DegreesToRadians(ActiveViewportClient->GetViewRotation().Pitch)));
-        rotDelta.Yaw *= yawcorr;
-    }
-
     GEngine->AddOnScreenDebugMessage(
         13375,
         FSpaceMouseModule::Settings->MovementSecondsTolerance,
@@ -164,13 +159,13 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
         FString::Printf(TEXT("Pivot distance: %f cm"), LastOrbitDistance)
     );
 
-    FMatrix OrbitTr = FTransform(LastOrbitPivotView).ToMatrixWithScale()
-        * FTransform(rotDelta).ToMatrixWithScale()
-        * FTransform(FVector(-LastOrbitDistance, 0, 0)).ToMatrixWithScale();
-
-    FVector ret = OrbitTr.TransformPosition(FVector::ZeroVector);
-    ret.X = 0;
-    return ret;
+    return UCommonBehaviors::GetOrbitingTranslationDelta(
+        LastOrbitPivotView,
+        ActiveViewportClient->GetViewRotation(),
+        rotDelta,
+        LastOrbitDistance,
+        FSpaceMouseModule::Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingWithRoll
+    );
 }
 
 FKeyEvent FSmEditorManager::GetKeyEventFromKey(const FInputActionKeyMapping& mapping)
