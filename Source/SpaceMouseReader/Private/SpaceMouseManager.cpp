@@ -64,7 +64,7 @@ void FSpaceMouseManager::Tick(float DeltaSecs)
     
     for (auto sm : Devices)
     {
-        sm->bPrintDebug = bPrintDebug;
+        //sm->UserSettings.bPrintDebug = bPrintDebug;
         sm->Tick(DeltaSecs);
         trans += sm->Translation;
         rot += sm->Rotation;

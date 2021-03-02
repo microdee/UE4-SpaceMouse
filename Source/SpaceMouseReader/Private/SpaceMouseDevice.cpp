@@ -10,6 +10,36 @@
 
 #include "hidapi.h"
 
+namespace SmDevDetails
+{
+    template<typename TResult>
+    void ApplyMovement(FSpaceMouseDevice* Self, float fx, float fy, float fz, float DeltaSecs, const FMovementSettings& Settings, TResult& Output)
+    {
+        Self->Moving = true;
+
+        FVector xmap = Settings.XAxisMap;
+        FVector ymap = Settings.YAxisMap;
+        FVector zmap = Settings.ZAxisMap;
+
+        fx = FSpaceMouseDevice::GetCurvedFloat(Settings.Curve, fx);
+        fy = FSpaceMouseDevice::GetCurvedFloat(Settings.Curve, fy);
+        fz = FSpaceMouseDevice::GetCurvedFloat(Settings.Curve, fz);
+
+        auto NewTrl = TResult(
+            fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
+            fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
+            fx * zmap.X + fy * zmap.Y + fz * zmap.Z
+        ) * Settings.UnitsPerSec * DeltaSecs;
+
+#if USE_MOST_SIGNIFICANT_AXES_ONLY
+        if(NewTrl.Size() > Translation.Size())
+#endif
+        {
+            Output = NewTrl;
+        }
+    }
+}
+
 // SpacePilot Pro had troubles with filtering only the most significant axis data for a frame
 // So disabling first with a preprocessor in the hope that it won't cause trouble in other devices either.
 #define USE_MOST_SIGNIFICANT_AXES_ONLY 0
@@ -41,130 +71,90 @@ void FSpaceMouseDevice::Tick(float DeltaSecs)
 {
     if (!DeviceOpened) return;
 
-    unsigned char* pOutput = (unsigned char*)&OutputBuffer;
+    uint8* pOutput = &OutputBuffer[0];
     int ctr = 0;
 
     PrevMoving = MovementTimed > 0;
     Moving = false;
 
-    bool drecieved = false;
-    FString dreport;
+    bool dReceived = false;
+    FString dReport;
 
 #if USE_MOST_SIGNIFICANT_AXES_ONLY
     Translation = {0,0,0};
     Rotation = {0,0,0};
 #endif
 
-    while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < MaxReads)
+    while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < UserSettings.MaxReads)
     {
-        drecieved = true;
-        if(bPrintDebug)
+        dReceived = true;
+        if(UserSettings.bPrintDebug)
         {
-            dreport += FString::FromHexBlob(pOutput, GetReportSize());
+            dReport += FString::FromHexBlob(pOutput, GetReportSize());
         }
-        unsigned char* pCurr = pOutput;
+        uint8* pCurrentReport = pOutput;
         for (int i = 0; i < 4; i++)
         {
-            unsigned char report = *pCurr;
-            /*int16 xx = *(pCurr + 1) | (uint16)(*(pCurr + 2)) << 8;
-            int16 yy = *(pCurr + 3) | (uint16)(*(pCurr + 4)) << 8;
-            int16 zz = *(pCurr + 5) | (uint16)(*(pCurr + 6)) << 8;*/
+            const uint8 report = *pCurrentReport;
 
-            int16 xx = *(int16*)(pCurr + 1);
-            int16 yy = *(int16*)(pCurr + 3);
-            int16 zz = *(int16*)(pCurr + 5);
+            int16 xx = *reinterpret_cast<int16*>(pCurrentReport + 1);
+            int16 yy = *reinterpret_cast<int16*>(pCurrentReport + 3);
+            int16 zz = *reinterpret_cast<int16*>(pCurrentReport + 5);
 
-            float fx = (float)xx / SPACEMOUSE_AXIS_RESOLUTION;
-            float fy = (float)yy / SPACEMOUSE_AXIS_RESOLUTION;
-            float fz = (float)zz / SPACEMOUSE_AXIS_RESOLUTION;
+            float fx = static_cast<float>(xx) / SPACEMOUSE_AXIS_RESOLUTION;
+            float fy = static_cast<float>(yy) / SPACEMOUSE_AXIS_RESOLUTION;
+            float fz = static_cast<float>(zz) / SPACEMOUSE_AXIS_RESOLUTION;
 
-            if (report == 0 && bPrintDebug)
+            if (report == 0 && UserSettings.bPrintDebug)
             {
-                dr0 = FString::FromHexBlob(pCurr, 7);
+                dr0 = FString::FromHexBlob(pCurrentReport, 7);
             }
 
             if (report == 1 && CHECK_AXES())
             {
-                Moving = true;
-
-                FVector xmap = XTranslationAxisMap;
-                FVector ymap = YTranslationAxisMap;
-                FVector zmap = ZTranslationAxisMap;
-
-                fx = GetCurvedFloat(TranslationCurve, fx);
-                fy = GetCurvedFloat(TranslationCurve, fy);
-                fz = GetCurvedFloat(TranslationCurve, fz);
-
-                auto NewTrl = FVector(
-                    fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
-                    fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
-                    fx * zmap.X + fy * zmap.Y + fz * zmap.Z
-                ) * TranslationUnitsPerSec * DeltaSecs;
-
+                ApplyTranslation(fx, fy, fz, DeltaSecs);
 #if USE_MOST_SIGNIFICANT_AXES_ONLY
                 if(NewTrl.Size() > Translation.Size())
 #endif
                 {
-                    Translation = NewTrl;
-                    if(bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
+                    if(UserSettings.bPrintDebug) dr1 = FString::FromHexBlob(pCurrentReport, GetReportSize());
                 }
             }
             if (report == 2 && CHECK_AXES())
             {
-                Moving = true;
-
-                FVector xmap = PitchAxisMap;
-                FVector ymap = YawAxisMap;
-                FVector zmap = RollAxisMap;
-
-                fx = GetCurvedFloat(RotationCurve, fx);
-                fy = GetCurvedFloat(RotationCurve, fy);
-                fz = GetCurvedFloat(RotationCurve, fz);
-                
-                auto NewRot = FRotator(
-                    fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
-                    fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
-                    fx * zmap.X + fy * zmap.Y + fz * zmap.Z
-                ) * RotationDegreesPerSec * DeltaSecs;
+                ApplyRotation(fx, fy, fz, DeltaSecs);
 
 #if USE_MOST_SIGNIFICANT_AXES_ONLY
                 if(NewRot.Euler().Size() > Rotation.Euler().Size())
 #endif
                 {
-                    Rotation = NewRot;
-                    if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
+                    if (UserSettings.bPrintDebug) dr2 = FString::FromHexBlob(pCurrentReport, GetReportSize());
                 }
             }
             if (report == 3)
             {
-                int ii = 0;
-                for (int j = 0; j < 6; j++)
-                {
-                    for (int k = 0; k < 8; k++)
-                    {
-                        Buttons[ii] = (1 << k & (unsigned char)*(pCurr + 1 + j)) > 0;
-                        ii++;
-                    }
-                }
-
-                if (bPrintDebug) dr3 = FString::FromHexBlob(pCurr, GetReportSize());
+                ApplyButtons(pCurrentReport);
             }
-            pCurr += GetReportSize();
+            pCurrentReport += GetReportSize();
         }
         ctr++;
     }
 
 #if WITH_EDITOR
-    if (bPrintDebug && drecieved)
+    if (UserSettings.bPrintDebug && dReceived)
     {
-        PrintDebugInfo(dreport);
+        PrintDebugInfo(dReport);
     }
 #endif
+    TickMovementState(DeltaSecs);
+}
 
-    if(Moving) MovementTimed = MovementTimeTolerance;
+void FSpaceMouseDevice::TickMovementState(float DeltaSecs)
+{
+    if(Moving) MovementTimed = UserSettings.MovementTimeTolerance;
     OnMovementStartedFrame = MovementTimed > 0 && !PrevMoving;
-    OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
     MovementTimed -= DeltaSecs;
+    OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
 }
 
 void FSpaceMouseDevice::PrintDebugInfo(FString dreport)
@@ -189,6 +179,31 @@ void FSpaceMouseDevice::PrintDebugInfo(FString dreport)
         *dr0, *dr1, *dr2, *dr3
     );
     GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, message);
+}
+
+void FSpaceMouseDevice::ApplyTranslation(float fx, float fy, float fz, float DeltaSecs)
+{
+    SmDevDetails::ApplyMovement(this, fx, fy, fz, DeltaSecs, UserSettings.Translation, Translation);
+}
+
+void FSpaceMouseDevice::ApplyRotation(float fp, float fy, float fr, float DeltaSecs)
+{
+    SmDevDetails::ApplyMovement(this, fp, fy, fr, DeltaSecs, UserSettings.Rotation, Rotation);
+}
+
+void FSpaceMouseDevice::ApplyButtons(uint8* Report)
+{
+    int ii = 0;
+    for (int j = 0; j < 6; j++)
+    {
+        for (int k = 0; k < 8; k++)
+        {
+            Buttons[ii] = (1 << k & static_cast<uint8>(*(Report + 1 + j))) > 0;
+            ii++;
+        }
+    }
+
+    if (UserSettings.bPrintDebug) dr3 = FString::FromHexBlob(Report, GetReportSize());
 }
 
 #undef CHECK_AXES
@@ -238,124 +253,93 @@ void FSingleReportPosRotSmDevice::Tick(float DeltaSecs)
 {
     if (!DeviceOpened) return;
 
-    unsigned char* pOutput = (unsigned char*)&OutputBuffer;
+    uint8* pOutput = &OutputBuffer[0];
     int ctr = 0;
 
     PrevMoving = MovementTimed > 0;
     Moving = false;
 
-    bool drecieved = false;
-    FString dreport;
+    bool dReceived = false;
+    FString dReport;
 
 #if USE_MOST_SIGNIFICANT_AXES_ONLY
     Translation = { 0,0,0 };
     Rotation = { 0,0,0 };
 #endif
 
-    while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < MaxReads)
+    while (hid_read(Device, pOutput, GetReportSize() * 4) > 0 && ctr < UserSettings.MaxReads)
     {
-        drecieved = true;
-        if (bPrintDebug)
+        dReceived = true;
+        if (UserSettings.bPrintDebug)
         {
-            dreport += FString::FromHexBlob(pOutput, GetReportSize());
+            dReport += FString::FromHexBlob(pOutput, GetReportSize());
         }
-        unsigned char* pCurr = pOutput;
+        uint8* pCurrentReport = pOutput;
         for (int i = 0; i < 4; i++)
         {
-            unsigned char report = *pCurr;
+            const uint8 report = *pCurrentReport;
             /*int16 xx = *(pCurr + 1) | (uint16)(*(pCurr + 2)) << 8;
             int16 yy = *(pCurr + 3) | (uint16)(*(pCurr + 4)) << 8;
             int16 zz = *(pCurr + 5) | (uint16)(*(pCurr + 6)) << 8;*/
 
-            int16 xx = *(int16*)(pCurr + 1);
-            int16 yy = *(int16*)(pCurr + 3);
-            int16 zz = *(int16*)(pCurr + 5);
-            int16 rxx = *(int16*)(pCurr + 7);
-            int16 ryy = *(int16*)(pCurr + 9);
-            int16 rzz = *(int16*)(pCurr + 11);
+            int16 xx = *reinterpret_cast<int16*>(pCurrentReport + 1);
+            int16 yy = *reinterpret_cast<int16*>(pCurrentReport + 3);
+            int16 zz = *reinterpret_cast<int16*>(pCurrentReport + 5);
+            int16 rxx = *reinterpret_cast<int16*>(pCurrentReport + 7);
+            int16 ryy = *reinterpret_cast<int16*>(pCurrentReport + 9);
+            int16 rzz = *reinterpret_cast<int16*>(pCurrentReport + 11);
 
-            float fx = GetCurvedFloat(TranslationCurve, (float)xx / SPACEMOUSE_AXIS_RESOLUTION);
-            float fy = GetCurvedFloat(TranslationCurve, (float)yy / SPACEMOUSE_AXIS_RESOLUTION);
-            float fz = GetCurvedFloat(TranslationCurve, (float)zz / SPACEMOUSE_AXIS_RESOLUTION);
-            float rfx = GetCurvedFloat(RotationCurve, (float)rxx / SPACEMOUSE_AXIS_RESOLUTION);
-            float rfy = GetCurvedFloat(RotationCurve, (float)ryy / SPACEMOUSE_AXIS_RESOLUTION);
-            float rfz = GetCurvedFloat(RotationCurve, (float)rzz / SPACEMOUSE_AXIS_RESOLUTION);
+            float fx = static_cast<float>(xx) / SPACEMOUSE_AXIS_RESOLUTION;
+            float fy = static_cast<float>(yy) / SPACEMOUSE_AXIS_RESOLUTION;
+            float fz = static_cast<float>(zz) / SPACEMOUSE_AXIS_RESOLUTION;
+            float rfx = static_cast<float>(rxx) / SPACEMOUSE_AXIS_RESOLUTION;
+            float rfy = static_cast<float>(ryy) / SPACEMOUSE_AXIS_RESOLUTION;
+            float rfz = static_cast<float>(rzz) / SPACEMOUSE_AXIS_RESOLUTION;
 
-            if (report == 0 && bPrintDebug)
+            if (report == 0 && UserSettings.bPrintDebug)
             {
-                dr0 = FString::FromHexBlob(pCurr, GetReportSize());
+                dr0 = FString::FromHexBlob(pCurrentReport, GetReportSize());
             }
 
             if (report == 1 && CHECK_AXES())
             {
                 Moving = true;
 
-                FVector xmap = XTranslationAxisMap;
-                FVector ymap = YTranslationAxisMap;
-                FVector zmap = ZTranslationAxisMap;
-
-                auto NewTrl = FVector(
-                    fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
-                    fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
-                    fx * zmap.X + fy * zmap.Y + fz * zmap.Z
-                ) * TranslationUnitsPerSec * DeltaSecs;
-
+                ApplyTranslation(fx, fy, fz, DeltaSecs);
+                
 #if USE_MOST_SIGNIFICANT_AXES_ONLY
                 if (NewTrl.Size() > Translation.Size())
 #endif
                 {
-                    Translation = NewTrl;
-                    if (bPrintDebug) dr1 = FString::FromHexBlob(pCurr, GetReportSize());
+                    if (UserSettings.bPrintDebug) dr1 = FString::FromHexBlob(pCurrentReport, GetReportSize());
                 }
 
-                xmap = PitchAxisMap;
-                ymap = YawAxisMap;
-                zmap = RollAxisMap;
-
-                auto NewRot = FRotator(
-                    rfx * xmap.X + rfy * xmap.Y + rfz * xmap.Z,
-                    rfx * ymap.X + rfy * ymap.Y + rfz * ymap.Z,
-                    rfx * zmap.X + rfy * zmap.Y + rfz * zmap.Z
-                ) * RotationDegreesPerSec * DeltaSecs;
+                ApplyRotation(rfx, rfy, rfz, DeltaSecs);
                 
 #if USE_MOST_SIGNIFICANT_AXES_ONLY
                 if (NewRot.Euler().Size() > Rotation.Euler().Size())
 #endif
                 {
-                    Rotation = NewRot;
-                    if (bPrintDebug) dr2 = FString::FromHexBlob(pCurr, GetReportSize());
+                    if (UserSettings.bPrintDebug) dr2 = FString::FromHexBlob(pCurrentReport, GetReportSize());
                 }
             }
             else if (report == 3)
             {
-                int ii = 0;
-                for (int j = 0; j < 6; j++)
-                {
-                    for (int k = 0; k < 8; k++)
-                    {
-                        Buttons[ii] = (1 << k & (unsigned char)*(pCurr + 1 + j)) > 0;
-                        ii++;
-                    }
-                }
-
-                if (bPrintDebug) dr3 = FString::FromHexBlob(pCurr, GetReportSize());
+                ApplyButtons(pCurrentReport);
             }
-            pCurr += GetReportSize();
+            pCurrentReport += GetReportSize();
         }
         ctr++;
     }
 
 #if WITH_EDITOR
-    if (bPrintDebug && drecieved)
+    if (UserSettings.bPrintDebug && dReceived)
     {
-        PrintDebugInfo(dreport);
+        PrintDebugInfo(dReport);
     }
 #endif
 
-    if (Moving) MovementTimed = MovementTimeTolerance;
-    OnMovementStartedFrame = MovementTimed > 0 && !PrevMoving;
-    OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
-    MovementTimed -= DeltaSecs;
+    TickMovementState(DeltaSecs);
 }
 
 #undef CHECK_AXES
