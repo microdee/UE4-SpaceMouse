@@ -153,8 +153,8 @@ void FSpaceMouseDevice::TickMovementState(float DeltaSecs)
 {
     if(Moving) MovementTimed = UserSettings.MovementTimeTolerance;
     OnMovementStartedFrame = MovementTimed > 0 && !PrevMoving;
-    OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
     MovementTimed -= DeltaSecs;
+    OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
 }
 
 void FSpaceMouseDevice::PrintDebugInfo(FString dreport)
