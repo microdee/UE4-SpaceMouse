@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "UserSettings.h"
 #include "Curves/CurveFloat.h"
 #include "GameFramework/PlayerInput.h"
 
@@ -52,6 +53,8 @@ class USpaceMouseConfig : public UObject
     GENERATED_BODY()
 public:
     USpaceMouseConfig(const FObjectInitializer& ObjectInitializer);
+
+    FUserSettings GetUserSettings();
 
     UPROPERTY(EditAnywhere, Config, Category = "Behavior")
     bool ActiveInBackground = false;
