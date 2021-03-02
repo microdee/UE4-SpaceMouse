@@ -120,7 +120,7 @@ void FSmEditorManager::ManageActiveViewport()
     }
 }
 
-FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
+FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float forwardDelta)
 {
     if(OnMovementStartedFrame)
     {
@@ -150,6 +150,11 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
             LastOrbitPivot = ActiveViewportClient->GetViewLocation() +
                 ActiveViewportClient->GetViewRotation().RotateVector(LastOrbitPivotView);
         }
+    }
+    if(LastOrbitDistance > 0)
+    {
+        LastOrbitDistance -= forwardDelta;
+        LastOrbitPivotView.X -= forwardDelta;
     }
 
     GEngine->AddOnScreenDebugMessage(
@@ -275,7 +280,11 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
                         {
                             OrbRot.Pitch *= currRot.Pitch > -80 && currRot.Pitch < 80;
                         }
-                        trans = GetOrbitingPosDeltaOffset(orbitRotatesObject ? OrbRot : OrbRot.GetInverse()) / speedmul + (orbitMovesObject ? -trans : trans);
+                        auto orbitTrans = orbitMovesObject ? -trans : trans;
+                        trans = GetOrbitingPosDeltaOffset(
+                            orbitRotatesObject ? OrbRot : OrbRot.GetInverse(),
+                            orbitTrans.X * speedmul
+                        ) / speedmul + orbitTrans;
                     }
                     
                     FVector posDelta = currRot.RotateVector(trans) * speedmul;

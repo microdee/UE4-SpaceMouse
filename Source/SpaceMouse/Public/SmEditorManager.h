@@ -28,7 +28,7 @@ private:
 
     static FKeyEvent GetKeyEventFromKey(const FInputActionKeyMapping& mapping);
     static bool AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cvp);
-    FVector GetOrbitingPosDeltaOffset(FRotator rotDelta);
+    FVector GetOrbitingPosDeltaOffset(FRotator rotDelta, float forwardDelta);
 
 public:
 
