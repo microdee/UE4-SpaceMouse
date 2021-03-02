@@ -186,6 +186,17 @@ FKeyEvent FSmEditorManager::GetKeyEventFromKey(const FInputActionKeyMapping& map
     );
 }
 
+bool FSmEditorManager::AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cvp)
+{
+    static TSet<FName> IncompatibleViewports =
+    {
+        FName("SStaticMeshEditorViewport")
+    };
+
+    FName widgetType = cvp->GetEditorViewportWidget()->GetType();
+    return !IncompatibleViewports.Contains(widgetType);
+}
+
 void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 {
     if(!FSpaceMouseModule::Settings->ActiveInBackground)
@@ -313,9 +324,12 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
                     ActiveViewportClient->SetViewLocation(currPos);
                     ActiveViewportClient->SetViewRotation(currRot);
 
-                    // This is important to trigger PerspectiveCameraMoved event from outside.
-                    ActiveViewportClient->MoveViewportCamera(FVector::ZeroVector, FRotator::ZeroRotator);
-                    ActiveViewportClient->Viewport->InvalidateHitProxy();
+                    if(AllowPerspectiveCameraMoveEvent(ActiveViewportClient))
+                    {
+                        // This is important to trigger PerspectiveCameraMoved event from outside.
+                        ActiveViewportClient->MoveViewportCamera(FVector::ZeroVector, FRotator::ZeroRotator);
+                        ActiveViewportClient->Viewport->InvalidateHitProxy();
+                    }
                 }
             }
         }
