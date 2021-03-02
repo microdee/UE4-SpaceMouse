@@ -42,7 +42,7 @@ public class SpaceMouse : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				// ... add private dependencies that you statically link with here ...	
+				// ... add private dependencies that you statically link with here ...
 			}
 			);
 
@@ -55,7 +55,8 @@ public class SpaceMouse : ModuleRules
                     "SlateCore",
                     "UnrealEd",
                     "LevelEditor",
-					"ApplicationCore"
+					"ApplicationCore",
+					"RHI"
                     // ... add private dependencies that you statically link with here ...	
                 }
             );

@@ -10,6 +10,7 @@
 
 struct FInputActionKeyMapping;
 class FEditorViewportClient;
+class FSmViewportOverlay;
 
 class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager
 {
@@ -26,8 +27,11 @@ private:
     FEditorViewportClient* ActiveViewportClient = nullptr;
     FString focusedVpType = "";
 
+    TSharedPtr<FSmViewportOverlay> OrbitingOverlay;
+
     static FKeyEvent GetKeyEventFromKey(const FInputActionKeyMapping& mapping);
-    FVector GetOrbitingPosDeltaOffset(FRotator rotDelta);
+    static bool AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cvp);
+    FVector GetOrbitingPosDeltaOffset(FRotator rotDelta, float forwardDelta);
 
 public:
 
@@ -51,6 +55,7 @@ public:
 
     virtual void Tick(float DeltaSecs) override;
     void Start();
+    void ManageOrbitingOverlay();
     void LearnButtonMappings();
     void LearnButtonMapping(int& target);
     void ManageActiveViewport();

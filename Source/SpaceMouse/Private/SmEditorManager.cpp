@@ -2,6 +2,7 @@
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #include "SmEditorManager.h"
+#include "SmViewportOverlay.h"
 
 #include "CameraController.h"
 #include "CommonBehaviors.h"
@@ -23,6 +24,7 @@ void FSmEditorManager::Tick(float DeltaSecs)
     FSpaceMouseManager::Tick(DeltaSecs);
 
     ManageActiveViewport();
+    ManageOrbitingOverlay();
     MoveActiveViewport(Translation, Rotation);
     LearnButtonMappings();
     
@@ -37,6 +39,19 @@ void FSmEditorManager::Start()
     {
         bStarted = true;
         GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
+    }
+}
+
+void FSmEditorManager::ManageOrbitingOverlay()
+{
+    
+    if(OnMovementStartedFrame && ActiveViewportClient)
+    {
+        OrbitingOverlay = MakeShared<FSmViewportOverlay>(ActiveViewportClient);
+    }
+    if(OnMovementEndedFrame)
+    {
+        OrbitingOverlay.Reset();
     }
 }
 
@@ -120,7 +135,7 @@ void FSmEditorManager::ManageActiveViewport()
     }
 }
 
-FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
+FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float forwardDelta)
 {
     if(OnMovementStartedFrame)
     {
@@ -151,13 +166,13 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta)
                 ActiveViewportClient->GetViewRotation().RotateVector(LastOrbitPivotView);
         }
     }
+    if(LastOrbitDistance > 0)
+    {
+        LastOrbitDistance -= forwardDelta;
+        LastOrbitPivotView.X -= forwardDelta;
+    }
 
-    GEngine->AddOnScreenDebugMessage(
-        13375,
-        FSpaceMouseModule::Settings->MovementSecondsTolerance,
-        FColor::Cyan,
-        FString::Printf(TEXT("Pivot distance: %f cm"), LastOrbitDistance)
-    );
+    if(OrbitingOverlay) OrbitingOverlay->Draw(LastOrbitPivot, LastOrbitDistance);
 
     return UCommonBehaviors::GetOrbitingTranslationDelta(
         LastOrbitPivotView,
@@ -184,6 +199,17 @@ FKeyEvent FSmEditorManager::GetKeyEventFromKey(const FInputActionKeyMapping& map
         ),
         0, false, cc ? *cc : 0, kc ? *kc : 0
     );
+}
+
+bool FSmEditorManager::AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cvp)
+{
+    static TSet<FName> IncompatibleViewports =
+    {
+        FName("SStaticMeshEditorViewport")
+    };
+
+    FName widgetType = cvp->GetEditorViewportWidget()->GetType();
+    return !IncompatibleViewports.Contains(widgetType);
 }
 
 void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
@@ -264,7 +290,11 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
                         {
                             OrbRot.Pitch *= currRot.Pitch > -80 && currRot.Pitch < 80;
                         }
-                        trans = GetOrbitingPosDeltaOffset(orbitRotatesObject ? OrbRot : OrbRot.GetInverse()) / speedmul + (orbitMovesObject ? -trans : trans);
+                        auto orbitTrans = orbitMovesObject ? -trans : trans;
+                        trans = GetOrbitingPosDeltaOffset(
+                            orbitRotatesObject ? OrbRot : OrbRot.GetInverse(),
+                            orbitTrans.X * speedmul
+                        ) / speedmul + orbitTrans;
                     }
                     
                     FVector posDelta = currRot.RotateVector(trans) * speedmul;
@@ -313,9 +343,12 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
                     ActiveViewportClient->SetViewLocation(currPos);
                     ActiveViewportClient->SetViewRotation(currRot);
 
-                    // This is important to trigger PerspectiveCameraMoved event from outside.
-                    ActiveViewportClient->MoveViewportCamera(FVector::ZeroVector, FRotator::ZeroRotator);
-                    ActiveViewportClient->Viewport->InvalidateHitProxy();
+                    if(AllowPerspectiveCameraMoveEvent(ActiveViewportClient))
+                    {
+                        // This is important to trigger PerspectiveCameraMoved event from outside.
+                        ActiveViewportClient->MoveViewportCamera(FVector::ZeroVector, FRotator::ZeroRotator);
+                        ActiveViewportClient->Viewport->InvalidateHitProxy();
+                    }
                 }
             }
         }
