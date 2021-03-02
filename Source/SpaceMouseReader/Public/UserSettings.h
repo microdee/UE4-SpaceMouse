@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Object.h"
 #include "UserSettings.generated.h"
+
+struct FRichCurve;
 
 USTRUCT(BlueprintType)
 struct FMovementSettings

@@ -25,7 +25,6 @@ FSmViewportOverlay::FSmViewportOverlay(FEditorViewportClient* VpClient)
             . ColorAndOpacity(FLinearColor::Yellow)
             . ShadowOffset(FVector2D(2, 2))
             . ShadowColorAndOpacity(FLinearColor::Black)
-            //. RenderTransformPivot(FVector2D(0.5, 0.5))
         ];
 }
 
