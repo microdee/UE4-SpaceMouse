@@ -2,6 +2,7 @@
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #include "SmEditorManager.h"
+#include "SmViewportOverlay.h"
 
 #include "CameraController.h"
 #include "CommonBehaviors.h"
@@ -23,6 +24,7 @@ void FSmEditorManager::Tick(float DeltaSecs)
     FSpaceMouseManager::Tick(DeltaSecs);
 
     ManageActiveViewport();
+    ManageOrbitingOverlay();
     MoveActiveViewport(Translation, Rotation);
     LearnButtonMappings();
     
@@ -37,6 +39,19 @@ void FSmEditorManager::Start()
     {
         bStarted = true;
         GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
+    }
+}
+
+void FSmEditorManager::ManageOrbitingOverlay()
+{
+    
+    if(OnMovementStartedFrame && ActiveViewportClient)
+    {
+        OrbitingOverlay = MakeShared<FSmViewportOverlay>(ActiveViewportClient);
+    }
+    if(OnMovementEndedFrame)
+    {
+        OrbitingOverlay.Reset();
     }
 }
 
@@ -157,12 +172,7 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float for
         LastOrbitPivotView.X -= forwardDelta;
     }
 
-    GEngine->AddOnScreenDebugMessage(
-        13375,
-        FSpaceMouseModule::Settings->MovementSecondsTolerance,
-        FColor::Cyan,
-        FString::Printf(TEXT("Pivot distance: %f cm"), LastOrbitDistance)
-    );
+    if(OrbitingOverlay) OrbitingOverlay->Draw(LastOrbitPivot, LastOrbitDistance);
 
     return UCommonBehaviors::GetOrbitingTranslationDelta(
         LastOrbitPivotView,
