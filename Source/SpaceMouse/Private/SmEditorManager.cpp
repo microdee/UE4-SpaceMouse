@@ -228,7 +228,7 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
     if (OnMovementEndedFrame && ActiveViewportClient)
     {
         ActiveViewportClient->SetRealtime(bWasRealtime);
-        ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
+        //ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
     }
 
     if (ActiveViewportClient && Enabled)
