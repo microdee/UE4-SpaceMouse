@@ -125,8 +125,8 @@ void FSmEditorManager::ManageActiveViewport()
                     }
                     bWasOrbitCamera = cvp->ShouldOrbitCamera();
                     bWasRealtime = cvp->IsRealtime();
-                    cvp->ToggleOrbitCamera(false);
-                    cvp->SetRealtime(true);
+                    //cvp->ToggleOrbitCamera(false);
+                    //cvp->SetRealtime(true);
                     ActiveViewportClient = cvp;
                     break;
                 }
@@ -222,14 +222,16 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
     if (OnMovementStartedFrame && ActiveViewportClient)
     {
         bWasRealtime = ActiveViewportClient->IsRealtime();
+        bWasOrbitCamera = ActiveViewportClient->ShouldOrbitCamera();
         ActiveViewportClient->ToggleOrbitCamera(false);
         ActiveViewportClient->SetRealtime(true);
     }
 
-    /*if (OnMovementEndedFrame && ActiveViewportClient)
+    if (OnMovementEndedFrame && ActiveViewportClient)
     {
         ActiveViewportClient->SetRealtime(bWasRealtime);
-    }*/
+        ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
+    }
 
     if (ActiveViewportClient && Enabled)
     {
