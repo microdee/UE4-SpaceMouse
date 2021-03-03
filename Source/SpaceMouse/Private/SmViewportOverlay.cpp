@@ -5,7 +5,8 @@
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
-#include "Kismet/GameplayStatics.h"
+#include "Widgets/SViewport.h"
+#include "Widgets/Text/STextBlock.h"
 
 
 FSmViewportOverlay::FSmViewportOverlay(FEditorViewportClient* VpClient)

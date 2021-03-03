@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 
+class SOverlay;
+class SViewport;
+class STextBlock;
+class FEditorViewportClient;
 /**
  * Object managing the lifespan of orbiting information over the active viewport
  */
