@@ -7,7 +7,7 @@ public class SpaceMouse : ModuleRules
 {
 	public SpaceMouse(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+		PCHUsage = ModuleRules.PCHUsageMode.NoSharedPCHs;
         bEnableUndefinedIdentifierWarnings = false;
 		CppStandard = CppStandardVersion.Cpp17;
 
