@@ -5,7 +5,8 @@
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
-#include "Kismet/GameplayStatics.h"
+#include "Widgets/SViewport.h"
+#include "Widgets/Text/STextBlock.h"
 
 
 FSmViewportOverlay::FSmViewportOverlay(FEditorViewportClient* VpClient)
@@ -25,7 +26,6 @@ FSmViewportOverlay::FSmViewportOverlay(FEditorViewportClient* VpClient)
             . ColorAndOpacity(FLinearColor::Yellow)
             . ShadowOffset(FVector2D(2, 2))
             . ShadowColorAndOpacity(FLinearColor::Black)
-            //. RenderTransformPivot(FVector2D(0.5, 0.5))
         ];
 }
 

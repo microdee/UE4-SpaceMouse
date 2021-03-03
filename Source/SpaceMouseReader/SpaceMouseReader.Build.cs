@@ -8,7 +8,7 @@ public class SpaceMouseReader : ModuleRules
 	public SpaceMouseReader(ReadOnlyTargetRules Target) : base(Target)
 	{
         PrecompileForTargets = PrecompileTargetsType.Any;
-		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+        PCHUsage = ModuleRules.PCHUsageMode.NoSharedPCHs;
         bEnableUndefinedIdentifierWarnings = false;
 		CppStandard = CppStandardVersion.Cpp17;
 
