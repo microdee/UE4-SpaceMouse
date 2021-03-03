@@ -166,11 +166,9 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float for
                 ActiveViewportClient->GetViewRotation().RotateVector(LastOrbitPivotView);
         }
     }
-    if(LastOrbitDistance > 0)
-    {
-        LastOrbitDistance -= forwardDelta;
-        LastOrbitPivotView.X -= forwardDelta;
-    }
+    
+    LastOrbitDistance -= forwardDelta;
+    LastOrbitPivotView.X -= forwardDelta;
 
     if(OrbitingOverlay) OrbitingOverlay->Draw(LastOrbitPivot, LastOrbitDistance);
 
