@@ -2,10 +2,8 @@
 
 
 #include "ReadingMethod/DataReadingMethod.h"
-
-
+#include "ActiveHidSmDevice.h"
 #include "DebugInfoPrinter.h"
-#include "hidapi.h"
 #include "ProcessedDeviceOutput.h"
 #include "Curves/RichCurve.h"
 
@@ -51,7 +49,7 @@ union FReportButtons
     TStaticBitArray<64> BitArray;
 };
 
-void FDataReadingMethod::Tick(hid_device* Device, FDataReadingOutput& Output, float DeltaSecs)
+void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
 {
     uint8* Report = &OutputBuffer[0];
     int Ctr = 0;
@@ -61,7 +59,7 @@ void FDataReadingMethod::Tick(hid_device* Device, FDataReadingOutput& Output, fl
 
     bool Received = false;
     
-    while (hid_read(Device, Report, GetReportSize() * GetReportCount()) > 0 && Ctr < UserSettings.MaxReads)
+    while (Output.HidDevice->Read(Report, GetReportSize() * GetReportCount()) > 0 && Ctr < UserSettings.MaxReads)
     {
         Received = true;
         ReadData(Output, DeltaSecs, Report);

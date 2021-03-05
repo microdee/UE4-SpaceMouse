@@ -8,9 +8,8 @@
 
 struct FRichCurve;
 struct FProcessedDeviceOutput;
-struct FDebugInfoPrinter;
-
-typedef struct hid_device_ hid_device;
+class FDebugInfoPrinter;
+class FActiveHidSmDevice;
 
 DECLARE_MULTICAST_DELEGATE(FMovementEvent)
 DECLARE_MULTICAST_DELEGATE(FDataReadEvent)
@@ -19,6 +18,7 @@ struct SPACEMOUSEREADER_API FDataReadingOutput
 {
     TSharedPtr<FProcessedDeviceOutput> Data;
     TSharedPtr<FDebugInfoPrinter> Debug;
+    TSharedPtr<FActiveHidSmDevice> HidDevice;
 };
 
 /**
@@ -44,7 +44,7 @@ public:
     virtual int GetReportCount() { return 4; }
     virtual int GetAxisResolution() { return 350; }
 
-    virtual void Tick(hid_device* Device, FDataReadingOutput& Output, float DeltaSecs);
+    virtual void Tick(FDataReadingOutput& Output, float DeltaSecs);
     virtual void ReadData(FDataReadingOutput& Output, float DeltaSecs, uint8* Report) = 0;
     
     static float GetCurvedFloat(const FRichCurve* curve, float ff);
