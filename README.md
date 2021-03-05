@@ -1,13 +1,17 @@
 ## SpaceMouse camera controller for UE4 editor viewports
+  
+**Pre-Compiled for UE 4.23 .. 4.26.**
 
-**Compatible with UE 4.26 and below**  
-**Compiled for UE 4.23 .. 4.26.**
+Demo video: https://youtu.be/Qibig0gQWvE
 
 **[Download manually for free](https://github.com/microdee/UE4-SpaceMouse/releases/latest)**
 
 **[Buy it via the Marketplace](https://www.unrealengine.com/marketplace/en-US/product/spacemouse-for-unreal-engine)**
 
-Demo video: https://youtu.be/Qibig0gQWvE
+**If you have a code project just use this repo as submodule**
+```
+git submodule add https://github.com/microdee/UE4-SpaceMouse.git Plugins/SpaceMouse
+```
 
 ## [Disclaimer about the new official plugin shipped by 3DConnexion](DISCLAIMER.md)
 
@@ -61,6 +65,10 @@ This plugin works with the HID device directly so no 3DxWare service is needed t
 [Have any feedback or ideas? Go to Discussions!](https://github.com/microdee/UE4-SpaceMouse/discussions)
 
 [UE4 forum (please prefer Github Discussions)](https://forums.unrealengine.com/unreal-engine/feedback-for-epic/437-support-for-space-navigator-3d-mouse?p=1609440#post1609440)
+
+## Build a release
+
+If for any reason you cannot use this plugin as a submodule and you want to make a pre-built release to be an engine plugin, then work with the [official test project](https://github.com/microdee/UE4-SpaceMouse-TestProject) and see the build instructions there.
 
 ## Major changes from version 1.1
 
