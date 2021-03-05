@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SingleReportTransRotMethod.h"
+#include "ReadingMethod/SingleReportTransRotMethod.h"
 
 #include "DebugInfoPrinter.h"
 
