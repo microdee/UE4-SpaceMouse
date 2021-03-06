@@ -19,6 +19,7 @@ struct SPACEMOUSEREADER_API FDataReadingOutput
     TSharedPtr<FDebugInfoPrinter> Debug;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
     TSharedPtr<FMovementState> MovementState;
+    FUserSettings Settings;
 };
 
 /**
@@ -30,7 +31,6 @@ public:
     FDataReadingMethod();
     virtual ~FDataReadingMethod();
     
-    FUserSettings UserSettings {};
     FDataReadEvent OnDataReceived;
     
     virtual int GetReportSize() { return 7; }

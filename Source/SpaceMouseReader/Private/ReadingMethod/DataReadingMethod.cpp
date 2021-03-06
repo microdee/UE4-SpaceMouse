@@ -58,7 +58,7 @@ void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
 
     bool Received = false;
     
-    while (Output.HidDevice->Read(Report, GetReportSize() * GetReportCount()) > 0 && Ctr < UserSettings.MaxReads)
+    while (Output.HidDevice->Read(Report, GetReportSize() * GetReportCount()) > 0 && Ctr < Output.Settings.MaxReads)
     {
         Received = true;
         ReadData(Output, DeltaSecs, Report);
@@ -83,12 +83,12 @@ void FDataReadingMethod::TickMovementState(FDataReadingOutput& Output, float Del
 
 void FDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs)
 {
-    SmDataReadingDetails::ApplyMovement(fx, fy, fz, DeltaSecs, UserSettings.Translation, Output.Data->Translation);
+    SmDataReadingDetails::ApplyMovement(fx, fy, fz, DeltaSecs, Output.Settings.Translation, Output.Data->Translation);
 }
 
 void FDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs)
 {
-    SmDataReadingDetails::ApplyMovement(fp, fy, fr, DeltaSecs, UserSettings.Rotation, Output.Data->Rotation);
+    SmDataReadingDetails::ApplyMovement(fp, fy, fr, DeltaSecs, Output.Settings.Rotation, Output.Data->Rotation);
 }
 
 void FDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID)

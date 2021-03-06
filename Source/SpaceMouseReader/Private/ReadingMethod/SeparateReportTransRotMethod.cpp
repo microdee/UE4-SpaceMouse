@@ -4,6 +4,7 @@
 #include "ReadingMethod/SeparateReportTransRotMethod.h"
 
 #include "DebugInfoPrinter.h"
+#include "MovementState.h"
 
 
 FSeparateReportTransRotMethod::FSeparateReportTransRotMethod()
@@ -39,7 +40,7 @@ void FSeparateReportTransRotMethod::ReadData(FDataReadingOutput& Output, float D
         float fy = static_cast<float>(yy) / GetAxisResolution();
         float fz = static_cast<float>(zz) / GetAxisResolution();
 
-        if (ReportID == 0 && UserSettings.bPrintDebug)
+        if (ReportID == 0 && Output.Settings.bPrintDebug)
         {
             Output.Debug->SetReport(ReportID, Report, GetReportSize());
         }
