@@ -48,11 +48,13 @@ void FSeparateReportTransRotMethod::ReadData(FDataReadingOutput& Output, float D
         {
             ApplyTranslation(Output, fx, fy, fz, DeltaSecs);
             Output.Debug->SetReport(ReportID, Report, GetReportSize());
+            Output.MovementState->Move();
         }
         if (ReportID == 2 && CHECK_AXES())
         {
             ApplyRotation(Output, fx, fy, fz, DeltaSecs);
             Output.Debug->SetReport(ReportID, Report, GetReportSize());
+            Output.MovementState->Move();
         }
         if (ReportID == 3)
         {

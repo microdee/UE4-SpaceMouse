@@ -3,15 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "UserSettings.h"
 
+class FMovementState;
 struct FRichCurve;
 struct FProcessedDeviceOutput;
 class FDebugInfoPrinter;
 class FActiveHidSmDevice;
 
-DECLARE_MULTICAST_DELEGATE(FMovementEvent)
 DECLARE_MULTICAST_DELEGATE(FDataReadEvent)
 
 struct SPACEMOUSEREADER_API FDataReadingOutput
@@ -19,6 +18,7 @@ struct SPACEMOUSEREADER_API FDataReadingOutput
     TSharedPtr<FProcessedDeviceOutput> Data;
     TSharedPtr<FDebugInfoPrinter> Debug;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
+    TSharedPtr<FMovementState> MovementState;
 };
 
 /**
@@ -29,16 +29,9 @@ class SPACEMOUSEREADER_API FDataReadingMethod
 public:
     FDataReadingMethod();
     virtual ~FDataReadingMethod();
-
-    FMovementEvent OnMovementStarted;
-    FMovementEvent OnMovementEnded;
-    FDataReadEvent OnDataReceived;
-
-    bool OnMovementStartedFrame = false;
-    bool OnMovementEndedFrame = false;
-    bool Moving = false;
     
     FUserSettings UserSettings {};
+    FDataReadEvent OnDataReceived;
     
     virtual int GetReportSize() { return 7; }
     virtual int GetReportCount() { return 4; }
@@ -52,12 +45,10 @@ public:
 protected:
     
     uint8 OutputBuffer[80];
-    bool PrevMoving = false;
-    float MovementTimed = 0.0f;
-    
-    void TickMovementState(float DeltaSecs);
-    
-    void ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs);
-    void ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs);
+
+    static void TickMovementState(FDataReadingOutput& Output, float DeltaSecs);
+
+    static void ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs);
+    static void ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs);
     void ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID = 3);
 };

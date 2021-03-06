@@ -60,7 +60,7 @@ void FSingleReportTransRotMethod::ReadData(FDataReadingOutput& Output, float Del
 
         if (ReportID == 1 && CHECK_AXES())
         {
-            Moving = true;
+            Output.MovementState->Move();
 
             ApplyTranslation(Output, fx, fy, fz, DeltaSecs);
             ApplyRotation(Output, rfx, rfy, rfz, DeltaSecs);

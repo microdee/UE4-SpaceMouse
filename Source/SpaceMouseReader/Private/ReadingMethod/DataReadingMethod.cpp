@@ -54,8 +54,7 @@ void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
     uint8* Report = &OutputBuffer[0];
     int Ctr = 0;
 
-    PrevMoving = MovementTimed > 0;
-    Moving = false;
+    Output.MovementState->PreTick();
 
     bool Received = false;
     
@@ -67,7 +66,7 @@ void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
     }
     if(Received) OnDataReceived.Broadcast();
 
-    TickMovementState(DeltaSecs);
+    TickMovementState(Output, DeltaSecs);
 }
 
 float FDataReadingMethod::GetCurvedFloat(const FRichCurve* curve, float ff)
@@ -77,17 +76,9 @@ float FDataReadingMethod::GetCurvedFloat(const FRichCurve* curve, float ff)
     else return ff;
 }
 
-void FDataReadingMethod::TickMovementState(float DeltaSecs)
+void FDataReadingMethod::TickMovementState(FDataReadingOutput& Output, float DeltaSecs)
 {
-    if(Moving) MovementTimed = UserSettings.MovementTimeTolerance;
-    
-    OnMovementStartedFrame = MovementTimed > 0 && !PrevMoving;
-    if(OnMovementStartedFrame) OnMovementStarted.Broadcast();
-    
-    MovementTimed -= DeltaSecs;
-    
-    OnMovementEndedFrame = MovementTimed <= 0 && PrevMoving;
-    if(OnMovementEndedFrame) OnMovementEnded.Broadcast();
+    Output.MovementState->Tick(Output.Settings.MovementTimeTolerance, DeltaSecs);
 }
 
 void FDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs)
