@@ -3,6 +3,47 @@
 
 #include "Buttons.h"
 
+EV3DCmd FButtonIterator::operator*() const
+{
+    return Button;
+}
+
+FButtonIterator& FButtonIterator::operator++()
+{
+    Button = FSmButton::FromButtonID(FSmButton::FromCmdCode(Button) + 1);
+    return *this;
+}
+
+FButtonIterator& FButtonIterator::operator--()
+{
+    Button = FSmButton::FromButtonID(FSmButton::FromCmdCode(Button) + 1);
+    return *this;
+}
+
+bool FButtonIterator::operator==(const FButtonIterator& Other) const
+{
+    return Button == Other.Button;
+}
+
+bool FButtonIterator::operator!=(const FButtonIterator& Other) const
+{
+    return  Button != Other.Button;
+}
+
+// ReSharper disable once CppMemberFunctionMayBeStatic
+// ReSharper disable once CppUE4CodingStandardNamingViolationWarning
+FButtonIterator FAllSmButtons::begin()
+{
+    return { EV3DCmd::MenuOptions };
+}
+
+// ReSharper disable once CppMemberFunctionMayBeStatic
+// ReSharper disable once CppUE4CodingStandardNamingViolationWarning
+FButtonIterator FAllSmButtons::end()
+{
+    return { EV3DCmd::COUNT };
+}
+
 EV3DCmd FSmButton::FromButtonID(int ButtonID)
 {
     return static_cast<EV3DCmd>(ButtonID + 1);

@@ -6,13 +6,34 @@
 
 enum class EV3DCmd : uint8;
 
+struct SPACEMOUSEREADER_API FButtonIterator
+{
+    EV3DCmd Button;
+    
+    EV3DCmd operator*() const;
+    FButtonIterator& operator++();
+    FButtonIterator& operator--();
+    bool operator==(const FButtonIterator& Other) const;
+    bool operator!=(const FButtonIterator& Other) const;
+};
+
+struct SPACEMOUSEREADER_API FAllSmButtons
+{
+    // ReSharper disable once CppUE4CodingStandardNamingViolationWarning
+    FButtonIterator begin();
+    
+    // ReSharper disable once CppUE4CodingStandardNamingViolationWarning
+    FButtonIterator end();
+};
+
 /**
  * 
  */
 struct SPACEMOUSEREADER_API FSmButton
 {
-    static EV3DCmd FromButtonID(int ButtonID);
-    static int FromCmdCode(EV3DCmd CmdCode);
+    static FORCEINLINE EV3DCmd FromButtonID(int ButtonID);
+    static FORCEINLINE int FromCmdCode(EV3DCmd CmdCode);
+    
     static FString GetNameOf(EV3DCmd Button);
     static FString GetFriendlyNameOf(EV3DCmd Button);
 };
@@ -184,6 +205,8 @@ enum class EV3DCmd : uint8
     Menu14                           = 162,
     Menu15                           = 163,
     Menu16                           = 164,
+    
+    // ReSharper disable once CppUE4CodingStandardNamingViolationWarning
     COUNT                            = 165,
     Noop                             = 0xFF,
 };
