@@ -183,6 +183,7 @@ enum class EV3DCmd : uint8
     Menu14                           = 162,
     Menu15                           = 163,
     Menu16                           = 164,
+    COUNT                            = 165,
     Noop                             = 0xFF,
 };
 
