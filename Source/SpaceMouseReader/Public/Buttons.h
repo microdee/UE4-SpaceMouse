@@ -9,11 +9,11 @@ enum class EV3DCmd : uint8;
 /**
  * 
  */
-class SPACEMOUSEREADER_API FButtons
+struct SPACEMOUSEREADER_API FSmButton
 {
-public:
-    FButtons();
-    ~FButtons();
+    static EV3DCmd FromButtonID(int ButtonID);
+    static int FromCmdCode(EV3DCmd CmdCode);
+    static FString GetNameOf(EV3DCmd Button);
 };
 
 enum class EV3DCmd : uint8
@@ -26,8 +26,8 @@ enum class EV3DCmd : uint8
     ViewFront                        = 5,
     ViewBottom                       = 6,
     ViewBack                         = 7,
-    ViewRollcw                       = 8,
-    ViewRollccw                      = 9,
+    ViewRollCW                       = 8,
+    ViewRollCCW                      = 9,
     ViewIso1                         = 10,
     ViewIso2                         = 11,
     KeyF1                            = 12,
@@ -51,20 +51,20 @@ enum class EV3DCmd : uint8
     FilterDominant                   = 30,
     ScalePlus                        = 31,
     ScaleMinus                       = 32,
-    ViewSpincw                       = 33,
-    ViewSpinccw                      = 34,
-    ViewTiltcw                       = 35,
-    ViewTiltccw                      = 36,
+    ViewSpinCW                       = 33,
+    ViewSpinCCW                      = 34,
+    ViewTiltCW                       = 35,
+    ViewTiltCCW                      = 36,
     MenuPopup                        = 37,
-    MenuButtonmappingeditor          = 38,
-    MenuAdvancedsettingseditor       = 39,
-    MotionmacroZoom                  = 40,
-    MotionmacroZoomoutCursorToCenter = 41,
-    MotionmacroZoominCursorToCenter  = 42,
-    MotionmacroZoomoutCenterToCenter = 43,
-    MotionmacroZoominCenterToCenter  = 44,
-    MotionmacroZoomoutCursorToCursor = 45,
-    MotionmacroZoominCursorToCursor  = 46,
+    MenuButtonMappingEditor          = 38,
+    MenuAdvancedSettingsEditor       = 39,
+    MotionMacroZoom                  = 40,
+    MotionMacroZoomOutCursorToCenter = 41,
+    MotionMacroZoomInCursorToCenter  = 42,
+    MotionMacroZoomOutCenterToCenter = 43,
+    MotionMacroZoomInCenterToCenter  = 44,
+    MotionMacroZoomOutCursorToCursor = 45,
+    MotionMacroZoomInCursorToCursor  = 46,
     ViewQzIn                         = 47,
     ViewQzOut                        = 48,
     KeyEnter                         = 49,
