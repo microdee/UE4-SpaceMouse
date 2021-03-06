@@ -14,6 +14,7 @@ struct SPACEMOUSEREADER_API FSmButton
     static EV3DCmd FromButtonID(int ButtonID);
     static int FromCmdCode(EV3DCmd CmdCode);
     static FString GetNameOf(EV3DCmd Button);
+    static FString GetFriendlyNameOf(EV3DCmd Button);
 };
 
 enum class EV3DCmd : uint8
