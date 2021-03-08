@@ -52,3 +52,8 @@ void FMovementState::Accumulate(const FMovementState& Other)
     if(bOnMovementStartedFrame) OnMovementStarted.Broadcast();
     if(bOnMovementEndedFrame) OnMovementEnded.Broadcast();
 }
+
+void FMovementState::Accumulate(TSharedPtr<FMovementState> Other)
+{
+    Accumulate(*Other.Get());
+}

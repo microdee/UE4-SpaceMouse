@@ -27,6 +27,7 @@ public:
     void Tick(float MovementTimeTolerance, float DeltaSeconds);
     void AccumulationReset();
     void Accumulate(const FMovementState& Other);
+    void Accumulate(TSharedPtr<FMovementState> Other);
     
 private:
     bool bPrevMoving = false;
