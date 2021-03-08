@@ -2,12 +2,3 @@
 
 
 #include "DeviceTypes/SpacePilotLike.h"
-
-
-FSpacePilotLike::FSpacePilotLike()
-{
-}
-
-FSpacePilotLike::~FSpacePilotLike()
-{
-}

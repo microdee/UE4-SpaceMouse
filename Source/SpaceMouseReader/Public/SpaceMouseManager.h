@@ -25,6 +25,7 @@ protected:
     virtual FUserSettings GetUserSettings() = 0;
 
 public:
+    virtual ~FSpaceMouseManager() = default;
 
     FVector FORCEINLINE GetTranslation() const { return AccumulatedData.Translation; }
     FRotator FORCEINLINE GetRotation() const { return AccumulatedData.Rotation; }

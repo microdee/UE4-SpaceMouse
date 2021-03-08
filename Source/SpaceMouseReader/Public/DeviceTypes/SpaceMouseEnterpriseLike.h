@@ -9,7 +9,7 @@
 /**
  * 
  */
-class SPACEMOUSEREADER_API FSpaceMouseEnterpriseLike : FButtonCapabilities
+class SPACEMOUSEREADER_API FSpaceMouseEnterpriseLike : public FButtonCapabilities
 {
 public:
     FSpaceMouseEnterpriseLike()
@@ -63,6 +63,4 @@ public:
         SupportedButtons.Add(EV3DCmd::KeyF11);
         SupportedButtons.Add(EV3DCmd::KeyF12);
     }
-    
-    ~FSpaceMouseEnterpriseLike();
 };

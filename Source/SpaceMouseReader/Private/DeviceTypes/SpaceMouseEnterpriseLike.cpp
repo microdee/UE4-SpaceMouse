@@ -2,12 +2,3 @@
 
 
 #include "DeviceTypes/SpaceMouseEnterpriseLike.h"
-
-
-FSpaceMouseEnterpriseLike::FSpaceMouseEnterpriseLike()
-{
-}
-
-FSpaceMouseEnterpriseLike::~FSpaceMouseEnterpriseLike()
-{
-}

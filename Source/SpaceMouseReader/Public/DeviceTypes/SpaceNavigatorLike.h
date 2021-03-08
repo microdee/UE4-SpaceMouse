@@ -9,7 +9,7 @@
 /**
  * 
  */
-class SPACEMOUSEREADER_API FSpaceNavigatorLike : FButtonCapabilities
+class SPACEMOUSEREADER_API FSpaceNavigatorLike : public FButtonCapabilities
 {
 public:
     FSpaceNavigatorLike()
@@ -17,5 +17,4 @@ public:
         SupportedButtons.Add(FSmButton::FromButtonID(0));
         SupportedButtons.Add(FSmButton::FromButtonID(1));
     }
-    ~FSpaceNavigatorLike();
 };

@@ -8,7 +8,7 @@
 /**
  * This HID data format has the translation and rotation in a single report
  */
-class SPACEMOUSEREADER_API FSingleReportTransRotMethod : FDataReadingMethod
+class SPACEMOUSEREADER_API FSingleReportTransRotMethod : public FDataReadingMethod
 {
 public:
     FSingleReportTransRotMethod();

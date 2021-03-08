@@ -2,12 +2,3 @@
 
 
 #include "DeviceTypes/SpaceMouseProLike.h"
-
-
-FSpaceMouseProLike::FSpaceMouseProLike()
-{
-}
-
-FSpaceMouseProLike::~FSpaceMouseProLike()
-{
-}

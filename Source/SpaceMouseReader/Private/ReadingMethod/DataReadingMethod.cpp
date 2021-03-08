@@ -4,6 +4,7 @@
 #include "ReadingMethod/DataReadingMethod.h"
 #include "ActiveHidSmDevice.h"
 #include "DebugInfoPrinter.h"
+#include "MovementState.h"
 #include "ProcessedDeviceOutput.h"
 #include "Curves/RichCurve.h"
 

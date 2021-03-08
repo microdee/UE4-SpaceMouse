@@ -2,12 +2,3 @@
 
 
 #include "DeviceTypes/SpaceNavigatorLike.h"
-
-
-FSpaceNavigatorLike::FSpaceNavigatorLike()
-{
-}
-
-FSpaceNavigatorLike::~FSpaceNavigatorLike()
-{
-}
