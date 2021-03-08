@@ -7,13 +7,12 @@
 bool USpaceMouseData::bFrameRequested = false;
 
 FTimerDelegate USpaceMouseData::OnTickDel;
-FSpaceMouseManager USpaceMouseData::Manager;
+FSmRuntimeManager USpaceMouseData::Manager;
 
-void USpaceMouseData::GetSpaceMouseData(UObject* WorldContextObj, FVector& DeltaTranslation, FRotator& DeltaRotation, TArray<bool>& Buttons)
+void USpaceMouseData::LazyInit(UObject* WorldContextObj)
 {
     if (!bFrameRequested)
     {
-
         OnTickDel = OnTickDel.CreateLambda([WorldContextObj]()
         {
             if (!bFrameRequested) return;
@@ -25,8 +24,30 @@ void USpaceMouseData::GetSpaceMouseData(UObject* WorldContextObj, FVector& Delta
         USpaceMouseData::bFrameRequested = true;
         WorldContextObj->GetWorld()->GetTimerManager().SetTimerForNextTick(USpaceMouseData::OnTickDel);
     }
+}
+
+void USpaceMouseData::GetSpaceMouseAxes(UObject* WorldContextObj, FVector& DeltaTranslation, FRotator& DeltaRotation)
+{
+    LazyInit(WorldContextObj);
 
     DeltaTranslation = Manager.GetTranslation();
     DeltaRotation = Manager.GetRotation();
-    Buttons = Manager.GetButtons();
+}
+
+bool USpaceMouseData::GetSpaceMouseButtonState(UObject* WorldContextObj, int Id)
+{
+    LazyInit(WorldContextObj);
+    return Manager.GetButtons()[Id];
+}
+
+bool USpaceMouseData::GetSpaceMouseButtonDown(UObject* WorldContextObj, int Id)
+{
+    LazyInit(WorldContextObj);
+    return Manager.ButtonDownFrame(FSmButton::FromButtonID(Id));
+}
+
+bool USpaceMouseData::GetSpaceMouseButtonUp(UObject* WorldContextObj, int Id)
+{
+    LazyInit(WorldContextObj);
+    return Manager.ButtonUpFrame(FSmButton::FromButtonID(Id));
 }
