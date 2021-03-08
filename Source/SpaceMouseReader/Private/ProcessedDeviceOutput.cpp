@@ -21,12 +21,18 @@ FProcessedDeviceOutput FProcessedDeviceOutput::operator+(TSharedPtr<FProcessedDe
     };
 }
 
-FProcessedDeviceOutput FProcessedDeviceOutput::operator+=(const FProcessedDeviceOutput& other) const
+FProcessedDeviceOutput&& FProcessedDeviceOutput::operator+=(const FProcessedDeviceOutput& other)
 {
-    return *this + other;
+    Translation += other.Translation;
+    Rotation += other.Rotation;
+    Buttons |= other.Buttons;
+    return MoveTemp(*this);
 }
 
-FProcessedDeviceOutput FProcessedDeviceOutput::operator+=(TSharedPtr<FProcessedDeviceOutput> other) const
+FProcessedDeviceOutput&& FProcessedDeviceOutput::operator+=(TSharedPtr<FProcessedDeviceOutput> other)
 {
-    return *this + other;
+    Translation += other->Translation;
+    Rotation += other->Rotation;
+    Buttons |= other->Buttons;
+    return MoveTemp(*this);
 }

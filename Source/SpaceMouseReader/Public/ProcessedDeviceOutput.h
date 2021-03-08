@@ -17,6 +17,6 @@ struct SPACEMOUSEREADER_API FProcessedDeviceOutput
 
     FProcessedDeviceOutput operator+(const FProcessedDeviceOutput& other) const;
     FProcessedDeviceOutput operator+(TSharedPtr<FProcessedDeviceOutput> other) const;
-    FProcessedDeviceOutput operator+=(const FProcessedDeviceOutput& other) const;
-    FProcessedDeviceOutput operator+=(TSharedPtr<FProcessedDeviceOutput> other) const;
+    FProcessedDeviceOutput&& operator+=(const FProcessedDeviceOutput& other);
+    FProcessedDeviceOutput&& operator+=(TSharedPtr<FProcessedDeviceOutput> other);
 };
