@@ -5,6 +5,9 @@
 #include "SpaceMouseReader.h"
 
 #include "hidapi.h"
+#include "MovementState.h"
+#include "DeviceTypes/DeviceFactory.h"
+#include "DeviceTypes/SmDevice.h"
 
 #if WITH_EDITOR
 #include "EngineGlobals.h"
@@ -13,76 +16,44 @@
 
 void FSpaceMouseManager::Initialize()
 {
-    Translation = FVector::ZeroVector;
-    Rotation = FRotator::ZeroRotator;
+    PrevAccumulatedData = AccumulatedData = {};
+    MovementState = MakeShared<FMovementState>();
 
-    Buttons.Empty(SPACEMOUSE_BUTTONCOUNT);
-    Buttons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
-    PrevButtons.Empty(SPACEMOUSE_BUTTONCOUNT);
-    PrevButtons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
-
-    DeviceInfos = hid_enumerate(0, 0);
-    hid_device_info* cinfo = DeviceInfos;
-
-    int ii = 0;
-    while (cinfo)
-    {
-        for(auto& elem : FSpaceMouseReaderModule::Prototypes)
-        {
-            uint32 vidpid = JOIN_VIDPID(static_cast<uint32>(cinfo->vendor_id), static_cast<uint32>(cinfo->product_id));
-            if(elem.Key == vidpid)
-            {
-                auto smdevice = elem.Value->NewDevice();
-                smdevice->Initialize(cinfo, ii);
-                Devices.Add(smdevice);
-                if (smdevice->DeviceOpened)
-                    DeviceOpened = true;
-                break;
-            }
-        }
-        cinfo = cinfo->next;
-        ii++;
-    }
+    Devices.Empty();
+    FDeviceFactory Factory {};
+    Factory.OpenConnectedDevices(GetUserSettings(), Devices);
+    
     Enabled = true;
+    DeviceOpened = Devices.Num() > 0;
 }
 
 void FSpaceMouseManager::Tick(float DeltaSecs)
 {
-    //Translation = FVector::ZeroVector;
-    //Rotation = FRotator::ZeroRotator;
-    FVector trans = FVector::ZeroVector;
-    FRotator rot = FRotator::ZeroRotator;
-    
-    for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-    {
-        PrevButtons[i] = Buttons[i];
-        Buttons[i] = false;
-    }
-    
-    OnMovementStartedFrame = false;
-    OnMovementEndedFrame = false;
-    
-    for (auto sm : Devices)
-    {
-        //sm->UserSettings.bPrintDebug = bPrintDebug;
-        sm->Tick(DeltaSecs);
-        trans += sm->Translation;
-        rot += sm->Rotation;
-        OnMovementStartedFrame = OnMovementStartedFrame || sm->OnMovementStartedFrame;
-        OnMovementEndedFrame = OnMovementEndedFrame || sm->OnMovementEndedFrame;
+    PrevAccumulatedData = AccumulatedData;
+    AccumulatedData = {};
 
-        for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-            Buttons[i] = Buttons[i] || sm->Buttons[i];
+    MovementState->AccumulationReset();
+    
+    for (auto SmDevice : Devices)
+    {
+        SmDevice->Tick(DeltaSecs);
+        AccumulatedData += SmDevice->Data;
+        MovementState->Accumulate(SmDevice->MovementState);
     }
-    Translation = trans;
-    Rotation = rot;
 
 #if WITH_EDITOR
-    if (bPrintDebug)
+    if (GetUserSettings().bPrintDebug)
     {
+        FString Message = TEXT("Connected SpaceMice: ") + FString::FromInt(Devices.Num());
+
+        for (const auto SmDevice : Devices)
+        {
+            Message += TEXT("\n    Device: ") + SmDevice->DeviceName;
+        }
+        
         GEngine->AddOnScreenDebugMessage(
             2000, 1.0, FColor::Cyan,
-            "Connected SpaceMice: " + FString::FromInt(Devices.Num())
+            Message
         );
     }
 #endif
