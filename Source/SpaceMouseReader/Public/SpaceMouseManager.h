@@ -5,12 +5,11 @@
 
 #include "CoreMinimal.h"
 
+
+#include "Buttons.h"
 #include "ProcessedDeviceOutput.h"
 #include "UserSettings.h"
 #include "Containers/StaticBitArray.h"
-
-#define BUTTONDOWN(id) (Buttons[id] && !PrevButtons[id])
-#define BUTTONUP(id) (!Buttons[id] && PrevButtons[id])
 
 class FSmDevice;
 class FMovementState;
@@ -39,4 +38,7 @@ public:
 
     int LastErrorCode;
     bool DeviceOpened;
+
+    bool FORCEINLINE ButtonDownFrame(EV3DCmd Button);
+    bool FORCEINLINE ButtonUpFrame(EV3DCmd Button);
 };

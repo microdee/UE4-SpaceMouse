@@ -27,6 +27,18 @@ void FSpaceMouseManager::Initialize()
     DeviceOpened = Devices.Num() > 0;
 }
 
+bool FSpaceMouseManager::ButtonDownFrame(const EV3DCmd Button)
+{
+    auto Id = FSmButton::FromCmdCode(Button);
+    return AccumulatedData.Buttons[Id] && !PrevAccumulatedData.Buttons[Id]; 
+}
+
+bool FSpaceMouseManager::ButtonUpFrame(const EV3DCmd Button)
+{
+    auto Id = FSmButton::FromCmdCode(Button);
+    return !AccumulatedData.Buttons[Id] && PrevAccumulatedData.Buttons[Id]; 
+}
+
 void FSpaceMouseManager::Tick(float DeltaSecs)
 {
     PrevAccumulatedData = AccumulatedData;
