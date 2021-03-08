@@ -39,6 +39,10 @@ namespace SmDevFactory_Details
 
 FDeviceFactory::FDeviceFactory()
 {
+    
+    // https://github.com/FreeSpacenav/spacenavd/blob/a9eccf34e7cac969ee399f625aef827f4f4aaec6/src/dev.c#L202
+    // https://www.3dconnexion.fr/nc/service/faqs/faq/how-can-i-check-if-my-usb-3d-mouse-is-recognized-by-windows.html
+    
     AddModel(0x046d, 0xc603, DETAILS::DeclareModel
     (
         TEXT("Space Mouse plus XT"),
