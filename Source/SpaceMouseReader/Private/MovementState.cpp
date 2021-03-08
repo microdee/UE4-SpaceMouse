@@ -35,3 +35,20 @@ void FMovementState::Tick(float MovementTimeTolerance, float DeltaSeconds)
     bOnMovementEndedFrame = MovementTimed <= 0 && bPrevMoving;
     if(bOnMovementEndedFrame) OnMovementEnded.Broadcast();
 }
+
+void FMovementState::AccumulationReset()
+{
+    bOnMovementStartedFrame = false;
+    bOnMovementEndedFrame = false;
+    bMoving = false;
+}
+
+void FMovementState::Accumulate(const FMovementState& Other)
+{
+    bMoving |= Other.bMoving;
+    bOnMovementStartedFrame |= Other.bOnMovementStartedFrame;
+    bOnMovementEndedFrame |= Other.bOnMovementEndedFrame;
+    
+    if(bOnMovementStartedFrame) OnMovementStarted.Broadcast();
+    if(bOnMovementEndedFrame) OnMovementEnded.Broadcast();
+}

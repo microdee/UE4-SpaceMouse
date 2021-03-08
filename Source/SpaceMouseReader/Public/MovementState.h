@@ -25,6 +25,8 @@ public:
     void Move();
     void PreTick();
     void Tick(float MovementTimeTolerance, float DeltaSeconds);
+    void AccumulationReset();
+    void Accumulate(const FMovementState& Other);
     
 private:
     bool bPrevMoving = false;
