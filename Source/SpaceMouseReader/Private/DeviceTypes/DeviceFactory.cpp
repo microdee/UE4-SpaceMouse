@@ -19,8 +19,8 @@ namespace SmDevFactory_Details
     template<typename TButtonCapabilities = FButtonCapabilities, typename TDataReadingMethod = FSeparateReportTransRotMethod>
     FSmDeviceCreator DeclareModel(FString DeviceName, ESmModelConfidence Confidence = ESmModelConfidence::Tested)
     {
-        static_assert(std::is_convertible_v<TButtonCapabilities, FButtonCapabilities>, "Invalid button assignment class");
-        static_assert(std::is_convertible_v<TDataReadingMethod, FDataReadingMethod>, "Invalid data reading method class");
+        static_assert(std::is_convertible_v<TButtonCapabilities*, FButtonCapabilities*>, "Invalid button assignment class");
+        static_assert(std::is_convertible_v<TDataReadingMethod*, FDataReadingMethod*>, "Invalid data reading method class");
         
         return [=](const FSmDeviceInstantiation& InstInfo)
         {

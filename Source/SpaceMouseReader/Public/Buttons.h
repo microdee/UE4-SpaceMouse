@@ -31,8 +31,8 @@ struct SPACEMOUSEREADER_API FAllSmButtons
  */
 struct SPACEMOUSEREADER_API FSmButton
 {
-    static FORCEINLINE EV3DCmd FromButtonID(int ButtonID);
-    static FORCEINLINE int FromCmdCode(EV3DCmd CmdCode);
+    static EV3DCmd FromButtonID(int ButtonID);
+    static int FromCmdCode(EV3DCmd CmdCode);
     
     static FString GetNameOf(EV3DCmd Button);
     static FString GetFriendlyNameOf(EV3DCmd Button);

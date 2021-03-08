@@ -10,7 +10,7 @@ FActiveHidSmDevice::FActiveHidSmDevice(hid_device_info* DeviceInfo)
     : DeviceInfo(DeviceInfo)
 {
     Device = hid_open_path(DeviceInfo->path);
-    bDeviceOpened = Device;
+    bDeviceOpened = Device != nullptr;
     if (bDeviceOpened) hid_set_nonblocking(Device, 1);
 }
 
