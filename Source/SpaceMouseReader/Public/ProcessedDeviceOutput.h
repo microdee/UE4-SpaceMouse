@@ -15,5 +15,8 @@ struct SPACEMOUSEREADER_API FProcessedDeviceOutput
     FRotator Rotation {0,0,0};
     TStaticBitArray<64> Buttons;
 
-    FProcessedDeviceOutput operator+(const FProcessedDeviceOutput& other);
+    FProcessedDeviceOutput operator+(const FProcessedDeviceOutput& other) const;
+    FProcessedDeviceOutput operator+(TSharedPtr<FProcessedDeviceOutput> other) const;
+    FProcessedDeviceOutput operator+=(const FProcessedDeviceOutput& other) const;
+    FProcessedDeviceOutput operator+=(TSharedPtr<FProcessedDeviceOutput> other) const;
 };
