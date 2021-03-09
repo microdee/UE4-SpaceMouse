@@ -7,6 +7,7 @@
 #include "DebugInfoPrinter.h"
 #include "MovementState.h"
 #include "ProcessedDeviceOutput.h"
+#include "DeviceTypes/ButtonCapabilities.h"
 #include "ReadingMethod/DataReadingMethod.h"
 
 FSmDevice::FSmDevice(
@@ -49,7 +50,8 @@ void FSmDevice::TickInit()
 void FSmDevice::Tick(float DeltaSeconds)
 {
     TickInit();
-    
+
+    ProcessedData->Buttons = NormData->Buttons;
     FDataReadingOutput Output
     {
         ProcessedData,
@@ -60,4 +62,6 @@ void FSmDevice::Tick(float DeltaSeconds)
         UserSettings()
     };
     DataReadingMethod->Tick(Output, DeltaSeconds);
+    Buttons->TransformRawData(ProcessedData);
+    // Buttons->TransformRawData(NormData); // NormData keeps the HID buttons from the device
 }

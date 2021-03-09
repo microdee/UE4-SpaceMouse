@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 
 #include "Buttons.h"
+#include "ProcessedDeviceOutput.h"
 
 /**
  * 
@@ -16,4 +17,5 @@ public:
     ~FButtonCapabilities();
     
     TSet<EV3DCmd> SupportedButtons;
+    virtual void TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data) {}
 };
