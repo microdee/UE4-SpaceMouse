@@ -68,6 +68,17 @@ void FSpaceMouseManager::Tick(float DeltaSecs)
             2000, 1.0, FColor::Cyan,
             Message
         );
+
+        for(int i=0; i<AccumulatedData.Buttons.Num(); i++)
+        {
+            if(ButtonDownFrame(FSmButton::FromID(i)))
+            {
+                GEngine->AddOnScreenDebugMessage(
+                    INDEX_NONE, 1.2, FColor::Emerald,
+                    FSmButton::GetFriendlyNameOf(FSmButton::FromID(i))
+                );
+            }
+        }
     }
 #endif
 }
