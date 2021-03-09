@@ -29,13 +29,13 @@ void FSpaceMouseManager::Initialize()
 
 bool FSpaceMouseManager::ButtonDownFrame(const EV3DCmd Button)
 {
-    auto Id = FSmButton::FromCmdCode(Button);
+    auto Id = FSmButton::FromCmd(Button);
     return AccumulatedData.Buttons[Id] && !PrevAccumulatedData.Buttons[Id]; 
 }
 
 bool FSpaceMouseManager::ButtonUpFrame(const EV3DCmd Button)
 {
-    auto Id = FSmButton::FromCmdCode(Button);
+    auto Id = FSmButton::FromCmd(Button);
     return !AccumulatedData.Buttons[Id] && PrevAccumulatedData.Buttons[Id]; 
 }
 
@@ -49,7 +49,7 @@ void FSpaceMouseManager::Tick(float DeltaSecs)
     for (auto SmDevice : Devices)
     {
         SmDevice->Tick(DeltaSecs);
-        AccumulatedData += SmDevice->Data;
+        AccumulatedData += SmDevice->ProcessedData;
         MovementState->Accumulate(SmDevice->MovementState);
     }
 

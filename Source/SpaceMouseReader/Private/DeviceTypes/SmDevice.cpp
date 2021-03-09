@@ -34,7 +34,7 @@ void FSmDevice::TickInit()
     if(!bInited)
     {
         bInited = true;
-        Data = MakeShared<FProcessedDeviceOutput>();
+        ProcessedData = MakeShared<FProcessedDeviceOutput>();
         DebugInfoPrinter = MakeShared<FDebugInfoPrinter>();
         MovementState = MakeShared<FMovementState>();
 
@@ -49,6 +49,6 @@ void FSmDevice::Tick(float DeltaSeconds)
 {
     TickInit();
     
-    FDataReadingOutput Output { Data, DebugInfoPrinter, HidDevice, MovementState, UserSettings() };
+    FDataReadingOutput Output { ProcessedData, DebugInfoPrinter, HidDevice, MovementState, UserSettings() };
     DataReadingMethod->Tick(Output, DeltaSeconds);
 }

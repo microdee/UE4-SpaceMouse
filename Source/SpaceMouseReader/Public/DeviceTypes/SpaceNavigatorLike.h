@@ -14,7 +14,7 @@ class SPACEMOUSEREADER_API FSpaceNavigatorLike : public FButtonCapabilities
 public:
     FSpaceNavigatorLike()
     {
-        SupportedButtons.Add(FSmButton::FromButtonID(0));
-        SupportedButtons.Add(FSmButton::FromButtonID(1));
+        SupportedButtons.Add(FSmButton::FromID(0));
+        SupportedButtons.Add(FSmButton::FromID(1));
     }
 };

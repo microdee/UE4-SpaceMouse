@@ -43,11 +43,11 @@ bool USpaceMouseData::GetSpaceMouseButtonState(UObject* WorldContextObj, int Id)
 bool USpaceMouseData::GetSpaceMouseButtonDown(UObject* WorldContextObj, int Id)
 {
     LazyInit(WorldContextObj);
-    return Manager.ButtonDownFrame(FSmButton::FromButtonID(Id));
+    return Manager.ButtonDownFrame(FSmButton::FromID(Id));
 }
 
 bool USpaceMouseData::GetSpaceMouseButtonUp(UObject* WorldContextObj, int Id)
 {
     LazyInit(WorldContextObj);
-    return Manager.ButtonUpFrame(FSmButton::FromButtonID(Id));
+    return Manager.ButtonUpFrame(FSmButton::FromID(Id));
 }

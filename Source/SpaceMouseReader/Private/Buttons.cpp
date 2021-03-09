@@ -10,13 +10,13 @@ EV3DCmd FButtonIterator::operator*() const
 
 FButtonIterator& FButtonIterator::operator++()
 {
-    Button = FSmButton::FromButtonID(FSmButton::FromCmdCode(Button) + 1);
+    Button = FSmButton::FromID(FSmButton::FromCmd(Button) + 1);
     return *this;
 }
 
 FButtonIterator& FButtonIterator::operator--()
 {
-    Button = FSmButton::FromButtonID(FSmButton::FromCmdCode(Button) + 1);
+    Button = FSmButton::FromID(FSmButton::FromCmd(Button) + 1);
     return *this;
 }
 
@@ -44,12 +44,12 @@ FButtonIterator FAllSmButtons::end()
     return { EV3DCmd::COUNT };
 }
 
-EV3DCmd FSmButton::FromButtonID(int ButtonID)
+EV3DCmd FSmButton::FromID(int ButtonID)
 {
     return static_cast<EV3DCmd>(ButtonID + 1);
 }
 
-int FSmButton::FromCmdCode(EV3DCmd CmdCode)
+int FSmButton::FromCmd(EV3DCmd CmdCode)
 {
     return static_cast<int>(CmdCode) - 1;
 }
