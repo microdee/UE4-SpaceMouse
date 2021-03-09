@@ -84,23 +84,23 @@ void FDataReadingMethod::TickMovementState(FDataReadingOutput& Output, float Del
 
 void FDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs)
 {
-    SmDataReadingDetails::ApplyMovement(fx, fy, fz, DeltaSecs, Output.Settings.Translation, Output.Data->Translation);
+    SmDataReadingDetails::ApplyMovement(fx, fy, fz, DeltaSecs, Output.Settings.Translation, Output.ProcessedData->Translation);
 }
 
 void FDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs)
 {
-    SmDataReadingDetails::ApplyMovement(fp, fy, fr, DeltaSecs, Output.Settings.Rotation, Output.Data->Rotation);
+    SmDataReadingDetails::ApplyMovement(fp, fy, fr, DeltaSecs, Output.Settings.Rotation, Output.ProcessedData->Rotation);
 }
 
 void FDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID)
 {
-    auto& Buttons = Output.Data->Buttons;
+    auto& Buttons = Output.ProcessedData->Buttons;
     FReportButtons Input {0, 0, 0, 0};
     uint16* DataPtr = reinterpret_cast<uint16*>(Report + 1);
     Input.Data[0] = DataPtr[0];
     Input.Data[1] = DataPtr[1];
     Input.Data[2] = DataPtr[2];
 
-    Output.Data->Buttons = Input.BitArray;
+    Output.ProcessedData->Buttons = Input.BitArray;
     Output.Debug->SetReport(ReportID, Report, GetReportSize());
 }
