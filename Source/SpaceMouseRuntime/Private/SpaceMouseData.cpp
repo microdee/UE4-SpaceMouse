@@ -26,12 +26,21 @@ void USpaceMouseData::LazyInit(UObject* WorldContextObj)
     }
 }
 
-void USpaceMouseData::GetSpaceMouseAxes(UObject* WorldContextObj, FVector& DeltaTranslation, FRotator& DeltaRotation)
+void USpaceMouseData::GetSpaceMouseDeltaAxes(UObject* WorldContextObj, FVector& DeltaTranslation, FRotator& DeltaRotation)
 {
     LazyInit(WorldContextObj);
 
     DeltaTranslation = Manager.GetTranslation();
     DeltaRotation = Manager.GetRotation();
+}
+
+void USpaceMouseData::GetSpaceMouseAxes(UObject* WorldContextObj, FVector& NormalizedTranslation,
+    FRotator& NormalizedRotation)
+{
+    LazyInit(WorldContextObj);
+    
+    NormalizedTranslation = Manager.GetNormalizedTranslation();
+    NormalizedRotation = Manager.GetNormalizedRotation();
 }
 
 bool USpaceMouseData::GetSpaceMouseButtonState(UObject* WorldContextObj, int Id)

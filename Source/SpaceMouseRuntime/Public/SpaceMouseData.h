@@ -32,10 +32,21 @@ public:
         Category = "SpaceMouse",
         meta = ( WorldContext = "WorldContextObj" )
     )
-    static void GetSpaceMouseAxes(
+    static void GetSpaceMouseDeltaAxes(
         UObject* WorldContextObj,
         FVector& DeltaTranslation,
         FRotator& DeltaRotation
+    );
+    
+    UFUNCTION(
+        BlueprintPure,
+        Category = "SpaceMouse",
+        meta = ( WorldContext = "WorldContextObj" )
+    )
+    static void GetSpaceMouseAxes(
+        UObject* WorldContextObj,
+        FVector& NormalizedTranslation,
+        FRotator& NormalizedRotation
     );
 
     UFUNCTION(
