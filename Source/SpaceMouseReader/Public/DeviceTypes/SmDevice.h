@@ -19,7 +19,7 @@ struct SPACEMOUSEREADER_API FSmDeviceInstantiation
 {
     int InternalID = 0;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
-    FUserSettings UserSettings;
+    TFunction<FUserSettings()> UserSettings;
 };
 
 enum class ESmModelConfidence : uint8
@@ -49,7 +49,7 @@ public:
     FString DeviceName;
     ESmModelConfidence ModelConfidence;
     int InternalID;
-    FUserSettings UserSettings;
+    TFunction<FUserSettings()> UserSettings;
     TSharedPtr<FButtonCapabilities> Buttons;
     TSharedPtr<FDataReadingMethod> DataReadingMethod;
     TSharedPtr<FActiveHidSmDevice> HidDevice;

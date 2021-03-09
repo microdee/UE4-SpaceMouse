@@ -179,7 +179,7 @@ void FDeviceFactory::AddModel(uint16 Vid, uint16 Pid, FSmDeviceCreator Creator)
     KnownModels.Add(JOIN_VIDPID(Vid, Pid), Creator);
 }
 
-void FDeviceFactory::OpenConnectedDevices(const FUserSettings& Settings, TArray<TSharedPtr<FSmDevice>>& Output)
+void FDeviceFactory::OpenConnectedDevices(const TFunction<FUserSettings()>& Settings, TArray<TSharedPtr<FSmDevice>>& Output)
 {
     auto cinfo = hid_enumerate(0, 0);
     

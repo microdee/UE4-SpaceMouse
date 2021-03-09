@@ -7,8 +7,7 @@
 #include "Engine/Engine.h"
 
 
-FDebugInfoPrinter::FDebugInfoPrinter(TFunction<bool()> IsEnabled)
-    : Enabled(IsEnabled)
+FDebugInfoPrinter::FDebugInfoPrinter()
 {
 }
 
@@ -16,9 +15,9 @@ FDebugInfoPrinter::~FDebugInfoPrinter()
 {
 }
 
-void FDebugInfoPrinter::Print(FString FriendlyDeviceName, const hid_device_info* DeviceInfo, int InternalID)
+void FDebugInfoPrinter::Print(FString FriendlyDeviceName, const hid_device_info* DeviceInfo, int InternalID, bool bEnabled)
 {
-    if(!Enabled) return;
+    if(!bEnabled) return;
     
     auto message = FString::Printf(
         TEXT("Device: %s\n")

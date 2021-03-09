@@ -29,5 +29,5 @@ public:
     TMap<uint32 /* vid, pid */, FSmDeviceCreator> KnownModels;
     void AddModel(uint16 Vid, uint16 Pid, FSmDeviceCreator Creator);
 
-    void OpenConnectedDevices(const FUserSettings& Settings, TArray<TSharedPtr<FSmDevice>>& Output);
+    void OpenConnectedDevices(const TFunction<FUserSettings()>& Settings, TArray<TSharedPtr<FSmDevice>>& Output);
 };

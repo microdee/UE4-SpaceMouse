@@ -35,12 +35,12 @@ void FSmDevice::TickInit()
     {
         bInited = true;
         Data = MakeShared<FProcessedDeviceOutput>();
-        DebugInfoPrinter = MakeShared<FDebugInfoPrinter>([this]() { return UserSettings.bPrintDebug; });
+        DebugInfoPrinter = MakeShared<FDebugInfoPrinter>();
         MovementState = MakeShared<FMovementState>();
 
         DataReadingMethod->OnDataReceived.AddLambda([this]()
         {
-           DebugInfoPrinter->Print(DeviceName, HidDevice->DeviceInfo, InternalID); 
+           DebugInfoPrinter->Print(DeviceName, HidDevice->DeviceInfo, InternalID, UserSettings().bPrintDebug); 
         });
     }
 }
@@ -49,6 +49,6 @@ void FSmDevice::Tick(float DeltaSeconds)
 {
     TickInit();
     
-    FDataReadingOutput Output { Data, DebugInfoPrinter, HidDevice, MovementState, UserSettings };
+    FDataReadingOutput Output { Data, DebugInfoPrinter, HidDevice, MovementState, UserSettings() };
     DataReadingMethod->Tick(Output, DeltaSeconds);
 }

@@ -16,13 +16,12 @@
 
 void FSpaceMouseManager::Initialize()
 {
-    auto Settings = GetUserSettings();
     PrevAccumulatedData = AccumulatedData = {};
     MovementState = MakeShared<FMovementState>();
 
     Devices.Empty();
     FDeviceFactory Factory {};
-    Factory.OpenConnectedDevices(Settings, Devices);
+    Factory.OpenConnectedDevices([this]() { return GetUserSettings(); }, Devices);
     
     Enabled = true;
     DeviceOpened = Devices.Num() > 0;
@@ -42,7 +41,6 @@ bool FSpaceMouseManager::ButtonUpFrame(const EV3DCmd Button)
 
 void FSpaceMouseManager::Tick(float DeltaSecs)
 {
-    auto Settings = GetUserSettings();
     PrevAccumulatedData = AccumulatedData;
     AccumulatedData = {};
 
@@ -56,7 +54,7 @@ void FSpaceMouseManager::Tick(float DeltaSecs)
     }
 
 #if WITH_EDITOR
-    if (Settings.bPrintDebug)
+    if (GetUserSettings().bPrintDebug)
     {
         FString Message = TEXT("Connected SpaceMice: ") + FString::FromInt(Devices.Num());
 
