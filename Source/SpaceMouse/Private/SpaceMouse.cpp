@@ -18,11 +18,9 @@
 //General Log
 DEFINE_LOG_CATEGORY(SpaceMouseEditor);
 
-USpaceMouseConfig* FSpaceMouseModule::Settings;
-
 bool FSpaceMouseModule::HandleSettingsSaved()
 {
-    Settings = GetMutableDefault<USpaceMouseConfig>();
+    auto Settings = GetMutableDefault<USpaceMouseConfig>();
     Settings->SaveConfig();
     return true;
 }
@@ -31,7 +29,7 @@ void FSpaceMouseModule::RegisterSettings()
 {
     if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
     {
-        Settings = GetMutableDefault<USpaceMouseConfig>();
+        auto Settings = GetMutableDefault<USpaceMouseConfig>();
 
         ISettingsSectionPtr SettingsSection = SettingsModule->RegisterSettings("Editor", "Plugins", "SpaceMouse",
             LOCTEXT("RuntimeGeneralSettingsName", "SpaceMouse"),

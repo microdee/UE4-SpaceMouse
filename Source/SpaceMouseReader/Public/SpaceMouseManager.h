@@ -4,45 +4,45 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SpaceMouseDevice.h"
 
-#define BUTTONDOWN(id) (Buttons[id] && !PrevButtons[id])
-#define BUTTONUP(id) (!Buttons[id] && PrevButtons[id])
+
+#include "Buttons.h"
+#include "ProcessedDeviceOutput.h"
+#include "UserSettings.h"
+#include "Containers/StaticBitArray.h"
+
+class FSmDevice;
+class FMovementState;
 
 class SPACEMOUSEREADER_API FSpaceMouseManager
 {
 protected:
 
-    FVector Translation;
-    FRotator Rotation;
-    TArray<bool> PrevButtons;
-    TArray<bool> Buttons;
+    FProcessedDeviceOutput PrevAccumulatedData;
+    FProcessedDeviceOutput AccumulatedData;
+    FProcessedDeviceOutput NormalizedData;
+    TArray<TSharedPtr<FSmDevice>> Devices;
 
-    TArray<TSharedPtr<FSpaceMouseDevice>> Devices;
-    hid_device_info * DeviceInfos;
+    virtual FUserSettings GetUserSettings() = 0;
 
 public:
+    virtual ~FSpaceMouseManager() = default;
 
-    FVector FORCEINLINE GetTranslation() { return Translation; }
-    FRotator FORCEINLINE GetRotation() { return Rotation; }
-    TArray<bool> FORCEINLINE GetButtons() { return Buttons; }
+    FVector FORCEINLINE GetTranslation() const { return AccumulatedData.Translation; }
+    FRotator FORCEINLINE GetRotation() const { return AccumulatedData.Rotation; }
+    FVector FORCEINLINE GetNormalizedTranslation() const { return NormalizedData.Translation; }
+    FRotator FORCEINLINE GetNormalizedRotation() const { return NormalizedData.Rotation; }
+    TStaticBitArray<64> FORCEINLINE GetButtons() const { return AccumulatedData.Buttons; }
     
-    bool OnMovementStartedFrame = false;
-    bool OnMovementEndedFrame = false;
-
-    bool bPrintDebug = false;
-
-    FSpaceMouseManager() { }
-    virtual ~FSpaceMouseManager()
-    {
-        Devices.Empty();
-    }
+    TSharedPtr<FMovementState> MovementState;
 
     bool Enabled = false;
     virtual void Tick(float DeltaSecs);
     virtual void Initialize();
 
     int LastErrorCode;
-
     bool DeviceOpened;
+
+    bool ButtonDownFrame(EV3DCmd Button);
+    bool ButtonUpFrame(EV3DCmd Button);
 };

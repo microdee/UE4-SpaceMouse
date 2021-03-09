@@ -29,6 +29,4 @@ public:
     
     FSmEditorManager SmManager;
     class FSpaceMouseReaderModule* ReaderModule;
-
-    static USpaceMouseConfig* Settings;
 };

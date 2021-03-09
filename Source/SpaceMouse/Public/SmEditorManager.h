@@ -25,7 +25,7 @@ private:
     FVector LastOrbitPivotView = FVector::ZeroVector;
 
     FEditorViewportClient* ActiveViewportClient = nullptr;
-    FString focusedVpType = "";
+    FString FocusedVpType = "";
 
     TSharedPtr<FSmViewportOverlay> OrbitingOverlay;
 
@@ -33,26 +33,14 @@ private:
     static bool AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cvp);
     FVector GetOrbitingPosDeltaOffset(FRotator rotDelta, float forwardDelta);
 
+protected:
+    virtual FUserSettings GetUserSettings() override;
+
 public:
 
     static bool bStarted;
 
-    int LastErrorCode = 0;
-
-    FSmEditorManager() : FSpaceMouseManager() { }
-
-    virtual void Initialize() override
-    {
-        FSpaceMouseManager::Initialize();
-
-        OnTickDel = OnTickDel.CreateLambda([this]()
-        {
-            Tick(FApp::GetDeltaTime());
-        });
-        bWasOrbitCamera = false;
-        bWasRealtime = false;
-    }
-
+    virtual void Initialize() override;
     virtual void Tick(float DeltaSecs) override;
     void Start();
     void ManageOrbitingOverlay();

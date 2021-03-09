@@ -10,8 +10,8 @@
 #define SPACEMOUSE_BUTTONCOUNT 48
 #define SPACEMOUSE_AXIS_RESOLUTION 350
 
-struct hid_device_;
 struct FRichCurve;
+struct hid_device_;
 typedef struct hid_device_ hid_device;
 
 struct hid_device_info;

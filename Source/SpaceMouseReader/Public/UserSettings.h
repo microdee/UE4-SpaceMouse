@@ -12,10 +12,16 @@ struct FMovementSettings
 {
     GENERATED_BODY()
     
+    UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     FVector XAxisMap {0, -1,  0}; // Pitch
+    
+    UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     FVector YAxisMap {1,  0,  0}; // Yaw
+    
+    UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     FVector ZAxisMap {0,  0, -1}; // Roll
     
+    UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     float UnitsPerSec = 1000;
     
     const FRichCurve* Curve = nullptr;

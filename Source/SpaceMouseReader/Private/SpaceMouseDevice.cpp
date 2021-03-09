@@ -10,6 +10,10 @@
 
 #include "hidapi.h"
 
+// SpacePilot Pro had troubles with filtering only the most significant axis data for a frame
+// So disabling first with a preprocessor in the hope that it won't cause trouble in other devices either.
+#define USE_MOST_SIGNIFICANT_AXES_ONLY 0
+
 namespace SmDevDetails
 {
     template<typename TResult>
@@ -39,10 +43,6 @@ namespace SmDevDetails
         }
     }
 }
-
-// SpacePilot Pro had troubles with filtering only the most significant axis data for a frame
-// So disabling first with a preprocessor in the hope that it won't cause trouble in other devices either.
-#define USE_MOST_SIGNIFICANT_AXES_ONLY 0
 
 float FSpaceMouseDevice::GetCurvedFloat(const FRichCurve* curve, float ff)
 {

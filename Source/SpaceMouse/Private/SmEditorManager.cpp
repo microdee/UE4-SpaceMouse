@@ -10,22 +10,31 @@
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
+#include "MovementState.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "Framework/Application/SlateApplication.h"
 //#include "Object.h"
 
+void FSmEditorManager::Initialize()
+{
+    FSpaceMouseManager::Initialize();
+
+    OnTickDel = OnTickDel.CreateLambda([this]()
+    {
+        Tick(FApp::GetDeltaTime());
+    });
+    bWasOrbitCamera = false;
+    bWasRealtime = false;
+}
+
 void FSmEditorManager::Tick(float DeltaSecs)
 {
-    bPrintDebug = FSpaceMouseModule::Settings->DisplayDebugInformation;
-    for (auto sm : Devices)
-    {
-        sm->UserSettings = FSpaceMouseModule::Settings->GetUserSettings();
-    }
+    auto Settings = GetMutableDefault<USpaceMouseConfig>();
     FSpaceMouseManager::Tick(DeltaSecs);
 
     ManageActiveViewport();
     ManageOrbitingOverlay();
-    MoveActiveViewport(Translation, Rotation);
+    MoveActiveViewport(GetTranslation(), GetRotation());
     LearnButtonMappings();
     
     if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
@@ -45,11 +54,11 @@ void FSmEditorManager::Start()
 void FSmEditorManager::ManageOrbitingOverlay()
 {
     
-    if(OnMovementStartedFrame && ActiveViewportClient)
+    if(MovementState->bOnMovementStartedFrame && ActiveViewportClient)
     {
         OrbitingOverlay = MakeShared<FSmViewportOverlay>(ActiveViewportClient);
     }
-    if(OnMovementEndedFrame)
+    if(MovementState->bOnMovementEndedFrame)
     {
         OrbitingOverlay.Reset();
     }
@@ -57,19 +66,20 @@ void FSmEditorManager::ManageOrbitingOverlay()
 
 void FSmEditorManager::LearnButtonMappings()
 {
-    if(FSpaceMouseModule::Settings->LearnDecreaseSpeed)
-        LearnButtonMapping(FSpaceMouseModule::Settings->DecreaseSpeedButtonID);
+    auto Settings = GetMutableDefault<USpaceMouseConfig>();
+    if(Settings->LearnDecreaseSpeed)
+        LearnButtonMapping(Settings->DecreaseSpeedButtonID);
 
-    if (FSpaceMouseModule::Settings->LearnIncreaseSpeed)
-        LearnButtonMapping(FSpaceMouseModule::Settings->IncreaseSpeedButtonID);
+    if (Settings->LearnIncreaseSpeed)
+        LearnButtonMapping(Settings->IncreaseSpeedButtonID);
 
-    if (FSpaceMouseModule::Settings->LearnResetSpeed)
-        LearnButtonMapping(FSpaceMouseModule::Settings->ResetSpeedButtonID);
+    if (Settings->LearnResetSpeed)
+        LearnButtonMapping(Settings->ResetSpeedButtonID);
 
-    if (FSpaceMouseModule::Settings->LearnResetRoll)
-        LearnButtonMapping(FSpaceMouseModule::Settings->ResetRollButtonID);
+    if (Settings->LearnResetRoll)
+        LearnButtonMapping(Settings->ResetRollButtonID);
 
-    for(auto& mapping : FSpaceMouseModule::Settings->CustomKeyMappings)
+    for(auto& mapping : Settings->CustomKeyMappings)
     {
         if(mapping.LearnSpaceMouseButtonID)
             LearnButtonMapping(mapping.SpaceMouseButtonID);
@@ -78,12 +88,13 @@ void FSmEditorManager::LearnButtonMappings()
 
 void FSmEditorManager::LearnButtonMapping(int& target)
 {
+    auto Settings = GetMutableDefault<USpaceMouseConfig>();
     static const FString DefaultEditorPath = FString::Printf(TEXT("%sDefaultEditor.ini"), *FPaths::SourceConfigDir());
     
     bool learnt = false;
-    for(int i=0; i<Buttons.Num(); i++)
+    for(int i=0; i<GetButtons().Num(); i++)
     {
-        if(BUTTONDOWN(i))
+        if(ButtonDownFrame(FSmButton::FromID(i)))
         {
             target = i;
             learnt = true;
@@ -92,8 +103,8 @@ void FSmEditorManager::LearnButtonMapping(int& target)
     }
     if(learnt)
     {
-        FSpaceMouseModule::Settings->SaveConfig();
-        FSpaceMouseModule::Settings->SaveConfig(CPF_Config, *DefaultEditorPath);
+        Settings->SaveConfig();
+        Settings->SaveConfig(CPF_Config, *DefaultEditorPath);
     }
 }
 
@@ -107,27 +118,27 @@ void FSmEditorManager::ManageActiveViewport()
 
     if (IsActiveViewportInvalid(AllViewportClients)) ActiveViewportClient = nullptr;
 
-    for (FEditorViewportClient* cvp : AllViewportClients)
+    for (FEditorViewportClient* Cvp : AllViewportClients)
     {
-        if (!cvp) continue;
-        if (!cvp->GetEditorViewportWidget().Get()) continue;
-        if (cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
+        if (!Cvp) continue;
+        if (!Cvp->GetEditorViewportWidget().Get()) continue;
+        if (Cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
         {
-            if(cvp == ActiveViewportClient) break;
-            if (cvp->IsVisible() && cvp->IsPerspective())
+            if(Cvp == ActiveViewportClient) break;
+            if (Cvp->IsVisible() && Cvp->IsPerspective())
             {
-                if (cvp != ActiveViewportClient)
+                if (Cvp != ActiveViewportClient)
                 {
                     if (ActiveViewportClient)
                     {
                         ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
                         ActiveViewportClient->SetRealtime(bWasRealtime);
                     }
-                    bWasOrbitCamera = cvp->ShouldOrbitCamera();
-                    bWasRealtime = cvp->IsRealtime();
+                    bWasOrbitCamera = Cvp->ShouldOrbitCamera();
+                    bWasRealtime = Cvp->IsRealtime();
                     //cvp->ToggleOrbitCamera(false);
                     //cvp->SetRealtime(true);
-                    ActiveViewportClient = cvp;
+                    ActiveViewportClient = Cvp;
                     break;
                 }
             }
@@ -137,11 +148,12 @@ void FSmEditorManager::ManageActiveViewport()
 
 FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float forwardDelta)
 {
-    if(OnMovementStartedFrame)
+    auto Settings = GetMutableDefault<USpaceMouseConfig>();
+    if(MovementState->bOnMovementStartedFrame)
     {
         auto world = ActiveViewportClient->GetWorld();
         FHitResult hit;
-        float traceLength = FSpaceMouseModule::Settings->OrbitingLineTraceLength;
+        float traceLength = Settings->OrbitingLineTraceLength;
         FVector startpoint = ActiveViewportClient->GetViewLocation();
         FVector endpoint = startpoint +
             ActiveViewportClient->GetViewRotation().RotateVector({1, 0, 0}) * traceLength;
@@ -177,8 +189,13 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float for
         ActiveViewportClient->GetViewRotation(),
         rotDelta,
         LastOrbitDistance,
-        FSpaceMouseModule::Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingWithRoll
+        Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingWithRoll
     );
+}
+
+FUserSettings FSmEditorManager::GetUserSettings()
+{
+    return GetMutableDefault<USpaceMouseConfig>()->GetUserSettings();
 }
 
 FKeyEvent FSmEditorManager::GetKeyEventFromKey(const FInputActionKeyMapping& mapping)
@@ -212,12 +229,13 @@ bool FSmEditorManager::AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cv
 
 void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 {
-    if(!FSpaceMouseModule::Settings->ActiveInBackground)
+    auto Settings = GetMutableDefault<USpaceMouseConfig>();
+    if(!Settings->ActiveInBackground)
     {
         if(!FPlatformApplicationMisc::IsThisApplicationForeground()) return;
     }
     
-    if (OnMovementStartedFrame && ActiveViewportClient)
+    if (MovementState->bOnMovementStartedFrame && ActiveViewportClient)
     {
         bWasRealtime = ActiveViewportClient->IsRealtime();
         bWasOrbitCamera = ActiveViewportClient->ShouldOrbitCamera();
@@ -225,7 +243,7 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
         ActiveViewportClient->SetRealtime(true);
     }
 
-    if (OnMovementEndedFrame && ActiveViewportClient)
+    if (MovementState->bOnMovementEndedFrame && ActiveViewportClient)
     {
         ActiveViewportClient->SetRealtime(bWasRealtime);
         //ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
@@ -238,34 +256,34 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
             if (ActiveViewportClient->IsPerspective())
             {
                 float camspeed = ActiveViewportClient->GetCameraSpeedSetting();
-                if (BUTTONDOWN(FSpaceMouseModule::Settings->DecreaseSpeedButtonID))
+                if (ButtonDownFrame(FSmButton::FromID(Settings->DecreaseSpeedButtonID)))
                 {
                     ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
                     //UE_LOG(LogTemp, Display, TEXT("Speed --"));
                 }
-                if (BUTTONDOWN(FSpaceMouseModule::Settings->IncreaseSpeedButtonID))
+                if (ButtonDownFrame(FSmButton::FromID(Settings->IncreaseSpeedButtonID)))
                 {
                     ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
                     //UE_LOG(LogTemp, Display, TEXT("Speed ++"));
                 }
-                if (BUTTONDOWN(FSpaceMouseModule::Settings->ResetSpeedButtonID))
+                if (ButtonDownFrame(FSmButton::FromID(Settings->ResetSpeedButtonID)))
                 {
                     ActiveViewportClient->SetCameraSpeedSetting(4);
                 }
-                if (BUTTONDOWN(FSpaceMouseModule::Settings->ResetRollButtonID))
+                if (ButtonDownFrame(FSmButton::FromID(Settings->ResetRollButtonID)))
                 {
                     ActiveViewportClient->RemoveCameraRoll();
                 }
                 
-                for (const auto& mapping : FSpaceMouseModule::Settings->CustomKeyMappings)
+                for (const auto& mapping : Settings->CustomKeyMappings)
                 {
                     if(mapping.LearnSpaceMouseButtonID) continue;
-                    if(BUTTONDOWN(mapping.SpaceMouseButtonID))
+                    if(ButtonDownFrame(FSmButton::FromID(mapping.SpaceMouseButtonID)))
                     {
                         auto keyEvent = GetKeyEventFromKey(mapping.TargetKey);
                         FSlateApplication::Get().ProcessKeyDownEvent(keyEvent);
                     }
-                    if(BUTTONUP(mapping.SpaceMouseButtonID))
+                    if(ButtonUpFrame(FSmButton::FromID(mapping.SpaceMouseButtonID)))
                     {
                         auto keyEvent = GetKeyEventFromKey(mapping.TargetKey);
                         FSlateApplication::Get().ProcessKeyUpEvent(keyEvent);
@@ -279,14 +297,14 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
                     float speedmul = FMath::Pow(2, speedexp);
                     speedmul *= ActiveViewportClient->GetCameraSpeed();
 
-                    bool orbitMovesObject = FSpaceMouseModule::Settings->OrbittingMovesObject;
-                    bool orbitRotatesObject = FSpaceMouseModule::Settings->OrbittingRotatesObject;
+                    bool orbitMovesObject = Settings->OrbittingMovesObject;
+                    bool orbitRotatesObject = Settings->OrbittingRotatesObject;
                     FRotator currRot = ActiveViewportClient->GetViewRotation();
 
-                    if(FSpaceMouseModule::Settings->CameraBehavior >= ESpaceMouseCameraBehavior::OrbittingWithRoll)
+                    if(Settings->CameraBehavior >= ESpaceMouseCameraBehavior::OrbittingWithRoll)
                     {
                         auto OrbRot = rot;
-                        if(FSpaceMouseModule::Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingNoRoll)
+                        if(Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingNoRoll)
                         {
                             OrbRot.Pitch *= currRot.Pitch > -80 && currRot.Pitch < 80;
                         }
@@ -301,14 +319,14 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 
                     FVector currPos = ActiveViewportClient->GetViewLocation();
                     currPos += posDelta;
-                    switch (FSpaceMouseModule::Settings->CameraBehavior)
+                    switch (Settings->CameraBehavior)
                     {
                     case ESpaceMouseCameraBehavior::CameraDeltaWithRoll:
                         currRot = FRotator(FQuat(currRot) * FQuat(rot));
                         break;
                         
                     case ESpaceMouseCameraBehavior::CameraDeltaNoRoll:
-                        if (OnMovementStartedFrame)
+                        if (MovementState->bOnMovementStartedFrame)
                         {
                             ActiveViewportClient->RemoveCameraRoll();
                         }
@@ -326,7 +344,7 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
                         break;
                         
                     case ESpaceMouseCameraBehavior::OrbittingNoRoll:
-                        if (OnMovementStartedFrame)
+                        if (MovementState->bOnMovementStartedFrame)
                         {
                             ActiveViewportClient->RemoveCameraRoll();
                         }
@@ -357,10 +375,10 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
 
 const bool FSmEditorManager::IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients)
 {
-    bool activeViewportInvalid = true;
-    for (FEditorViewportClient* cvp : AllViewportClients)
+    bool bActiveViewportInvalid = true;
+    for (FEditorViewportClient* Cvp : AllViewportClients)
     {
-        if (cvp == ActiveViewportClient) return false;
+        if (Cvp == ActiveViewportClient) return false;
     }
     return true;
 }
