@@ -32,7 +32,7 @@ public:
     FRotator FORCEINLINE GetRotation() const { return AccumulatedData.Rotation; }
     FVector FORCEINLINE GetNormalizedTranslation() const { return NormalizedData.Translation; }
     FRotator FORCEINLINE GetNormalizedRotation() const { return NormalizedData.Rotation; }
-    TStaticBitArray<64> FORCEINLINE GetButtons() const { return AccumulatedData.Buttons; }
+    FButtonBits FORCEINLINE GetButtons() const { return AccumulatedData.Buttons; }
     
     TSharedPtr<FMovementState> MovementState;
 
