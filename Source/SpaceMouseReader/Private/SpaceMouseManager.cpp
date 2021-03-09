@@ -42,7 +42,7 @@ bool FSpaceMouseManager::ButtonUpFrame(const EV3DCmd Button)
 void FSpaceMouseManager::Tick(float DeltaSecs)
 {
     PrevAccumulatedData = AccumulatedData;
-    AccumulatedData = {};
+    AccumulatedData = NormalizedData = {};
 
     MovementState->AccumulationReset();
     
@@ -50,6 +50,7 @@ void FSpaceMouseManager::Tick(float DeltaSecs)
     {
         SmDevice->Tick(DeltaSecs);
         AccumulatedData += SmDevice->ProcessedData;
+        NormalizedData += SmDevice->NormData;
         MovementState->Accumulate(SmDevice->MovementState);
     }
 

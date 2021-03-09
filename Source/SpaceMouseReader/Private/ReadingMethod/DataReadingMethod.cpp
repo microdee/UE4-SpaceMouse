@@ -24,7 +24,7 @@ FDataReadingMethod::~FDataReadingMethod()
 namespace SmDataReadingDetails
 {
     template<typename TResult>
-    void ApplyMovement(float fx, float fy, float fz, float DeltaSecs, const FMovementSettings& Settings, TResult& Output)
+    void ApplyMovement(float fx, float fy, float fz, float DeltaSecs, const FMovementSettings& Settings, TResult& Output, TResult& NormOutput)
     {
         FVector xmap = Settings.XAxisMap;
         FVector ymap = Settings.YAxisMap;
@@ -34,13 +34,13 @@ namespace SmDataReadingDetails
         fy = FDataReadingMethod::GetCurvedFloat(Settings.Curve, fy);
         fz = FDataReadingMethod::GetCurvedFloat(Settings.Curve, fz);
 
-        auto NewTrl = TResult(
+        NormOutput = TResult(
             fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
             fx * ymap.X + fy * ymap.Y + fz * ymap.Z,
             fx * zmap.X + fy * zmap.Y + fz * zmap.Z
-        ) * Settings.UnitsPerSec * DeltaSecs;
+        );
         
-        Output = NewTrl;
+        Output = NormOutput * Settings.UnitsPerSec * DeltaSecs;
     }
 }
 
@@ -84,12 +84,24 @@ void FDataReadingMethod::TickMovementState(FDataReadingOutput& Output, float Del
 
 void FDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs)
 {
-    SmDataReadingDetails::ApplyMovement(fx, fy, fz, DeltaSecs, Output.Settings.Translation, Output.ProcessedData->Translation);
+    SmDataReadingDetails::ApplyMovement(
+        fx, fy, fz,
+        DeltaSecs,
+        Output.Settings.Translation,
+        Output.ProcessedData->Translation,
+        Output.NormData->Translation
+    );
 }
 
 void FDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs)
 {
-    SmDataReadingDetails::ApplyMovement(fp, fy, fr, DeltaSecs, Output.Settings.Rotation, Output.ProcessedData->Rotation);
+    SmDataReadingDetails::ApplyMovement(
+        fp, fy, fr,
+        DeltaSecs,
+        Output.Settings.Rotation,
+        Output.ProcessedData->Rotation,
+        Output.NormData->Rotation
+    );
 }
 
 void FDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID)
@@ -102,5 +114,6 @@ void FDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report,
     Input.Data[2] = DataPtr[2];
 
     Output.ProcessedData->Buttons = Input.BitArray;
+    Output.NormData->Buttons = Input.BitArray;
     Output.Debug->SetReport(ReportID, Report, GetReportSize());
 }

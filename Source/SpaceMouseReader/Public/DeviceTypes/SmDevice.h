@@ -53,6 +53,7 @@ public:
     TSharedPtr<FButtonCapabilities> Buttons;
     TSharedPtr<FDataReadingMethod> DataReadingMethod;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
+    TSharedPtr<FProcessedDeviceOutput> NormData;
     TSharedPtr<FProcessedDeviceOutput> ProcessedData;
     TSharedPtr<FMovementState> MovementState;
     TSharedPtr<FDebugInfoPrinter> DebugInfoPrinter;

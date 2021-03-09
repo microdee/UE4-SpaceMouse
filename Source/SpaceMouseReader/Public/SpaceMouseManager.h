@@ -20,6 +20,7 @@ protected:
 
     FProcessedDeviceOutput PrevAccumulatedData;
     FProcessedDeviceOutput AccumulatedData;
+    FProcessedDeviceOutput NormalizedData;
     TArray<TSharedPtr<FSmDevice>> Devices;
 
     virtual FUserSettings GetUserSettings() = 0;
@@ -40,6 +41,6 @@ public:
     int LastErrorCode;
     bool DeviceOpened;
 
-    bool FORCEINLINE ButtonDownFrame(EV3DCmd Button);
-    bool FORCEINLINE ButtonUpFrame(EV3DCmd Button);
+    bool ButtonDownFrame(EV3DCmd Button);
+    bool ButtonUpFrame(EV3DCmd Button);
 };

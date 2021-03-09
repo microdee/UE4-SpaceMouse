@@ -16,6 +16,7 @@ DECLARE_MULTICAST_DELEGATE(FDataReadEvent)
 struct SPACEMOUSEREADER_API FDataReadingOutput
 {
     TSharedPtr<FProcessedDeviceOutput> ProcessedData;
+    TSharedPtr<FProcessedDeviceOutput> NormData;
     TSharedPtr<FDebugInfoPrinter> Debug;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
     TSharedPtr<FMovementState> MovementState;
