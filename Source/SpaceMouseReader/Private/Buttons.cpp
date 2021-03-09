@@ -46,12 +46,12 @@ FButtonIterator FAllSmButtons::end()
 
 EV3DCmd FSmButton::FromID(int ButtonID)
 {
-    return static_cast<EV3DCmd>(ButtonID + 1);
+    return static_cast<EV3DCmd>(ButtonID);
 }
 
 int FSmButton::FromCmd(EV3DCmd CmdCode)
 {
-    return static_cast<int>(CmdCode) - 1;
+    return static_cast<int>(CmdCode);
 }
 
 FString FSmButton::GetNameOf(EV3DCmd Button)
