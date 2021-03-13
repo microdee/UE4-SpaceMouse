@@ -162,8 +162,10 @@ FDeviceFactory::FDeviceFactory()
         TEXT("Space Mouse Module"),
         ESmModelConfidence::UntestedShouldWork
     ));
-    
+
+    // TODO: figure out a way to detect device through universal receiver
     AddModel(0x256f, 0xc652, DETAILS::DeclareModel
+    <FButtonCapabilities, FSingleReportTransRotMethod>
     (
         TEXT("Universal Receiver"),
         ESmModelConfidence::Unknown
