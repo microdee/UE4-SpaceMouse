@@ -15,6 +15,16 @@ git submodule add https://github.com/microdee/UE4-SpaceMouse.git Plugins/SpaceMo
 
 ## [Disclaimer about the new official plugin shipped by 3DConnexion](DISCLAIMER.md)
 
+## Requirements
+
+This plugin works with the HID device directly and doesn't use 3DxWare (official "drivers") SDK or its services (similar how Blender does it). However it has different requirements depending on your operating system:
+
+* **Windows** treats space mice as generic HID input devices before 3DxWare is installed. Therefore this plugin works out of the box, without the need for official drivers to be installed.
+  * In case you need to install their software package for other applications, make sure to untick their UE4 plugin in the installer.
+  * However if you already installed the official drivers with default settings, please remove their UE4 plugin from `<path-to-ue4>\Engine\Plugins\3DConnexion` before using this one.
+* **MacOS** treats space mice as regular 2D mice before 3DxWare is installed. This means the OS prevents other programs accessing raw HID data of it to fight keyloggers, so they need the official drivers.
+  * [See installation instructions](MAC.md)
+
 # About
 
 You can control any 3D editor viewport currently in focus (user clicked on it). There are multiple control schemes, check below.
@@ -57,8 +67,6 @@ With **Button mappings** one can remap some functionalities to SpaceMouse button
 * Increase, Decrease and Reset camera speed.
 * Reset the roll of the camera
 * Map SpaceMouse buttons to keyboard presses in UE4 editor, so if you have a SpaceMouse Pilot or Enterprise you can spare some hand lifts while working.
-
-This plugin works with the HID device directly so no 3DxWare service is needed to run (similar how Blender does it). And I highly recommend to disable said service because it's a big pile of steaming hot garbage imo. It doesn't need you to install any drivers at all in theory. However it shouldn't interfere with a running 3DxWare service in case you need it for other less fortunate programs.
 
 [Report bugs](https://github.com/microdee/UE4-SpaceMouse/issues)
 
