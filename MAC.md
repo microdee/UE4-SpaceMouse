@@ -12,4 +12,3 @@ Once installed and restarted you will NEED to open the **3DConnexion Home** app.
 3DConnexion assigns their button mappings to the buttons on space mice by default. While this seems useful it actually interferes with the button assignment in Unreal Engine. To prevent that open the **Properties** from the 3DConnexion Home and while the **Any Application** is selected for the **Configure** dropdown menu, go to the **Buttons** tab and disable all the mappings, as seen on this screenshot:
 
 ![buttons](ReadmeMedia/mac_disable_buttons.png)
-
