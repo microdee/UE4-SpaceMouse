@@ -7,7 +7,7 @@
 
 class FMovementState;
 class FDebugInfoPrinter;
-class FDataReadingMethod;
+class FHidDataReadingMethod;
 class FButtonCapabilities;
 class FActiveHidSmDevice;
 struct FProcessedDeviceOutput;
@@ -41,7 +41,7 @@ public:
         const FString DeviceName,
         const ESmModelConfidence ModelConfidence,
         const TSharedPtr<FButtonCapabilities> Buttons,
-        const TSharedPtr<FDataReadingMethod> DataReadingMethod,
+        const TSharedPtr<FHidDataReadingMethod> DataReadingMethod,
         const FSmDeviceInstantiation& InstanceData
     );
     ~FSmDevice();
@@ -51,7 +51,7 @@ public:
     int InternalID;
     TFunction<FUserSettings()> UserSettings;
     TSharedPtr<FButtonCapabilities> Buttons;
-    TSharedPtr<FDataReadingMethod> DataReadingMethod;
+    TSharedPtr<FHidDataReadingMethod> DataReadingMethod;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
     TSharedPtr<FProcessedDeviceOutput> NormData;
     TSharedPtr<FProcessedDeviceOutput> ProcessedData;

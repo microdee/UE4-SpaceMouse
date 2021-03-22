@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DataReadingMethod.h"
+#include "HidDataReadingMethod.h"
 
 /**
  * This HID data format separates translation and rotation into separate reports
  */
-class SPACEMOUSEREADER_API FSeparateReportTransRotMethod : public FDataReadingMethod
+class SPACEMOUSEREADER_API FSeparateReportTransRotMethod : public FHidDataReadingMethod
 {
 public:
     FSeparateReportTransRotMethod();

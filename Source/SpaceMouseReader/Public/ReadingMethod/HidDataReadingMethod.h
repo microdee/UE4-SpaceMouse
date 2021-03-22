@@ -26,11 +26,11 @@ struct SPACEMOUSEREADER_API FDataReadingOutput
 /**
  * Class encapsulating a method to convert raw HID input into usable data
  */
-class SPACEMOUSEREADER_API FDataReadingMethod
+class SPACEMOUSEREADER_API FHidDataReadingMethod
 {
 public:
-    FDataReadingMethod();
-    virtual ~FDataReadingMethod();
+    FHidDataReadingMethod();
+    virtual ~FHidDataReadingMethod();
     
     FDataReadEvent OnDataReceived;
     

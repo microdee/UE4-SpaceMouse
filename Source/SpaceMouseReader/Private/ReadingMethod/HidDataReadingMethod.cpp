@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ReadingMethod/DataReadingMethod.h"
+#include "ReadingMethod/HidDataReadingMethod.h"
 #include "ReadingMethod/ActiveHidSmDevice.h"
 #include "Buttons.h"
 #include "DebugInfoPrinter.h"
@@ -10,11 +10,11 @@
 #include "Curves/RichCurve.h"
 
 
-FDataReadingMethod::FDataReadingMethod()
+FHidDataReadingMethod::FHidDataReadingMethod()
 {
 }
 
-FDataReadingMethod::~FDataReadingMethod()
+FHidDataReadingMethod::~FHidDataReadingMethod()
 {
 }
 
@@ -29,9 +29,9 @@ namespace SmDataReadingDetails
         FVector ymap = Settings.YAxisMap;
         FVector zmap = Settings.ZAxisMap;
 
-        fx = FDataReadingMethod::GetCurvedFloat(Settings.Curve, fx);
-        fy = FDataReadingMethod::GetCurvedFloat(Settings.Curve, fy);
-        fz = FDataReadingMethod::GetCurvedFloat(Settings.Curve, fz);
+        fx = FHidDataReadingMethod::GetCurvedFloat(Settings.Curve, fx);
+        fy = FHidDataReadingMethod::GetCurvedFloat(Settings.Curve, fy);
+        fz = FHidDataReadingMethod::GetCurvedFloat(Settings.Curve, fz);
 
         NormOutput = TResult(
             fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
@@ -43,7 +43,7 @@ namespace SmDataReadingDetails
     }
 }
 
-void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
+void FHidDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
 {
     uint8* Report = &OutputBuffer[0];
     int Ctr = 0;
@@ -63,19 +63,19 @@ void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
     TickMovementState(Output, DeltaSecs);
 }
 
-float FDataReadingMethod::GetCurvedFloat(const FRichCurve* curve, float ff)
+float FHidDataReadingMethod::GetCurvedFloat(const FRichCurve* curve, float ff)
 {
     if(curve && FMath::Abs(ff) > SMALL_NUMBER)
         return curve->Eval(FMath::Abs(ff)) * FMath::Sign(ff);
     else return ff;
 }
 
-void FDataReadingMethod::TickMovementState(FDataReadingOutput& Output, float DeltaSecs)
+void FHidDataReadingMethod::TickMovementState(FDataReadingOutput& Output, float DeltaSecs)
 {
     Output.MovementState->Tick(Output.Settings.MovementTimeTolerance, DeltaSecs);
 }
 
-void FDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs)
+void FHidDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs)
 {
     SmDataReadingDetails::ApplyMovement(
         fx, fy, fz,
@@ -86,7 +86,7 @@ void FDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, 
     );
 }
 
-void FDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs)
+void FHidDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs)
 {
     SmDataReadingDetails::ApplyMovement(
         fp, fy, fr,
@@ -97,7 +97,7 @@ void FDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, flo
     );
 }
 
-void FDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID)
+void FHidDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID)
 {
     FMemory::Memcpy(&Output.ProcessedData->Buttons, Report + 1, GetReportSize() - 1);
     FMemory::Memcpy(&Output.NormData->Buttons, Report + 1, GetReportSize() - 1);

@@ -8,13 +8,14 @@
 #include "MovementState.h"
 #include "ProcessedDeviceOutput.h"
 #include "DeviceTypes/ButtonCapabilities.h"
-#include "ReadingMethod/DataReadingMethod.h"
+#include "ReadingMethod/ActiveHidSmDevice.h"
+#include "ReadingMethod/HidDataReadingMethod.h"
 
 FSmDevice::FSmDevice(
     const FString DeviceName,
     const ESmModelConfidence ModelConfidence,
     const TSharedPtr<FButtonCapabilities> Buttons,
-    const TSharedPtr<FDataReadingMethod> DataReadingMethod,
+    const TSharedPtr<FHidDataReadingMethod> DataReadingMethod,
     const FSmDeviceInstantiation& InstanceData
 )   : DeviceName(DeviceName)
     , ModelConfidence(ModelConfidence)
