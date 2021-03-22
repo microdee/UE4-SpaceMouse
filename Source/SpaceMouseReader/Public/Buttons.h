@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 
+#include "Containers/StaticBitArray.h"
+
 enum class EV3DCmd : uint8;
+
+typedef TStaticBitArray<256> FButtonBits;
 
 struct SPACEMOUSEREADER_API FButtonIterator
 {

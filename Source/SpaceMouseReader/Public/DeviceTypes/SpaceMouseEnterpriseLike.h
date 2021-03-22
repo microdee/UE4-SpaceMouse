@@ -63,4 +63,6 @@ public:
         SupportedButtons.Add(EV3DCmd::KeyF11);
         SupportedButtons.Add(EV3DCmd::KeyF12);
     }
+    
+    virtual void TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data) override;
 };

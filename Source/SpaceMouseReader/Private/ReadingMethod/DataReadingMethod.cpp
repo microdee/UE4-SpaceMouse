@@ -3,6 +3,7 @@
 
 #include "ReadingMethod/DataReadingMethod.h"
 #include "ActiveHidSmDevice.h"
+#include "Buttons.h"
 #include "DebugInfoPrinter.h"
 #include "MovementState.h"
 #include "ProcessedDeviceOutput.h"
@@ -18,8 +19,6 @@ FDataReadingMethod::~FDataReadingMethod()
 }
 
 // SpacePilot Pro had troubles with filtering only the most significant axis data for a frame
-// So disabling first with a preprocessor in the hope that it won't cause trouble in other devices either.
-#define USE_MOST_SIGNIFICANT_AXES_ONLY 0
 
 namespace SmDataReadingDetails
 {
@@ -43,12 +42,6 @@ namespace SmDataReadingDetails
         Output = NormOutput * Settings.UnitsPerSec * DeltaSecs;
     }
 }
-
-union FReportButtons
-{
-    uint16 Data[4];
-    TStaticBitArray<64> BitArray;
-};
 
 void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
 {
@@ -106,14 +99,8 @@ void FDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, flo
 
 void FDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID)
 {
-    auto& Buttons = Output.ProcessedData->Buttons;
-    FReportButtons Input {0, 0, 0, 0};
-    uint16* DataPtr = reinterpret_cast<uint16*>(Report + 1);
-    Input.Data[0] = DataPtr[0];
-    Input.Data[1] = DataPtr[1];
-    Input.Data[2] = DataPtr[2];
-
-    Output.ProcessedData->Buttons = Input.BitArray;
-    Output.NormData->Buttons = Input.BitArray;
+    FMemory::Memcpy(&Output.ProcessedData->Buttons, Report + 1, GetReportSize() - 1);
+    FMemory::Memcpy(&Output.NormData->Buttons, Report + 1, GetReportSize() - 1);
+    
     Output.Debug->SetReport(ReportID, Report, GetReportSize());
 }

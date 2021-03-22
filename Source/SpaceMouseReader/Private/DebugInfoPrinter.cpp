@@ -34,8 +34,9 @@ void FDebugInfoPrinter::Print(FString FriendlyDeviceName, const hid_device_info*
         *ReportAll
     );
 
-    for(auto ReportLine : Reports)
+    for(int i=0; i<Reports.Num(); i++)
     {
+        auto ReportLine = Reports[i];
         message += TEXT("    ") + ReportLine + TEXT("\n");
     }
     GEngine->AddOnScreenDebugMessage(2010 + InternalID, 10.0, FColor::Orange, message);
