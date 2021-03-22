@@ -2,7 +2,7 @@
 
 
 #include "ReadingMethod/DataReadingMethod.h"
-#include "ActiveHidSmDevice.h"
+#include "ReadingMethod/ActiveHidSmDevice.h"
 #include "Buttons.h"
 #include "DebugInfoPrinter.h"
 #include "MovementState.h"
