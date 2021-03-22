@@ -2,3 +2,9 @@
 
 
 #include "DeviceTypes/SpaceMouseEnterpriseLike.h"
+
+void FSpaceMouseEnterpriseLike::TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data)
+{
+    // Assumption, I'd need more proof
+    Data->Buttons = MapModernButtons(Data->Buttons);
+}

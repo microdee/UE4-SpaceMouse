@@ -7,12 +7,12 @@
 #include "ButtonCapabilities.h"
 
 /**
- * Without PRO!
+ * With PRO!
  */
-class SPACEMOUSEREADER_API FSpacePilotLike : public FButtonCapabilities
+class SPACEMOUSEREADER_API FSpacePilotProLike : public FButtonCapabilities
 {
 public:
-    FSpacePilotLike()
+    FSpacePilotProLike()
     {
         // sides
         SupportedButtons.Add(EV3DCmd::MenuOptions);
