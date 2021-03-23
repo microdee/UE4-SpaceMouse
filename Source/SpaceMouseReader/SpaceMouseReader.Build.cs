@@ -22,16 +22,6 @@ public class SpaceMouseReader : ModuleRules
 			"HIDUE"
 			// ... add other public dependencies that you statically link with here ...
 		});
-
-		if (Target.Platform == UnrealTargetPlatform.Mac)
-		{
-			var FrameworkPath =
-				Path.Combine(PluginDirectory, "Source", "ThirdParty", "Mac", "3DconnexionClient.framework");
-			
-			PublicFrameworks.AddRange(new []
-			{
-				FrameworkPath
-			});
-		}
 	}
 }
+	
