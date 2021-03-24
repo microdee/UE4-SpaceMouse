@@ -11,11 +11,10 @@ struct FTDxDeviceModel
 {
     uint16 VID;
     uint16 PID;
-}
+};
 
 class SPACEMOUSEREADER_API FTDxWareReadingMethod
     : public FDataReadingMethod
-    , public TSharedFromThis<FTDxWareReadingMethod, ESPMode::ThreadSafe>
 {
 private:
     TArray<FTDxDeviceModel> SeenDevices;
@@ -36,6 +35,6 @@ public:
     bool bMoved = false;
 
     virtual void Tick(FDataReadingOutput& Output, float DeltaSecs) override;
-}
+};
 
 #endif

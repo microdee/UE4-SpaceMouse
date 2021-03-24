@@ -14,7 +14,8 @@
 #include <dlfcn.h>
 #include <stdint.h>
 
-static TSharedRef<FTDxWareReadingMethod> TDxWareReader;
+// TODO: this was originally a shared pointer, but compiler said no, so until further connsideration we live dangerously
+static FTDxWareReadingMethod* TDxWareReader;
 
 // replicate just enough of the 3Dx API for our uses, not everything the driver provides
 
@@ -80,7 +81,7 @@ DECLARE_FUNC(SetConnexionClientButtonMask);
 DECLARE_FUNC(UnregisterConnexionClient);
 DECLARE_FUNC(ConnexionClientControl);
 
-static void* load_func(void* module, const char* func_name)
+void* load_func(void* module, const char* func_name)
 {
     void* func = dlsym(module, func_name);
     FString FuncName {func_name};
@@ -98,9 +99,9 @@ static void* load_func(void* module, const char* func_name)
 
 #define LOAD_FUNC(name) name = (name##_ptr)load_func(module, #name)
 
-static void* module;  // handle to the whole driver
+void* module;  // handle to the whole driver
 
-static bool load_driver_functions()
+bool load_driver_functions()
 {
     if (TDxWareReader->bDriverLoaded) {
         return true;
@@ -136,25 +137,25 @@ static bool load_driver_functions()
     return TDxWareReader->bDriverLoaded;
 }
 
-static void unload_driver()
+void unload_driver()
 {
     dlclose(module);
 }
 
-static void FTDxWareReadingMethod::DeviceAdded(uint32_t unused)
+void FTDxWareReadingMethod::DeviceAdded(uint32_t unused)
 {
     // determine exactly which device is plugged in
     int32_t result;
-    ConnexionClientControl(TDxWareReader->clientID, kConnexionCtlGetDeviceID, 0, &result);
-    int16_t vendorID = result >> 16;
-    int16_t productID = result & 0xffff;
+    ConnexionClientControl(TDxWareReader->ClientID, kConnexionCtlGetDeviceID, 0, &result);
+    auto vendorID = static_cast<uint16>(result >> 16);
+    auto productID = static_cast<uint16>(result & 0xffff);
     
     UE_LOG(LogSmReader, Display, TEXT("A device got connected."));
 
     TDxWareReader->SeenDevices.Add({vendorID, productID});
 }
 
-static void FTDxWareReadingMethod::DeviceRemoved(uint32_t unused)
+void FTDxWareReadingMethod::DeviceRemoved(uint32_t unused)
 {
     UE_LOG(LogSmReader, Display, TEXT("A device got removed."));
 }
@@ -163,23 +164,23 @@ union FButtonBridge
 {
     FButtonBits Output;
     uint32_t Input;
-}
+};
 
-static void FTDxWareReadingMethod::DeviceEvent(uint32_t unused, uint32_t msg_type, void* msg_arg)
+void FTDxWareReadingMethod::DeviceEvent(uint32_t unused, uint32_t msg_type, void* msg_arg)
 {
     if (msg_type == kConnexionMsgDeviceState) {
         ConnexionDeviceState* s = (ConnexionDeviceState*)msg_arg;
 
         // device state is broadcast to all clients; only react if sent to us
-        if (s->client == TDxWareReader->clientID) {
+        if (s->client == TDxWareReader->ClientID) {
             switch (s->command) {
                 case kConnexionCmdHandleAxis: {
-                    AccumulatedData.Translation = FVector(
+                    TDxWareReader->AccumulatedData.Translation = FVector(
                         static_cast<float>(s->axis[0]),
                         static_cast<float>(s->axis[1]),
                         static_cast<float>(s->axis[2])
                     );
-                    AccumulatedData.Rotation = FRotator(
+                    TDxWareReader->AccumulatedData.Rotation = FRotator(
                         static_cast<float>(s->axis[3]),
                         static_cast<float>(s->axis[4]),
                         static_cast<float>(s->axis[5])
@@ -190,7 +191,7 @@ static void FTDxWareReadingMethod::DeviceEvent(uint32_t unused, uint32_t msg_typ
                 case kConnexionCmdHandleButtons: {
                     FButtonBridge bridge {};
                     bridge.Input = TDxWareReader->bHasOldDriver ? s->buttons8 : s->buttons;
-                    AccumulatedData.Buttons |= bridge.Output;
+                    TDxWareReader->AccumulatedData.Buttons |= bridge.Output;
                     TDxWareReader->OnDataReceived.Broadcast();
                     break;
                 }
@@ -209,7 +210,7 @@ static void FTDxWareReadingMethod::DeviceEvent(uint32_t unused, uint32_t msg_typ
 
 FTDxWareReadingMethod::FTDxWareReadingMethod()
 {
-    TDxWareReader = SharedThis(this);
+    TDxWareReader = this;
     if (!load_driver_functions())
     {
         UE_LOG(LogSmReader, Error, TEXT("Could not load 3DConnexion driver functions"));
@@ -263,7 +264,7 @@ FTDxWareReadingMethod::~FTDxWareReadingMethod()
     }
 }
 
-FTDxWareReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
+void FTDxWareReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
 {
     FDataReadingMethod::Tick(Output, DeltaSecs);
     FProcessedDeviceOutput CurrData = AccumulatedData;
@@ -274,16 +275,16 @@ FTDxWareReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
     {
         ApplyTranslation(
             Output,
-            CurrData.Translation.x / GetAxisResolution(),
-            CurrData.Translation.y / GetAxisResolution(),
-            CurrData.Translation.z / GetAxisResolution(),
+            CurrData.Translation.X / GetAxisResolution(),
+            CurrData.Translation.Y / GetAxisResolution(),
+            CurrData.Translation.Z / GetAxisResolution(),
             DeltaSecs
         );
         ApplyRotation(
             Output,
-            CurrData.Rotation.x / GetAxisResolution(),
-            CurrData.Rotation.y / GetAxisResolution(),
-            CurrData.Rotation.z / GetAxisResolution(),
+            CurrData.Rotation.Pitch / GetAxisResolution(),
+            CurrData.Rotation.Yaw / GetAxisResolution(),
+            CurrData.Rotation.Roll / GetAxisResolution(),
             DeltaSecs
         );
         Output.MovementState->Move();

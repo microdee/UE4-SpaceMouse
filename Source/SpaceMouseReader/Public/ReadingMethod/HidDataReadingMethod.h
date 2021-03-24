@@ -16,8 +16,6 @@ public:
     FHidDataReadingMethod();
     virtual ~FHidDataReadingMethod();
     
-    FDataReadEvent OnDataReceived;
-    
     virtual int GetReportSize() { return 7; }
     virtual int GetReportCount() { return 4; }
 

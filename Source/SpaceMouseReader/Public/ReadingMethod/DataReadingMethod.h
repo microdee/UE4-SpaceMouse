@@ -33,6 +33,8 @@ public:
     FDataReadingMethod();
     virtual ~FDataReadingMethod();
     
+    FDataReadEvent OnDataReceived;
+    
     virtual int GetAxisResolution() { return 350; }
     static float GetCurvedFloat(const FRichCurve* curve, float ff);
     
