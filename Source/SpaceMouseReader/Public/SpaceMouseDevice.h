@@ -83,15 +83,3 @@ class SPACEMOUSEREADER_API FSingleReportPosRotSmDevice : public FSpaceMouseDevic
 
     virtual void Tick(float DeltaSecs) override;
 };
-
-class SPACEMOUSEREADER_API FTestSmDevice : public FSpaceMouseDevice
-{
-    virtual TSharedPtr<FSpaceMouseDevice> NewDevice() override { return MakeShared<FTestSmDevice>(); }
-
-    virtual int GetReportSize() override
-    {
-        return 7;
-    }
-
-    virtual void Tick(float DeltaSecs) override;
-};
