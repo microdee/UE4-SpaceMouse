@@ -1,7 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Mac/TDxDataProvider.h"
+#include "Mac/TDxWareReadingMethod.h"
 
 #if PLATFORM_MAC
 
@@ -189,9 +189,8 @@ static void DeviceEvent(uint32_t unused, uint32_t msg_type, void *msg_arg)
     }
 }
 
-FTDxDataProvider::FTDxDataProvider()
+FTDxWareReadingMethod::FTDxWareReadingMethod()
 {
-    StaticDataProvider = TSharedFromThis<FTDxDataProvider>;
     
 }
 

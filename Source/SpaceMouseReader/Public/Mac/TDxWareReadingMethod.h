@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #if PLATFORM_MAC
 
 #include "CoreMinimal.h"
+#include "ReadingMethod/DataReadingMethod.h"
 
 struct FTDxDeviceModel
 {
@@ -28,12 +29,13 @@ struct ConnexionDeviceState {
 };
 #pragma pack(pop)
 
-class SPACEMOUSEREADER_API FTDxDataProvider
+class SPACEMOUSEREADER_API FTDxWareReadingMethod : public FDataReadingMethod
 {
-	    TFunction<
+private:
     TArray<FTDxDeviceModel> SeenDevices;
     
-    FTDxDataProvider();
+public:
+    FTDxWareReadingMethod();
 }
 
 #endif
