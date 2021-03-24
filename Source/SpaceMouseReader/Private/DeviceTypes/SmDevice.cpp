@@ -9,13 +9,13 @@
 #include "ProcessedDeviceOutput.h"
 #include "DeviceTypes/ButtonCapabilities.h"
 #include "ReadingMethod/ActiveHidSmDevice.h"
-#include "ReadingMethod/HidDataReadingMethod.h"
+#include "ReadingMethod/DataReadingMethod.h"
 
 FSmDevice::FSmDevice(
     const FString DeviceName,
     const ESmModelConfidence ModelConfidence,
     const TSharedPtr<FButtonCapabilities> Buttons,
-    const TSharedPtr<FHidDataReadingMethod> DataReadingMethod,
+    const TSharedPtr<FDataReadingMethod> DataReadingMethod,
     const FSmDeviceInstantiation& InstanceData
 )   : DeviceName(DeviceName)
     , ModelConfidence(ModelConfidence)
@@ -43,7 +43,12 @@ void FSmDevice::TickInit()
 
         DataReadingMethod->OnDataReceived.AddLambda([this]()
         {
-           DebugInfoPrinter->Print(DeviceName, HidDevice->DeviceInfo, InternalID, UserSettings().bPrintDebug); 
+            DebugInfoPrinter->Print(
+                DeviceName,
+                HidDevice ? HidDevice->DeviceInfo : nullptr,
+                InternalID,
+                UserSettings().bPrintDebug
+            );
         });
     }
 }
