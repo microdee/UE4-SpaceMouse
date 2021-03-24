@@ -5,11 +5,12 @@
 #if PLATFORM_MAC
 
 #include "CoreMinimal.h"
+#include "ReadingMethod/DataReadingMethod.h"
 
-class SPACEMOUSEREADER_API FTDxDataProvider
+class SPACEMOUSEREADER_API FTDxWareReadingMethod : public FDataReadingMethod
 {
 public:
-    FTDxDataProvider();
+    FTDxWareReadingMethod();
 }
 
 #endif
