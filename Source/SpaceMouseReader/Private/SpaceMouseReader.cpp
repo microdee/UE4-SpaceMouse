@@ -5,6 +5,8 @@
 
 #include "hidapi.h"
 
+DEFINE_LOG_CATEGORY(LogSmReader);
+
 void FSpaceMouseReaderModule::StartupModule()
 {
     hid_init();
