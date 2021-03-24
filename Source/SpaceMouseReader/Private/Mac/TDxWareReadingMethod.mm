@@ -6,6 +6,7 @@
 #if PLATFORM_MAC
 
 #include "SpaceMouseReader.h"
+#include "Buttons.h"
 
 // connection to driver
 // grabbed from https://github.com/blender/blender/blob/594f47ecd2d5367ca936cf6fc6ec8168c2b360d0/intern/ghost/intern/GHOST_NDOFManagerCocoa.mm
@@ -13,15 +14,25 @@
 #include <dlfcn.h>
 #include <stdint.h>
 
-static uint16_t clientID = 0;
-
-static TSharedPtr<FTDyDataProvider> StaticDataProvider;
-
-static bool driver_loaded = false;
-static bool has_old_driver = false; // 3Dconnexion drivers before 10 beta 4 are "old", not all buttons will work
-static bool has_new_driver = false; // drivers >= 10.2.2 are "new", and can process events on a separate thread
+static TSharedRef<FTDxWareReadingMethod> TDxWareReader;
 
 // replicate just enough of the 3Dx API for our uses, not everything the driver provides
+
+#pragma pack(push, 2)  // just this struct
+struct ConnexionDeviceState {
+    uint16_t version;
+    uint16_t client;
+    uint16_t command;
+    int16_t param;
+    int32_t value;
+    uint64_t time;
+    uint8_t report[8];
+    uint16_t buttons8;  // obsolete! (pre-10.x drivers)
+    int16_t axis[6];    // tx, ty, tz, rx, ry, rz
+    uint16_t address;
+    uint32_t buttons;
+};
+#pragma pack(pop)
 
 #define kConnexionClientModeTakeOver 1
 #define kConnexionMaskAll 0x3fff
@@ -35,7 +46,7 @@ static bool has_new_driver = false; // drivers >= 10.2.2 are "new", and can proc
 // callback functions:
 typedef void (*AddedHandler)(uint32_t);
 typedef void (*RemovedHandler)(uint32_t);
-typedef void (*MessageHandler)(uint32_t, uint32_t msg_type, void *msg_arg);
+typedef void (*MessageHandler)(uint32_t, uint32_t msg_type, void* msg_arg);
 
 // driver functions:
 typedef int16_t (*SetConnexionHandlers_ptr)(MessageHandler, AddedHandler, RemovedHandler, bool);
@@ -44,7 +55,7 @@ typedef void (*CleanupConnexionHandlers_ptr)();
 
 typedef uint16_t (*RegisterConnexionClient_ptr)(
     uint32_t signature,
-    const char *name,
+    const char* name,
     uint16_t mode,
     uint32_t mask
 );
@@ -69,9 +80,9 @@ DECLARE_FUNC(SetConnexionClientButtonMask);
 DECLARE_FUNC(UnregisterConnexionClient);
 DECLARE_FUNC(ConnexionClientControl);
 
-static void *load_func(void *module, const char *func_name)
+static void* load_func(void* module, const char* func_name)
 {
-    void *func = dlsym(module, func_name);
+    void* func = dlsym(module, func_name);
     FString FuncName {func_name};
     if(func)
     {
@@ -87,11 +98,11 @@ static void *load_func(void *module, const char *func_name)
 
 #define LOAD_FUNC(name) name = (name##_ptr)load_func(module, #name)
 
-static void *module;  // handle to the whole driver
+static void* module;  // handle to the whole driver
 
 static bool load_driver_functions()
 {
-    if (driver_loaded) {
+    if (TDxWareReader->bDriverLoaded) {
         return true;
     }
 
@@ -102,27 +113,27 @@ static bool load_driver_functions()
         LOAD_FUNC(SetConnexionHandlers);
 
         if (SetConnexionHandlers != NULL) {
-            driver_loaded = true;
-            has_new_driver = true;
+            TDxWareReader->bDriverLoaded = true;
+            TDxWareReader->bHasNewDriver = true;
         }
         else {
             LOAD_FUNC(InstallConnexionHandlers);
 
-            driver_loaded = (InstallConnexionHandlers != NULL);
+            TDxWareReader->bDriverLoaded = (InstallConnexionHandlers != NULL);
         }
 
-        if (driver_loaded) {
+        if (TDxWareReader->bDriverLoaded) {
             LOAD_FUNC(CleanupConnexionHandlers);
             LOAD_FUNC(RegisterConnexionClient);
             LOAD_FUNC(SetConnexionClientButtonMask);
             LOAD_FUNC(UnregisterConnexionClient);
             LOAD_FUNC(ConnexionClientControl);
 
-            has_old_driver = (SetConnexionClientButtonMask == NULL);
+            TDxWareReader->bHasOldDriver = (SetConnexionClientButtonMask == NULL);
         }
     }
 
-    return driver_loaded;
+    return TDxWareReader->bDriverLoaded;
 }
 
 static void unload_driver()
@@ -130,60 +141,67 @@ static void unload_driver()
     dlclose(module);
 }
 
-static void DeviceAdded(uint32_t unused)
+static void FTDxWareReadingMethod::DeviceAdded(uint32_t unused)
 {
     // determine exactly which device is plugged in
     int32_t result;
-    ConnexionClientControl(clientID, kConnexionCtlGetDeviceID, 0, &result);
+    ConnexionClientControl(TDxWareReader->clientID, kConnexionCtlGetDeviceID, 0, &result);
     int16_t vendorID = result >> 16;
     int16_t productID = result & 0xffff;
     
     UE_LOG(LogSmReader, Display, TEXT("A device got connected."));
 
-    StaticDataProvider->SeenDevices.Add({vendorID, productID});
+    TDxWareReader->SeenDevices.Add({vendorID, productID});
 }
 
-static void DeviceRemoved(uint32_t unused)
+static void FTDxWareReadingMethod::DeviceRemoved(uint32_t unused)
 {
     UE_LOG(LogSmReader, Display, TEXT("A device got removed."));
 }
 
-static void DeviceEvent(uint32_t unused, uint32_t msg_type, void *msg_arg)
+union FButtonBridge
+{
+    FButtonBits Output;
+    uint32_t Input;
+}
+
+static void FTDxWareReadingMethod::DeviceEvent(uint32_t unused, uint32_t msg_type, void* msg_arg)
 {
     if (msg_type == kConnexionMsgDeviceState) {
-        ConnexionDeviceState *s = (ConnexionDeviceState *)msg_arg;
+        ConnexionDeviceState* s = (ConnexionDeviceState*)msg_arg;
 
         // device state is broadcast to all clients; only react if sent to us
-        if (s->client == clientID) {
-            // TODO: is s->time compatible with GHOST timestamps? if so use that instead.
-            GHOST_TUns64 now = ghost_system->getMilliSeconds();
-
+        if (s->client == TDxWareReader->clientID) {
             switch (s->command) {
                 case kConnexionCmdHandleAxis: {
-                    // convert to blender view coordinates
-                    const int t[3] = {s->axis[0], -(s->axis[2]), s->axis[1]};
-                    const int r[3] = {-(s->axis[3]), s->axis[5], -(s->axis[4])};
-
-                    ndof_manager->updateTranslation(t, now);
-                    ndof_manager->updateRotation(r, now);
-
-                    ghost_system->notifyExternalEventProcessed();
+                    AccumulatedData.Translation = FVector(
+                        static_cast<float>(s->axis[0]),
+                        static_cast<float>(s->axis[1]),
+                        static_cast<float>(s->axis[2])
+                    );
+                    AccumulatedData.Rotation = FRotator(
+                        static_cast<float>(s->axis[3]),
+                        static_cast<float>(s->axis[4]),
+                        static_cast<float>(s->axis[5])
+                    );
+                    TDxWareReader->OnDataReceived.Broadcast();
                     break;
                 }
                 case kConnexionCmdHandleButtons: {
-                    int button_bits = has_old_driver ? s->buttons8 : s->buttons;
-                    ndof_manager->updateButtons(button_bits, now);
-                    ghost_system->notifyExternalEventProcessed();
+                    FButtonBridge bridge {};
+                    bridge.Input = TDxWareReader->bHasOldDriver ? s->buttons8 : s->buttons;
+                    AccumulatedData.Buttons |= bridge.Output;
+                    TDxWareReader->OnDataReceived.Broadcast();
                     break;
                 }
-#if DEBUG_NDOF_DRIVER
-                case kConnexionCmdAppSpecific:
-                    printf("ndof: app-specific command, param = %hd, value = %d\n", s->param, s->value);
+                case kConnexionCmdAppSpecific: {
+                    UE_LOG(LogSmReader, Display, TEXT("app-specific command, param = %hd, value = %d"), s->param, s->value);
                     break;
-
-                default:
-                    printf("ndof: mystery device command %d\n", s->command);
-#endif
+                }
+                default: {
+                    UE_LOG(LogSmReader, Display, TEXT("mystery device command %d"), s->command);
+                    break;
+                }
             }
         }
     }
@@ -191,7 +209,88 @@ static void DeviceEvent(uint32_t unused, uint32_t msg_type, void *msg_arg)
 
 FTDxWareReadingMethod::FTDxWareReadingMethod()
 {
-    
+    TDxWareReader = SharedThis(this);
+    if (!load_driver_functions())
+    {
+        UE_LOG(LogSmReader, Error, TEXT("Could not load 3DConnexion driver functions"));
+        return;
+    }
+
+    uint16_t error;
+    if (TDxWareReader->bHasNewDriver)
+    {
+        const bool separate_thread = true;  // TODO: blender has it false, wonder if they had a very good reason
+        error = SetConnexionHandlers(
+            FTDxWareReadingMethod::DeviceEvent,
+            FTDxWareReadingMethod::DeviceAdded,
+            FTDxWareReadingMethod::DeviceRemoved,
+            separate_thread
+        );
+    }
+    else
+    {
+        error = InstallConnexionHandlers(
+            FTDxWareReadingMethod::DeviceEvent,
+            FTDxWareReadingMethod::DeviceAdded,
+            FTDxWareReadingMethod::DeviceRemoved
+        );
+    }
+
+    if (error) {
+        UE_LOG(LogSmReader, Error, TEXT("error %d while setting up handlers"), error);
+        return;
+    }
+
+    // Pascal string *and* a four-letter constant. How old-skool.
+    ClientID = RegisterConnexionClient(
+        'smue', "\012UnrealEngine",
+        kConnexionClientModeTakeOver,
+        kConnexionMaskAll
+    );
+
+    if (!bHasOldDriver) {
+        SetConnexionClientButtonMask(ClientID, kConnexionMaskAllButtons);
+    }
+}
+
+FTDxWareReadingMethod::~FTDxWareReadingMethod()
+{
+    if(bDriverLoaded)
+    {
+        UnregisterConnexionClient(ClientID);
+        CleanupConnexionHandlers();
+        unload_driver();
+    }
+}
+
+FTDxWareReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
+{
+    FDataReadingMethod::Tick(Output, DeltaSecs);
+    FProcessedDeviceOutput CurrData = AccumulatedData;
+    bool bCurrMoved = bMoved;
+    bMoved = false;
+
+    if(bCurrMoved)
+    {
+        ApplyTranslation(
+            Output,
+            CurrData.Translation.x / GetAxisResolution(),
+            CurrData.Translation.y / GetAxisResolution(),
+            CurrData.Translation.z / GetAxisResolution(),
+            DeltaSecs
+        );
+        ApplyRotation(
+            Output,
+            CurrData.Rotation.x / GetAxisResolution(),
+            CurrData.Rotation.y / GetAxisResolution(),
+            CurrData.Rotation.z / GetAxisResolution(),
+            DeltaSecs
+        );
+        Output.MovementState->Move();
+    }
+    Output.ProcessedData->Buttons = Output.NormData->Buttons = CurrData.Buttons;
+
+    TickMovementState(Output, DeltaSecs);
 }
 
 #endif
