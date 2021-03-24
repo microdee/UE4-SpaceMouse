@@ -14,8 +14,7 @@
 #include <dlfcn.h>
 #include <stdint.h>
 
-// TODO: this was originally a shared pointer, but compiler said no, so until further connsideration we live dangerously
-static FTDxWareReadingMethod* TDxWareReader;
+static TSharedPtr<FTDxWareReadingMethod> TDxWareReader;
 
 // replicate just enough of the 3Dx API for our uses, not everything the driver provides
 
@@ -168,6 +167,7 @@ union FButtonBridge
 
 void FTDxWareReadingMethod::DeviceEvent(uint32_t unused, uint32_t msg_type, void* msg_arg)
 {
+    UE_LOG(LogSmReader, Display, TEXT("Device Event: %d %p"), msg_type, msg_arg);
     if (msg_type == kConnexionMsgDeviceState) {
         ConnexionDeviceState* s = (ConnexionDeviceState*)msg_arg;
 
@@ -208,9 +208,23 @@ void FTDxWareReadingMethod::DeviceEvent(uint32_t unused, uint32_t msg_type, void
     }
 }
 
+TSharedPtr<FTDxWareReadingMethod> FTDxWareReadingMethod::GetSingleton()
+{
+    if(!TDxWareReader)
+    {
+        TDxWareReader = MakeShared<FTDxWareReadingMethod>();
+        TDxWareReader->Init();
+    }
+    
+    return TDxWareReader;
+}
+
 FTDxWareReadingMethod::FTDxWareReadingMethod()
 {
-    TDxWareReader = this;
+}
+
+void FTDxWareReadingMethod::Init()
+{
     if (!load_driver_functions())
     {
         UE_LOG(LogSmReader, Error, TEXT("Could not load 3DConnexion driver functions"));
@@ -220,7 +234,7 @@ FTDxWareReadingMethod::FTDxWareReadingMethod()
     uint16_t error;
     if (TDxWareReader->bHasNewDriver)
     {
-        const bool separate_thread = true;  // TODO: blender has it false, wonder if they had a very good reason
+        const bool separate_thread = false;  // TODO: blender has it false, wonder if they had a very good reason
         error = SetConnexionHandlers(
             FTDxWareReadingMethod::DeviceEvent,
             FTDxWareReadingMethod::DeviceAdded,
@@ -244,10 +258,11 @@ FTDxWareReadingMethod::FTDxWareReadingMethod()
 
     // Pascal string *and* a four-letter constant. How old-skool.
     ClientID = RegisterConnexionClient(
-        'smue', "\012UnrealEngine",
+        '\?\?\?\?', "\023com.epicgames.UE4Editor", // extracted from the Info.plist file of UE4 editor, yeah even the ????
         kConnexionClientModeTakeOver,
         kConnexionMaskAll
     );
+    UE_LOG(LogSmReader, Display, TEXT("3DxWare assigned client ID: %d"), ClientID);
 
     if (!bHasOldDriver) {
         SetConnexionClientButtonMask(ClientID, kConnexionMaskAllButtons);
@@ -256,6 +271,7 @@ FTDxWareReadingMethod::FTDxWareReadingMethod()
 
 FTDxWareReadingMethod::~FTDxWareReadingMethod()
 {
+    UE_LOG(LogSmReader, Warning, TEXT("Unregistering from 3DxWare"));
     if(bDriverLoaded)
     {
         UnregisterConnexionClient(ClientID);

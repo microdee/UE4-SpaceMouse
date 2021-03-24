@@ -36,7 +36,7 @@ void FSpaceMouseManager::Initialize()
         TEXT("3DxWare driver"),
         ESmModelConfidence::Unknown,
         MakeShared<FTDxWareButtonCapabilities>(),
-        MakeShared<FTDxWareReadingMethod>(),
+        FTDxWareReadingMethod::GetSingleton(),
         InstInfo
     );
     Devices.Add(MacDevice);
