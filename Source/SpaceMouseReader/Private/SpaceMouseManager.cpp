@@ -9,8 +9,15 @@
 #include "DeviceTypes/DeviceFactory.h"
 #include "DeviceTypes/SmDevice.h"
 
+#if PLATFORM_MAC
+#include "Mac/TDxWareReadingMethod.h"
+#include "Mac/TDxWareButtonCapabilities.h"
+#endif
+
 #if WITH_EDITOR
+#if !PLATFORM_MAC
 #include "EngineGlobals.h"
+#endif
 #include "Engine/Engine.h"
 #endif
 
@@ -18,10 +25,28 @@ void FSpaceMouseManager::Initialize()
 {
     PrevAccumulatedData = AccumulatedData = {};
     MovementState = MakeShared<FMovementState>();
-
     Devices.Empty();
+
+#if PLATFORM_MAC // On mac we have to use the 3DxWare SDK (at least pretend ;) )
+
+    FSmDeviceInstantiation InstInfo {
+        0, nullptr, [this]() { return GetUserSettings(); }
+    };
+    auto MacDevice = MakeShared<FSmDevice>(
+        TEXT("3DxWare driver"),
+        ESmModelConfidence::Unknown,
+        MakeShared<FTDxWareButtonCapabilities>(),
+        FTDxWareReadingMethod::GetSingleton(),
+        InstInfo
+    );
+    Devices.Add(MacDevice);
+
+#else // On windows we use HID (Linux is unknown yet)
+
     FDeviceFactory Factory {};
     Factory.OpenConnectedDevices([this]() { return GetUserSettings(); }, Devices);
+
+#endif
     
     Enabled = true;
     DeviceOpened = Devices.Num() > 0;

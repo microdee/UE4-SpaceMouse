@@ -2,9 +2,7 @@
 
 
 #include "ReadingMethod/DataReadingMethod.h"
-#include "ActiveHidSmDevice.h"
-#include "Buttons.h"
-#include "DebugInfoPrinter.h"
+
 #include "MovementState.h"
 #include "ProcessedDeviceOutput.h"
 #include "Curves/RichCurve.h"
@@ -17,8 +15,6 @@ FDataReadingMethod::FDataReadingMethod()
 FDataReadingMethod::~FDataReadingMethod()
 {
 }
-
-// SpacePilot Pro had troubles with filtering only the most significant axis data for a frame
 
 namespace SmDataReadingDetails
 {
@@ -43,31 +39,16 @@ namespace SmDataReadingDetails
     }
 }
 
-void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
-{
-    uint8* Report = &OutputBuffer[0];
-    int Ctr = 0;
-
-    Output.MovementState->PreTick();
-
-    bool Received = false;
-    
-    while (Output.HidDevice->Read(Report, GetReportSize() * GetReportCount()) > 0 && Ctr < Output.Settings.MaxReads)
-    {
-        Received = true;
-        ReadData(Output, DeltaSecs, Report);
-        Ctr++;
-    }
-    if(Received) OnDataReceived.Broadcast();
-
-    TickMovementState(Output, DeltaSecs);
-}
-
 float FDataReadingMethod::GetCurvedFloat(const FRichCurve* curve, float ff)
 {
     if(curve && FMath::Abs(ff) > SMALL_NUMBER)
         return curve->Eval(FMath::Abs(ff)) * FMath::Sign(ff);
     else return ff;
+}
+
+void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
+{
+    Output.MovementState->PreTick();
 }
 
 void FDataReadingMethod::TickMovementState(FDataReadingOutput& Output, float DeltaSecs)
@@ -95,12 +76,4 @@ void FDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, flo
         Output.ProcessedData->Rotation,
         Output.NormData->Rotation
     );
-}
-
-void FDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID)
-{
-    FMemory::Memcpy(&Output.ProcessedData->Buttons, Report + 1, GetReportSize() - 1);
-    FMemory::Memcpy(&Output.NormData->Buttons, Report + 1, GetReportSize() - 1);
-    
-    Output.Debug->SetReport(ReportID, Report, GetReportSize());
 }

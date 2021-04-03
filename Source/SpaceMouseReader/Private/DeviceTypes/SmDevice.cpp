@@ -8,6 +8,7 @@
 #include "MovementState.h"
 #include "ProcessedDeviceOutput.h"
 #include "DeviceTypes/ButtonCapabilities.h"
+#include "ReadingMethod/ActiveHidSmDevice.h"
 #include "ReadingMethod/DataReadingMethod.h"
 
 FSmDevice::FSmDevice(
@@ -42,7 +43,12 @@ void FSmDevice::TickInit()
 
         DataReadingMethod->OnDataReceived.AddLambda([this]()
         {
-           DebugInfoPrinter->Print(DeviceName, HidDevice->DeviceInfo, InternalID, UserSettings().bPrintDebug); 
+            DebugInfoPrinter->Print(
+                DeviceName,
+                HidDevice ? HidDevice->DeviceInfo : nullptr,
+                InternalID,
+                UserSettings().bPrintDebug
+            );
         });
     }
 }

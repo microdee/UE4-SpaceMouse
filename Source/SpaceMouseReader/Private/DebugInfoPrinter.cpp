@@ -17,7 +17,7 @@ FDebugInfoPrinter::~FDebugInfoPrinter()
 
 void FDebugInfoPrinter::Print(FString FriendlyDeviceName, const hid_device_info* DeviceInfo, int InternalID, bool bEnabled)
 {
-    if(!bEnabled) return;
+    if(!bEnabled || !DeviceInfo) return;
     
     auto message = FString::Printf(
         TEXT("Device: %s\n")

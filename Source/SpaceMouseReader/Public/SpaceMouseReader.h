@@ -6,6 +6,8 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogSmReader, Log, All);
+
 class SPACEMOUSEREADER_API FSpaceMouseReaderModule : public IModuleInterface
 {
 public:

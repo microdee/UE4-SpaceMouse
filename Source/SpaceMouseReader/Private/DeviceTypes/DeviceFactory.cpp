@@ -13,7 +13,8 @@
 #include "DeviceTypes/SpacePilotLike.h"
 #include "DeviceTypes/SpacePilotProLike.h"
 #include "DeviceTypes/UniversalReceiver.h"
-#include "ReadingMethod/DataReadingMethod.h"
+#include "ReadingMethod/ActiveHidSmDevice.h"
+#include "ReadingMethod/HidDataReadingMethod.h"
 #include "ReadingMethod/SeparateReportTransRotMethod.h"
 #include "ReadingMethod/SingleReportTransRotMethod.h"
 
@@ -23,7 +24,7 @@ namespace SmDevFactory_Details
     FSmDeviceCreator DeclareModel(FString DeviceName, ESmModelConfidence Confidence = ESmModelConfidence::Tested)
     {
         static_assert(std::is_convertible_v<TButtonCapabilities*, FButtonCapabilities*>, "Invalid button assignment class");
-        static_assert(std::is_convertible_v<TDataReadingMethod*, FDataReadingMethod*>, "Invalid data reading method class");
+        static_assert(std::is_convertible_v<TDataReadingMethod*, FHidDataReadingMethod*>, "Invalid data reading method class");
         
         return [=](const FSmDeviceInstantiation& InstInfo)
         {
