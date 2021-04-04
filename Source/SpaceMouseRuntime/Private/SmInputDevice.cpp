@@ -23,9 +23,9 @@ FKey FSmInputDevice::RotationRoll;
 FSmInputDevice::FSmInputDevice(const TSharedRef<FGenericApplicationMessageHandler>& InMessageHandler)
     : MessageHandler(InMessageHandler)
 {
+    RegisterSmButtons();
     Manager = MakeShared<FSmRuntimeManager>();
     Manager->Initialize();
-    RegisterSmButtons();
 }
 
 FSmInputDevice::~FSmInputDevice()
@@ -59,10 +59,10 @@ FKeyDetails FSmInputDevice::GetKeyDetailsFrom(EV3DCmd SmButton)
     );
 }
 
-#define SM_AXIS_DETAIL(InName, InAxis) \
+#define SM_AXIS_DETAIL(InAxis) \
     FKeyDetails( \
-        FKey(SM_KEY_PREFIX_TEXT TEXT(InName) TEXT(InAxis)), \
-        LOCTEXT("SmInputDevice_Axis_" InName InAxis, "SpaceMouse " InName " " InAxis), \
+        FKey(SM_KEY_PREFIX_TEXT TEXT(InAxis)), \
+        LOCTEXT("SmInputDevice_" InAxis, "SpaceMouse " InAxis), \
         FKeyDetails::GamepadKey | FKeyDetails::Axis1D, \
         TEXT("SpaceMouse") \
     )
@@ -77,9 +77,9 @@ void FSmInputDevice::RegisterSmButtons()
     );
 
     // register axes
-    auto TrX = SM_AXIS_DETAIL("Translation", "Lateral");
-    auto TrY = SM_AXIS_DETAIL("Translation", "Horizontal");
-    auto TrZ = SM_AXIS_DETAIL("Translation", "Vertical");
+    auto TrX = SM_AXIS_DETAIL("Lateral");
+    auto TrY = SM_AXIS_DETAIL("Horizontal");
+    auto TrZ = SM_AXIS_DETAIL("Vertical");
     TranslationX = TrX.GetKey();
     TranslationY = TrY.GetKey();
     TranslationZ = TrZ.GetKey();
@@ -87,9 +87,9 @@ void FSmInputDevice::RegisterSmButtons()
     EKeys::AddKey(TrY);
     EKeys::AddKey(TrZ);
     
-    auto RotP = SM_AXIS_DETAIL("Rotation", "Pitch");
-    auto RotY = SM_AXIS_DETAIL("Rotation", "Yaw");
-    auto RotR = SM_AXIS_DETAIL("Rotation", "Roll");
+    auto RotP = SM_AXIS_DETAIL("Pitch");
+    auto RotY = SM_AXIS_DETAIL("Yaw");
+    auto RotR = SM_AXIS_DETAIL("Roll");
     RotationPitch = RotP.GetKey();
     RotationYaw = RotY.GetKey();
     RotationRoll = RotR.GetKey();
@@ -114,31 +114,35 @@ void FSmInputDevice::SendControllerEvents()
 {
     Manager->Tick(FApp::GetDeltaTime());
 
-    MessageHandler->OnControllerAnalog(
-        SM_KEY_PREFIX_TEXT TEXT("TranslationLateral"), 0,
-        Manager->GetNormalizedTranslation().X
-    );
-    MessageHandler->OnControllerAnalog(
-        SM_KEY_PREFIX_TEXT TEXT("TranslationHorizontal"), 0,
-        Manager->GetNormalizedTranslation().Y
-    );
-    MessageHandler->OnControllerAnalog(
-        SM_KEY_PREFIX_TEXT TEXT("TranslationVertical"), 0,
-        Manager->GetNormalizedTranslation().Z
-    );
+    // Send axis data only while moving and an extra frame when axis values are supposedly 0
+    if(Manager->MovementState->bMoving || Manager->MovementState->bOnMovementEndedFrame)
+    {
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Lateral"), 0,
+            Manager->GetNormalizedTranslation().X
+        );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Horizontal"), 0,
+            Manager->GetNormalizedTranslation().Y
+        );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Vertical"), 0,
+            Manager->GetNormalizedTranslation().Z
+        );
     
-    MessageHandler->OnControllerAnalog(
-        SM_KEY_PREFIX_TEXT TEXT("RotationPitch"), 0,
-        Manager->GetNormalizedRotation().Pitch
-    );
-    MessageHandler->OnControllerAnalog(
-        SM_KEY_PREFIX_TEXT TEXT("RotationYaw"), 0,
-        Manager->GetNormalizedRotation().Yaw
-    );
-    MessageHandler->OnControllerAnalog(
-        SM_KEY_PREFIX_TEXT TEXT("RotationRoll"), 0,
-        Manager->GetNormalizedRotation().Roll
-    );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Pitch"), 0,
+            Manager->GetNormalizedRotation().Pitch
+        );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Yaw"), 0,
+            Manager->GetNormalizedRotation().Yaw
+        );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Roll"), 0,
+            Manager->GetNormalizedRotation().Roll
+        );
+    }
 
     for(int i=0; i<Manager->GetButtons().Num(); ++i)
     {
