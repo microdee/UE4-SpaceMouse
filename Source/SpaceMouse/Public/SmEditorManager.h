@@ -18,6 +18,9 @@ private:
 
     FTimerDelegate OnTickDel;
 
+    bool bLearning = false;
+    bool bFinishLearning = false;
+
     bool bWasOrbitCamera = false;
     bool bWasRealtime = false;
     float LastOrbitDistance = 0;
@@ -39,6 +42,10 @@ protected:
 public:
 
     static bool bStarted;
+
+    void BeginLearning();
+    void EndLearning();
+    bool IsLearning() const { return bLearning; } 
 
     virtual void Initialize() override;
     virtual void Tick(float DeltaSecs) override;

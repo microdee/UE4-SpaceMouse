@@ -220,10 +220,11 @@ FSlateColor SSmKeySelector::GetKeyIconColor() const
 
 FReply SSmKeySelector::ListenForInput()
 {
-    // TODO: Tell the editor SmManager
-    if (!bListenForNextInput)
+    auto& SmModule = FModuleManager::GetModuleChecked<FSpaceMouseModule>("SpaceMouse");
+    if (!bListenForNextInput && !SmModule.SmManager.IsLearning())
     {
         bListenForNextInput = true;
+        SmModule.SmManager.BeginLearning();
         return FReply::Handled().CaptureMouse(SharedThis(this)).SetUserFocus(SharedThis(this));
     }
     return FReply::Unhandled();
@@ -231,9 +232,19 @@ FReply SSmKeySelector::ListenForInput()
 
 FReply SSmKeySelector::ProcessHeardInput(FKey KeyHeard)
 {
-    // TODO: Tell the editor SmManager
+    auto& SmModule = FModuleManager::GetModuleChecked<FSpaceMouseModule>("SpaceMouse");
     if (bListenForNextInput)	// TODO: Unnecessary. Keep it for safety?
     {
+        // Allow cancellation with Esc key
+        if(KeyHeard == EKeys::Escape)
+        {
+            const FScopedTransaction Transaction(LOCTEXT("CancelChangeKey", "Cancel changing Key Value"));
+            
+            bListenForNextInput = false;
+            SmModule.SmManager.EndLearning();
+            return FReply::Handled().ReleaseMouseCapture().ClearUserFocus(EFocusCause::Cleared);
+        }
+        
         // Only consider input from SpaceMouse
         if(FSmInputDevice::KeyToSmButtonMap.Contains(KeyHeard))
         {
@@ -241,6 +252,7 @@ FReply SSmKeySelector::ProcessHeardInput(FKey KeyHeard)
             OnKeyChanged.ExecuteIfBound(MakeShareable(new FKey(KeyHeard)));
 
             bListenForNextInput = false;
+            SmModule.SmManager.EndLearning();
             return FReply::Handled().ReleaseMouseCapture().ClearUserFocus(EFocusCause::Cleared);
         }
         return FReply::Unhandled();
