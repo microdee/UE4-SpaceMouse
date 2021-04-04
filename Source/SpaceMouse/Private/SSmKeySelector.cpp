@@ -13,6 +13,7 @@
 #include "SListViewSelectorDropdownMenu.h"
 
 #include "SmInputDevice.h"
+#include "SpaceMouse.h"
 
 #define LOCTEXT_NAMESPACE "SmKeySelector"
 
@@ -86,21 +87,14 @@ void SSmKeySelector::Construct(const FArguments& InArgs)
 
     TMap<FName, FKeyTreeItem> TreeRootsForCatgories;
 
+    // We only care about spacemouse buttons
+    FKeyTreeItem* SmKeyCategory = new (KeyTreeRoot) FKeyTreeItem(MakeShareable(new FKeyTreeInfo(LOCTEXT("SmKeySelector_SmCategory", "SpaceMouse"), nullptr)));
+    TreeRootsForCatgories.Add("SpaceMouse", *SmKeyCategory);
+
     for(auto SmButton : FAllSmButtons())
     {
         FKey Key = FSmInputDevice::GetKeyFrom(SmButton);
-        
-        if (Key.IsBindableToActions() && (!InArgs._FilterBlueprintBindable || Key.IsBindableInBlueprints()))
-        {
-            const FName KeyMenuCategory = Key.GetMenuCategory();
-            FKeyTreeItem* KeyCategory = TreeRootsForCatgories.Find(KeyMenuCategory);
-            if (KeyCategory == nullptr)
-            {
-                KeyCategory = new (KeyTreeRoot) FKeyTreeItem(MakeShareable(new FKeyTreeInfo(EKeys::GetMenuCategoryDisplayName(KeyMenuCategory), nullptr)));
-                TreeRootsForCatgories.Add(KeyMenuCategory, *KeyCategory);
-            }
-            (*KeyCategory)->Children.Add(MakeShareable(new FKeyTreeInfo(FText(), MakeShareable(new FKey(Key)))));
-        }
+        (*SmKeyCategory)->Children.Add(MakeShareable(new FKeyTreeInfo(FText(), MakeShareable(new FKey(Key)))));
     }
 
     // if we allow NoClear, add a "None" option to be able to clear out a binding
