@@ -32,7 +32,9 @@ public class SpaceMouseRuntime : ModuleRules
                 "CoreUObject",
                 "Engine",
 
-                "SpaceMouseReader"
+                "SpaceMouseReader",
+                "InputCore",
+                "InputDevice"
                 // ... add other public dependencies that you statically link with here ...
             }
             );
