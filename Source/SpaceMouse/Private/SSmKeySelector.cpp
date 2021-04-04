@@ -120,45 +120,45 @@ void SSmKeySelector::Construct(const FArguments& InArgs)
     [
         SNew(SHorizontalBox)
         + SHorizontalBox::Slot()
-        .AutoWidth()
+        . AutoWidth()
         [
             SNew(SButton)
-            .PressMethod(EButtonPressMethod::DownAndUp)
-            .ToolTipText(this, &SSmKeySelector::GetKeyTooltip)
-            .OnClicked(this, &SSmKeySelector::ListenForInput)
+            . PressMethod(EButtonPressMethod::DownAndUp)
+            . ToolTipText(this, &SSmKeySelector::GetKeyTooltip)
+            . OnClicked(this, &SSmKeySelector::ListenForInput)
             [
                 SNew(SHorizontalBox)
                 + SHorizontalBox::Slot()
-                .AutoWidth()
-                .VAlign(VAlign_Center)
-                .HAlign(HAlign_Center)
+                . AutoWidth()
+                . VAlign(VAlign_Center)
+                . HAlign(HAlign_Center)
                 [
                     SNew(SImage)
-                    .Image(this, &SSmKeySelector::GetKeyIconImage)
-                    .ColorAndOpacity(this, &SSmKeySelector::GetKeyIconColor)
+                    . Image(this, &SSmKeySelector::GetKeyIconImage)
+                    . ColorAndOpacity(this, &SSmKeySelector::GetKeyIconColor)
                 ]
             ]
         ]
         + SHorizontalBox::Slot()
-        .HAlign(HAlign_Fill)
+        . HAlign(HAlign_Fill)
         [
             SAssignNew(KeyComboButton, SComboButton)
-            .OnGetMenuContent(this, &SSmKeySelector::GetMenuContent)
-            .ContentPadding(0)
-            .ToolTipText(this, &SSmKeySelector::GetKeyDescription)	// Longer key descriptions can overrun the visible space in the combo button if the parent width is constrained, so we reflect them in the tooltip too.
-            .ButtonContent()
+            . OnGetMenuContent(this, &SSmKeySelector::GetMenuContent)
+            . ContentPadding(0)
+            . ToolTipText(this, &SSmKeySelector::GetKeyDescription)	// Longer key descriptions can overrun the visible space in the combo button if the parent width is constrained, so we reflect them in the tooltip too.
+            . ButtonContent()
             [
                 SNew(SHorizontalBox)
                 + SHorizontalBox::Slot()
-                .Padding(2.f, 0.f)
-                .AutoWidth()
+                . Padding(2.f, 0.f)
+                . AutoWidth()
                 + SHorizontalBox::Slot()
-                .VAlign(VAlign_Center)
-                .HAlign(HAlign_Left)
+                . VAlign(VAlign_Center)
+                . HAlign(HAlign_Left)
                 [
                     SNew(STextBlock)
-                    .Text(this, &SSmKeySelector::GetKeyDescription)
-                    .Font(InArgs._Font)
+                    . Text(this, &SSmKeySelector::GetKeyDescription)
+                    . Font(InArgs._Font)
                 ]
             ]
         ]
@@ -318,25 +318,25 @@ TSharedRef<ITableRow> SSmKeySelector::GenerateKeyTreeRow(FKeyTreeItem InItem, co
     }
 
     return SNew(SComboRow<FKeyTreeItem>, OwnerTree)
-        .ToolTip(IDocumentation::Get()->CreateToolTip(Description, nullptr, BigTooltipDocLink, Description.ToString()))
+        . ToolTip(IDocumentation::Get()->CreateToolTip(Description, nullptr, BigTooltipDocLink, Description.ToString()))
         [
             SNew(SHorizontalBox)
             + SHorizontalBox::Slot()
-            .AutoWidth()
-            .Padding(1.f)
+            . AutoWidth()
+            . Padding(1.f)
             [
                 SNew(SImage)
-                .Image(IconBrush)
-                .Visibility(bIsCategory ? EVisibility::Collapsed : EVisibility::Visible)
+                . Image(IconBrush)
+                . Visibility(bIsCategory ? EVisibility::Collapsed : EVisibility::Visible)
             ]
             + SHorizontalBox::Slot()
-            .AutoWidth()
-            .Padding(1.f)
+            . AutoWidth()
+            . Padding(1.f)
             [
                 SNew(STextBlock)
-                .Text(Description)
-                .HighlightText(SearchText)
-                .Font(bIsCategory ? CategoryFont : KeyFont)
+                . Text(Description)
+                . HighlightText(SearchText)
+                . Font(bIsCategory ? CategoryFont : KeyFont)
             ]
         ];
 }
@@ -388,32 +388,32 @@ TSharedRef<SWidget>	SSmKeySelector::GetMenuContent()
     {
         // Pre-build the tree view and search box as it is needed as a parameter for the context menu's container.
         SAssignNew(KeyTreeView, SKeyTreeView)
-            .TreeItemsSource(&FilteredKeyTreeRoot)
-            .SelectionMode(ESelectionMode::Single)
-            .OnGenerateRow(this, &SSmKeySelector::GenerateKeyTreeRow)
-            .OnSelectionChanged(this, &SSmKeySelector::OnKeySelectionChanged)
-            .OnGetChildren(this, &SSmKeySelector::GetKeyChildren);
+            . TreeItemsSource(&FilteredKeyTreeRoot)
+            . SelectionMode(ESelectionMode::Single)
+            . OnGenerateRow(this, &SSmKeySelector::GenerateKeyTreeRow)
+            . OnSelectionChanged(this, &SSmKeySelector::OnKeySelectionChanged)
+            . OnGetChildren(this, &SSmKeySelector::GetKeyChildren);
 
         SAssignNew(FilterTextBox, SSearchBox)
-            .OnTextChanged(this, &SSmKeySelector::OnFilterTextChanged)
-            .OnTextCommitted(this, &SSmKeySelector::OnFilterTextCommitted);
+            . OnTextChanged(this, &SSmKeySelector::OnFilterTextChanged)
+            . OnTextCommitted(this, &SSmKeySelector::OnFilterTextCommitted);
 
         MenuContent = SNew(SListViewSelectorDropdownMenu<FKeyTreeItem>, FilterTextBox, KeyTreeView)
             [
                 SNew(SVerticalBox)
                 + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(4.f, 4.f, 4.f, 4.f)
+                . AutoHeight()
+                . Padding(4.f, 4.f, 4.f, 4.f)
                 [
                     FilterTextBox.ToSharedRef()
                 ]
                 + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(4.f, 4.f, 4.f, 4.f)
+                . AutoHeight()
+                . Padding(4.f, 4.f, 4.f, 4.f)
                 [
                     SNew(SBox)
-                    .HeightOverride(TreeViewHeight)
-                    .WidthOverride(TreeViewWidth)
+                    . HeightOverride(TreeViewHeight)
+                    . WidthOverride(TreeViewWidth)
                     [
                         KeyTreeView.ToSharedRef()
                     ]
