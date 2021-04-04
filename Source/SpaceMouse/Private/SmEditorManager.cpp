@@ -58,7 +58,6 @@ void FSmEditorManager::Start()
 
 void FSmEditorManager::ManageOrbitingOverlay()
 {
-    
     if(MovementState->bOnMovementStartedFrame && ActiveViewportClient)
     {
         OrbitingOverlay = MakeShared<FSmViewportOverlay>(ActiveViewportClient);
@@ -248,19 +247,7 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
                         ActiveViewportClient->RemoveCameraRoll();
                     }
                 
-                    for (const auto& mapping : Settings->CustomKeyMappings)
-                    {
-                        if(ButtonDownFrame(FSmInputDevice::GetButtonFrom(mapping.SpaceMouseButton)))
-                        {
-                            auto keyEvent = GetKeyEventFromKey(mapping.TargetKey);
-                            FSlateApplication::Get().ProcessKeyDownEvent(keyEvent);
-                        }
-                        if(ButtonUpFrame(FSmInputDevice::GetButtonFrom(mapping.SpaceMouseButton)))
-                        {
-                            auto keyEvent = GetKeyEventFromKey(mapping.TargetKey);
-                            FSlateApplication::Get().ProcessKeyUpEvent(keyEvent);
-                        }
-                    }
+                    // Editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
                 }
 
                 if(!trans.IsNearlyZero(SMALL_NUMBER) || !rot.IsNearlyZero(SMALL_NUMBER))

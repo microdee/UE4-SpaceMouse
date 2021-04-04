@@ -21,25 +21,6 @@ enum class ESpaceMouseCameraBehavior : uint8
     OrbittingNoRoll
 };
 
-USTRUCT(BlueprintType)
-struct FSpaceMouseKeyMapping
-{
-    GENERATED_BODY()
-    
-    UPROPERTY(
-        EditAnywhere,
-        Config,
-        Category = "ButtonMapping",
-        meta = (
-            ToolTip = "Only SpaceMouse buttons regarded here."
-        )
-    )
-    FSmKey SpaceMouseButton;
-
-    UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
-    FInputActionKeyMapping TargetKey;
-};
-
 UCLASS(Config=Editor, defaultconfig)
 class USpaceMouseConfig : public UObject
 {
@@ -158,7 +139,6 @@ public:
         )
     )
     FSmKey ResetRollButton;
-
-    UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
-    TArray<FSpaceMouseKeyMapping> CustomKeyMappings;
+    
+    // Further editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
 };
