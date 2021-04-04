@@ -26,6 +26,15 @@ bool FSpaceMouseModule::HandleSettingsSaved()
 
 void FSpaceMouseModule::RegisterSettings()
 {
+    auto& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+    
+    PropertyModule.RegisterCustomClassLayout(
+        "SpaceMouseConfig",
+        FOnGetDetailCustomizationInstance::CreateStatic(&FSpaceMouseConfigCustomization::MakeInstance)
+    );
+
+    PropertyModule.NotifyCustomizationModuleChanged();
+
     if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
     {
         auto Settings = GetMutableDefault<USpaceMouseConfig>();
@@ -47,6 +56,13 @@ void FSpaceMouseModule::RegisterSettings()
 
 void FSpaceMouseModule::UnregisterSettings()
 {
+    if(FModuleManager::Get().IsModuleLoaded("PropertyEditor"))
+    {
+        auto& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+
+        PropertyModule.UnregisterCustomClassLayout("SpaceMouseConfig");
+    }
+    
     if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
     {
         SettingsModule->UnregisterSettings("Editor", "Plugins", "SpaceMouse");

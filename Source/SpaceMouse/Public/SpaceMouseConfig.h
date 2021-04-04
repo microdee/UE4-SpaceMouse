@@ -8,6 +8,7 @@
 #include "UObject/Interface.h"
 #include "UserSettings.h"
 #include "Curves/CurveFloat.h"
+#include "IDetailCustomization.h"
 #include "GameFramework/PlayerInput.h"
 
 #include "SpaceMouseConfig.generated.h"
@@ -141,4 +142,12 @@ public:
     FSmKey ResetRollButton;
     
     // Further editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
+};
+
+class FSpaceMouseConfigCustomization : public IDetailCustomization
+{
+public:
+    static TSharedRef< IDetailCustomization > MakeInstance();
+
+    virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
 };
