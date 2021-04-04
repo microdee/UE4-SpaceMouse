@@ -4,12 +4,11 @@
 #include "SpaceMouse.h"
 #include "Editor.h"
 #include "SEditorViewport.h"
-//#include "Runtime/Core/Public/Misc/App.h"
-//#include "Object.h"
 #include "SpaceMouseReader.h"
 #include "ISettingsModule.h"
 #include "ISettingsSection.h"
 #include "ISettingsContainer.h"
+#include "SmKeyStructCustomization.h"
 
 //#define DEBUG_SM_VALUES 1
 
@@ -54,8 +53,28 @@ void FSpaceMouseModule::UnregisterSettings()
     }
 }
 
+void FSpaceMouseModule::RegisterPropertyTypeCustomizations()
+{
+    RegisterCustomPropertyTypeLayout(
+        "SmKey",
+        FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FSmKeyStructCustomization::MakeInstance)
+    );
+}
+
+void FSpaceMouseModule::RegisterCustomPropertyTypeLayout(FName PropertyTypeName, FOnGetPropertyTypeCustomizationInstance PropertyTypeLayoutDelegate)
+{
+    check(PropertyTypeName != NAME_None);
+
+    RegisteredPropertyTypes.Add(PropertyTypeName);
+
+    static FName PropertyEditor("PropertyEditor");
+    FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>(PropertyEditor);
+    PropertyModule.RegisterCustomPropertyTypeLayout(PropertyTypeName, PropertyTypeLayoutDelegate);
+}
+
 void FSpaceMouseModule::StartupModule()
 {
+    RegisterPropertyTypeCustomizations();
     RegisterSettings();
 
     if(FModuleManager::Get().IsModuleLoaded("SpaceMouseReader"))

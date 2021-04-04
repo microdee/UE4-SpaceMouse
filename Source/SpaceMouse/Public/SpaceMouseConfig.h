@@ -4,6 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SmKey.h"
 #include "UObject/Interface.h"
 #include "UserSettings.h"
 #include "Curves/CurveFloat.h"
@@ -33,7 +34,7 @@ struct FSpaceMouseKeyMapping
             ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    FKey SpaceMouseButton;
+    FSmKey SpaceMouseButton;
 
     UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
     FInputActionKeyMapping TargetKey;
@@ -126,7 +127,7 @@ public:
             ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    FKey IncreaseSpeedButton;
+    FSmKey IncreaseSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
@@ -136,7 +137,7 @@ public:
             ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    FKey DecreaseSpeedButton;
+    FSmKey DecreaseSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
@@ -146,7 +147,7 @@ public:
             ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    FKey ResetSpeedButton;
+    FSmKey ResetSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
@@ -156,7 +157,7 @@ public:
             ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    FKey ResetRollButton;
+    FSmKey ResetRollButton;
 
     UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
     TArray<FSpaceMouseKeyMapping> CustomKeyMappings;
