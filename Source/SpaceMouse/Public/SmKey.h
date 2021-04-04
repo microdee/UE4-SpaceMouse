@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "InputCore.h"
 #include "SmKey.generated.h"
 
 /**
