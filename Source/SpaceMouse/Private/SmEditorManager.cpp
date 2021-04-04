@@ -7,6 +7,7 @@
 #include "CameraController.h"
 #include "CommonBehaviors.h"
 #include "SpaceMouse.h"
+#include "SmInputDevice.h"
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
@@ -35,7 +36,6 @@ void FSmEditorManager::Tick(float DeltaSecs)
     ManageActiveViewport();
     ManageOrbitingOverlay();
     MoveActiveViewport(GetTranslation(), GetRotation());
-    LearnButtonMappings();
     
     if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
 }
@@ -61,50 +61,6 @@ void FSmEditorManager::ManageOrbitingOverlay()
     if(MovementState->bOnMovementEndedFrame)
     {
         OrbitingOverlay.Reset();
-    }
-}
-
-void FSmEditorManager::LearnButtonMappings()
-{
-    auto Settings = GetMutableDefault<USpaceMouseConfig>();
-    if(Settings->LearnDecreaseSpeed)
-        LearnButtonMapping(Settings->DecreaseSpeedButtonID);
-
-    if (Settings->LearnIncreaseSpeed)
-        LearnButtonMapping(Settings->IncreaseSpeedButtonID);
-
-    if (Settings->LearnResetSpeed)
-        LearnButtonMapping(Settings->ResetSpeedButtonID);
-
-    if (Settings->LearnResetRoll)
-        LearnButtonMapping(Settings->ResetRollButtonID);
-
-    for(auto& mapping : Settings->CustomKeyMappings)
-    {
-        if(mapping.LearnSpaceMouseButtonID)
-            LearnButtonMapping(mapping.SpaceMouseButtonID);
-    }
-}
-
-void FSmEditorManager::LearnButtonMapping(int& target)
-{
-    auto Settings = GetMutableDefault<USpaceMouseConfig>();
-    static const FString DefaultEditorPath = FString::Printf(TEXT("%sDefaultEditor.ini"), *FPaths::SourceConfigDir());
-    
-    bool learnt = false;
-    for(int i=0; i<GetButtons().Num(); i++)
-    {
-        if(ButtonDownFrame(FSmButton::FromID(i)))
-        {
-            target = i;
-            learnt = true;
-            break;
-        }
-    }
-    if(learnt)
-    {
-        Settings->SaveConfig();
-        Settings->SaveConfig(CPF_Config, *DefaultEditorPath);
     }
 }
 
@@ -256,34 +212,33 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
             if (ActiveViewportClient->IsPerspective())
             {
                 float camspeed = ActiveViewportClient->GetCameraSpeedSetting();
-                if (ButtonDownFrame(FSmButton::FromID(Settings->DecreaseSpeedButtonID)))
+                if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->DecreaseSpeedButton)))
                 {
                     ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
                     //UE_LOG(LogTemp, Display, TEXT("Speed --"));
                 }
-                if (ButtonDownFrame(FSmButton::FromID(Settings->IncreaseSpeedButtonID)))
+                if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->IncreaseSpeedButton)))
                 {
                     ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
                     //UE_LOG(LogTemp, Display, TEXT("Speed ++"));
                 }
-                if (ButtonDownFrame(FSmButton::FromID(Settings->ResetSpeedButtonID)))
+                if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->ResetSpeedButton)))
                 {
                     ActiveViewportClient->SetCameraSpeedSetting(4);
                 }
-                if (ButtonDownFrame(FSmButton::FromID(Settings->ResetRollButtonID)))
+                if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->ResetRollButton)))
                 {
                     ActiveViewportClient->RemoveCameraRoll();
                 }
                 
                 for (const auto& mapping : Settings->CustomKeyMappings)
                 {
-                    if(mapping.LearnSpaceMouseButtonID) continue;
-                    if(ButtonDownFrame(FSmButton::FromID(mapping.SpaceMouseButtonID)))
+                    if(ButtonDownFrame(FSmInputDevice::GetButtonFrom(mapping.SpaceMouseButton)))
                     {
                         auto keyEvent = GetKeyEventFromKey(mapping.TargetKey);
                         FSlateApplication::Get().ProcessKeyDownEvent(keyEvent);
                     }
-                    if(ButtonUpFrame(FSmButton::FromID(mapping.SpaceMouseButtonID)))
+                    if(ButtonUpFrame(FSmInputDevice::GetButtonFrom(mapping.SpaceMouseButton)))
                     {
                         auto keyEvent = GetKeyEventFromKey(mapping.TargetKey);
                         FSlateApplication::Get().ProcessKeyUpEvent(keyEvent);

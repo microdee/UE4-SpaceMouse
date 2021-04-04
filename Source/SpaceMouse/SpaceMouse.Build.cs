@@ -32,8 +32,10 @@ public class SpaceMouse : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "InputCore",
+                "PropertyEditor",
 
-                "SpaceMouseReader"
+                "SpaceMouseReader",
+                "SpaceMouseRuntime"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -54,6 +56,7 @@ public class SpaceMouse : ModuleRules
                     "Slate",
                     "SlateCore",
                     "UnrealEd",
+                    "EditorStyle",
                     "LevelEditor",
 					"ApplicationCore",
 					"RHI"

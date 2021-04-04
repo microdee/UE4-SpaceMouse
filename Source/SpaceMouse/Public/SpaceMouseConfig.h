@@ -30,18 +30,10 @@ struct FSpaceMouseKeyMapping
         Config,
         Category = "ButtonMapping",
         meta = (
-            EditCondition = "LearnSpaceMouseButtonID",
-            ToolTip = "Press button to map when enabled."
+            ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    int SpaceMouseButtonID = 1;
-
-    UPROPERTY(
-        EditAnywhere,
-        Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
-    )
-    bool LearnSpaceMouseButtonID = false;
+    FKey SpaceMouseButton;
 
     UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
     FInputActionKeyMapping TargetKey;
@@ -128,75 +120,43 @@ public:
 
     UPROPERTY(
         EditAnywhere,
+        Config,
         Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
+        meta = (
+            ToolTip = "Only SpaceMouse buttons regarded here."
+        )
     )
-    bool LearnIncreaseSpeed = false;
+    FKey IncreaseSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
         Config,
         Category = "ButtonMapping",
         meta = (
-            EditCondition = "LearnIncreaseSpeed",
-            ToolTip = "Press button to map when enabled."
+            ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    int IncreaseSpeedButtonID = 1;
-
-    UPROPERTY(
-        EditAnywhere,
-        Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
-    )
-    bool LearnDecreaseSpeed = false;
+    FKey DecreaseSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
         Config,
         Category = "ButtonMapping",
         meta = (
-            EditCondition = "LearnDecreaseSpeed",
-            ToolTip = "Press button to map when enabled."
+            ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    int DecreaseSpeedButtonID = 0;
-
-    UPROPERTY(
-        EditAnywhere,
-        Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
-    )
-    bool LearnResetSpeed = false;
+    FKey ResetSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
         Config,
         Category = "ButtonMapping",
         meta = (
-            EditCondition = "LearnResetSpeed",
-            ToolTip = "Press button to map when enabled."
+            ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    int ResetSpeedButtonID = 2;
-
-    UPROPERTY(
-        EditAnywhere,
-        Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
-    )
-    bool LearnResetRoll = false;
-
-    UPROPERTY(
-        EditAnywhere,
-        Config,
-        Category = "ButtonMapping",
-        meta = (
-            EditCondition = "LearnResetRoll",
-            ToolTip = "Press button to map when enabled."
-        )
-    )
-    int ResetRollButtonID = 3;
+    FKey ResetRollButton;
 
     UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
     TArray<FSpaceMouseKeyMapping> CustomKeyMappings;
