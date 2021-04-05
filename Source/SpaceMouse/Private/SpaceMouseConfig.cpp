@@ -136,8 +136,10 @@ void USpaceMouseConfig::SetDefaultBindings(bool bAskUser)
             EAppMsgType::YesNo,
             LOCTEXT(
                 "SmConfig_ConfirmSettingDefaultBindings",
-                "This action will overwrite any pre-existing secondary input bindings (keyboard shortcuts).\n"
-                "Are you sure you want to continue?"
+                "This action might overwrite some pre-existing Secondary keyboard shortcuts.\n"
+                // TODO: list affected shortcuts
+                "This action will NOT overwrite any Primary editor keyboard shortcuts.\n"
+                "Do you want to continue?"
             )
         );
         if(DialogResult != EAppReturnType::Yes)
@@ -242,7 +244,7 @@ void FSpaceMouseConfigCustomization::CustomizeDetails(IDetailLayoutBuilder& Deta
             SNew(SHyperlink)
             . Text(LOCTEXT(
                 "SmConfig_PreconfigureBindings",
-                "Preconfigure default button bindings."
+                "Configure default button bindings"
             ))
             . ToolTipText(LOCTEXT(
                 "SmConfig_PreconfigureBindingsTooltip",
