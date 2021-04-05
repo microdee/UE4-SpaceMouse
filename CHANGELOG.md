@@ -46,7 +46,7 @@
 # **1.1** (Current) (Marketplace)
 
 ## <= 1.1.4 
-See releases
+[See releases](https://github.com/microdee/UE4-SpaceMouse/releases)
 
 # **1.3** (roadmap)
 
