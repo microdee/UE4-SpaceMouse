@@ -59,11 +59,18 @@ FKeyDetails FSmInputDevice::GetKeyDetailsFrom(EV3DCmd SmButton)
     );
 }
 
+// Axis flag name has changed in UE 4.26
+#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4260
+#define AXIS_FLAG Axis1D
+#else
+#define AXIS_FLAG FloatAxis
+#endif
+
 #define SM_AXIS_DETAIL(InAxis) \
     FKeyDetails( \
         FKey(SM_KEY_PREFIX_TEXT TEXT(InAxis)), \
         LOCTEXT("SmInputDevice_" InAxis, "SpaceMouse " InAxis), \
-        FKeyDetails::GamepadKey | FKeyDetails::Axis1D, \
+        FKeyDetails::GamepadKey | FKeyDetails::AXIS_FLAG, \
         TEXT("SpaceMouse") \
     )
 
@@ -176,4 +183,5 @@ bool FSmInputDevice::Exec(UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar)
     return false;
 }
 
+#undef AXIS_FLAG
 #undef LOCTEXT_NAMESPACE

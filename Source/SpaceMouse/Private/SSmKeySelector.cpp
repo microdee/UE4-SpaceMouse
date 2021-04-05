@@ -260,12 +260,19 @@ FReply SSmKeySelector::ProcessHeardInput(FKey KeyHeard)
     return FReply::Unhandled();
 }
 
+// "Is axis?" function name in FKey has changed in UE 4.26
+#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4260
+#define IS_AXIS() IsButtonAxis()
+#else
+#define IS_AXIS() IsFloatAxis()
+#endif
+
 FReply SSmKeySelector::OnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
 {
     if (bListenForNextInput)
     {
         // In the case of axis inputs emulating button key presses we ignore the key press in favor of the axis. Key variants will need to be set from the combo box if required.
-        if (InKeyEvent.GetKey().IsButtonAxis())
+        if (InKeyEvent.GetKey().IS_AXIS())
         {
             return FReply::Unhandled();
         }

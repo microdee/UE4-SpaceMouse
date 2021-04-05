@@ -27,8 +27,13 @@ public:
         class IDetailChildrenBuilder& ChildBuilder,
         IPropertyTypeCustomizationUtils& StructCustomizationUtils
     ) override { };
+
+    // New functions in UE 4.26
+#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4260
     
     virtual bool ShouldInlineKey() const override { return true; }
+    
+#endif
     
     void CustomizeHeaderOnlyWithButton(
         TSharedRef<class IPropertyHandle> StructPropertyHandle,

@@ -76,7 +76,7 @@ void FSmEditorManager::ManageOrbitingOverlay()
 
 void FSmEditorManager::ManageActiveViewport()
 {
-#if ENGINE_MINOR_VERSION >= 22
+#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4220
     TArray<FEditorViewportClient*> AllViewportClients = GEditor->GetAllViewportClients();
 #else
     TArray<FEditorViewportClient*> AllViewportClients = GEditor->AllViewportClients;
