@@ -13,6 +13,9 @@
 
 #include "SpaceMouseConfig.generated.h"
 
+class FInputBindingManager;
+class FUICommandInfo;
+
 UENUM()
 enum class ESpaceMouseCameraBehavior : uint8
 {
@@ -150,10 +153,22 @@ public:
         )
     )
     FSmKey ShowSpaceMousePreferencesButton;
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "ButtonMapping",
+        meta = (
+            ToolTip = "Only SpaceMouse buttons regarded here."
+        )
+    )
+    FSmKey ShowInputBindingsButton;
     
     // Further editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
 
     static void SetDefaultBindings(bool bAskUser);
+    static void SetCommandBinding(FInputBindingManager& Ibm, FName InCmdCtx, FName InCmd, EV3DCmd SmButton);
+    static void SetCommandBinding(TSharedPtr<FUICommandInfo> InCmd, EV3DCmd SmButton);
 };
 
 class FSpaceMouseConfigCustomization : public IDetailCustomization

@@ -7,6 +7,7 @@
 #include "DetailCategoryBuilder.h"
 #include "DetailLayoutBuilder.h"
 #include "DetailWidgetRow.h"
+#include "EditorViewportCommands.h"
 #include "ISettingsModule.h"
 #include "SmInputDevice.h"
 #include "Framework/Application/SlateApplication.h"
@@ -31,6 +32,7 @@ USpaceMouseConfig::USpaceMouseConfig(const FObjectInitializer& ObjectInitializer
     ResetSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF3);
     ResetRollButton = FSmInputDevice::GetKeyFrom(EV3DCmd::FilterRotate);
     ShowSpaceMousePreferencesButton = FSmInputDevice::GetKeyFrom(EV3DCmd::MenuOptions);
+    ShowInputBindingsButton = FSmInputDevice::GetKeyFrom(EV3DCmd::MenuButtonMappingEditor);
 }
 
 FUserSettings USpaceMouseConfig::GetUserSettings()
@@ -75,14 +77,45 @@ void USpaceMouseConfig::SetDefaultBindings(bool bAskUser)
         }
     }
 
+    // TODO: change it per model?
+
     auto Self = GetMutableDefault<USpaceMouseConfig>();
-    Self->ResetRollButton = FSmInputDevice::GetKeyFrom(EV3DCmd::FilterRotate);
     Self->IncreaseSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF2);
     Self->DecreaseSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF1);
     Self->ResetSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF3);
     Self->ShowSpaceMousePreferencesButton = FSmInputDevice::GetKeyFrom(EV3DCmd::MenuOptions);
+    Self->ShowInputBindingsButton = FSmInputDevice::GetKeyFrom(EV3DCmd::MenuButtonMappingEditor);
+    
+    // transform meaning until per-device data is ready
+    Self->ResetRollButton = FSmInputDevice::GetKeyFrom(EV3DCmd::FilterRotate);
 
-    //FInputBindingManager::Get()
+    auto& Ibm = FInputBindingManager::Get();
+    auto& EdVpCmds = FEditorViewportCommands::Get();
+    
+    SetCommandBinding(EdVpCmds.Top, EV3DCmd::ViewTop);
+    SetCommandBinding(EdVpCmds.Bottom, EV3DCmd::ViewBottom);
+    SetCommandBinding(EdVpCmds.Front, EV3DCmd::ViewFront);
+    SetCommandBinding(EdVpCmds.Back, EV3DCmd::ViewBack);
+    SetCommandBinding(EdVpCmds.Right, EV3DCmd::ViewRight);
+    SetCommandBinding(EdVpCmds.Left, EV3DCmd::ViewLeft);
+    SetCommandBinding(EdVpCmds.FocusViewportToSelection, EV3DCmd::ViewFit);
+
+    // transform meaning until per-device data is ready
+    SetCommandBinding(EdVpCmds.Perspective, EV3DCmd::ViewRollCW);
+
+    Ibm.SaveInputBindings();
+}
+
+void USpaceMouseConfig::SetCommandBinding(FInputBindingManager& Ibm, FName InCmdCtx, FName InCmd, EV3DCmd SmButton)
+{
+    auto Cmd = Ibm.FindCommandInContext(InCmdCtx, InCmd);
+    SetCommandBinding(Cmd, SmButton);
+}
+
+void USpaceMouseConfig::SetCommandBinding(TSharedPtr<FUICommandInfo> InCmd, EV3DCmd SmButton)
+{
+    if(!InCmd) return;
+    InCmd->SetActiveChord(FInputChord(FSmInputDevice::GetKeyFrom(SmButton)), EMultipleKeyBindingIndex::Secondary);
 }
 
 TSharedRef<IDetailCustomization> FSpaceMouseConfigCustomization::MakeInstance()
@@ -141,11 +174,11 @@ void FSpaceMouseConfigCustomization::CustomizeDetails(IDetailLayoutBuilder& Deta
             SNew(SHyperlink)
             . Text(LOCTEXT(
                 "SmConfig_PreconfigureBindings",
-                "Preconfigure default bindings based on your device model."
+                "Preconfigure default button bindings."
             ))
             . ToolTipText(LOCTEXT(
                 "SmConfig_PreconfigureBindingsTooltip",
-                "Don't forget to save your configuration."
+                "This doesn't take the connected device model into account yet (WIP)"
             ))
             . OnNavigate(FSimpleDelegate::CreateLambda([]()
             {
