@@ -30,6 +30,7 @@ USpaceMouseConfig::USpaceMouseConfig(const FObjectInitializer& ObjectInitializer
     DecreaseSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF1);
     ResetSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF3);
     ResetRollButton = FSmInputDevice::GetKeyFrom(EV3DCmd::FilterRotate);
+    ShowSpaceMousePreferencesButton = FSmInputDevice::GetKeyFrom(EV3DCmd::MenuOptions);
 }
 
 FUserSettings USpaceMouseConfig::GetUserSettings()
@@ -79,6 +80,7 @@ void USpaceMouseConfig::SetDefaultBindings(bool bAskUser)
     Self->IncreaseSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF2);
     Self->DecreaseSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF1);
     Self->ResetSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF3);
+    Self->ShowSpaceMousePreferencesButton = FSmInputDevice::GetKeyFrom(EV3DCmd::MenuOptions);
 
     //FInputBindingManager::Get()
 }

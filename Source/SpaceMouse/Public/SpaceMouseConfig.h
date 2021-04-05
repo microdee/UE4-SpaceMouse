@@ -140,6 +140,16 @@ public:
         )
     )
     FSmKey ResetRollButton;
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "ButtonMapping",
+        meta = (
+            ToolTip = "Only SpaceMouse buttons regarded here."
+        )
+    )
+    FSmKey ShowSpaceMousePreferencesButton;
     
     // Further editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
 
