@@ -19,11 +19,17 @@ class FUICommandInfo;
 UENUM()
 enum class ESpaceMouseCameraBehavior : uint8
 {
-    CameraDeltaWithRoll UMETA(ToolTip="Puck represents the movement of the camera which can move freely in all 6DoF.\nRotation is in camera space."),
-    CameraDeltaNoRoll UMETA(ToolTip="Puck represents the movement of the camera which can move freely in 5DoF (without roll).\nHorizon is kept straight.\nPitch is in camera space, Yaw is in world space."),
+    CameraDeltaWithRoll UMETA(ToolTip="Puck represents the movement of the camera which can move freely in all 6DoF. Rotation is in camera space."),
+    CameraDeltaNoRoll UMETA(ToolTip="Puck represents the movement of the camera which can move freely in 5DoF (without roll). Horizon is kept straight. Pitch is in camera space, Yaw is in world space."),
     OrbitingWithRoll UMETA(ToolTip="Puck can represent either the camera orbiting around a subject, or a subject moving in front of the camera."),
-    OrbitingNoRoll UMETA(ToolTip="Puck can represent either the camera orbiting around a subject, or a subject moving in front of the camera.\nHorizon is kept straight.")
+    OrbitingNoRoll UMETA(ToolTip="Puck can represent either the camera orbiting around a subject, or a subject moving in front of the camera. Horizon is kept straight.")
 };
+
+UENUM()
+enum class EOrthoSmPlane : uint8
+{
+    LateralIsZoomVerticalIsUp UMETA(ToolTip="Move puck orthogonal to the plane of the Monitor to move around, Push Forward / Pull Backward to zoom."),
+    LateralIsUpVerticalIsZoom UMETA(ToolTip="Move puck orthogonal to the plane of the Desk to move around, Push Down / Pull Up to zoom.")
 };
 
 USTRUCT(BlueprintType)
@@ -53,10 +59,13 @@ public:
     UPROPERTY(EditAnywhere, Config, Category = "Behavior")
     ESpaceMouseCameraBehavior CameraBehavior = ESpaceMouseCameraBehavior::CameraDeltaWithRoll;
 
+    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+    float MovementSecondsTolerance = 0.25;
+
     UPROPERTY(
         EditAnywhere,
         Config,
-        Category = "Behavior",
+        Category = "Behavior|Orbiting",
         meta = (
             ToolTip = "Puck represents the subject moving in front of the viewport while translating"
         )
@@ -66,18 +75,43 @@ public:
     UPROPERTY(
         EditAnywhere,
         Config,
-        Category = "Behavior",
+        Category = "Behavior|Orbiting",
         meta = (
             ToolTip = "Puck represents the subject rotating in front of the viewport while rotating"
         )
     )
     bool OrbitingRotatesObject = false;
-
-    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
-    float MovementSecondsTolerance = 0.25;
     
-    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior|Orbiting",
+        meta = (
+            ToolTip = "You cannot orbit around anything larger than this. The default is 2 Km."
+        )
+    )
     float OrbitingLineTraceLength = 200000; // 2 Km
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior|Orthographic Viewports",
+        meta = (
+            ToolTip = "An arbitrary multiplier of the Zoom speed while insdide an Orthographic viewport. Negative numbers reverse direction."
+        )
+    )
+    float OrthoZoomSpeed = 1.0;
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior|Orthographic Viewports",
+        meta = (
+            ToolTip = "Select the plane of the device (2 axes) which will control the panning motion inside an Orthographic viewport. See tooltips for specific explanations."
+        )
+    )
+    EOrthoSmPlane OrthoPanningPlane = EOrthoSmPlane::LateralIsZoomVerticalIsUp;
 
     UPROPERTY(EditAnywhere, Config, Category = "Rotation")
     float RotationDegreesPerSec = 270;

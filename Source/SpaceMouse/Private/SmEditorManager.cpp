@@ -354,7 +354,10 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
     {
         float currZoom = ActiveViewportClient->GetOrthoZoom();
         float currZoomSpeed = currZoom / Settings->TranslationUnitsPerSec * 0.25;
-        float zoomDelta = trans.X * speedmul * currZoomSpeed * 8;
+        float zoomDelta = Settings->OrthoPanningPlane == EOrthoSmPlane::LateralIsZoomVerticalIsUp
+            ? trans.X : -trans.Z;
+        
+        zoomDelta *= speedmul * currZoomSpeed * Settings->OrthoZoomSpeed * 8;
         if(Settings->OrbitingMovesObject) zoomDelta *= -1;
         currZoom -= zoomDelta;
         
@@ -388,7 +391,14 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
         default: ;
         }
         
-        FVector orthoTrans = trans * FVector(0.0f, 1.0f, 1.0f);
+        FVector orthoTrans;
+
+        switch (Settings->OrthoPanningPlane)
+        {
+        case EOrthoSmPlane::LateralIsZoomVerticalIsUp: orthoTrans = {0, trans.Y, trans.Z}; break;
+        case EOrthoSmPlane::LateralIsUpVerticalIsZoom: orthoTrans = {0, trans.Y, trans.X}; break;
+        }
+        
         FVector posDelta = currRot.RotateVector(orthoTrans) * speedmul * currZoomSpeed;
         if(Settings->OrbitingMovesObject) posDelta *= -1;
         currPos += posDelta;
