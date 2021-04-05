@@ -52,6 +52,7 @@ public:
     void Start();
     void ManageOrbitingOverlay();
     void ManageActiveViewport();
+    void TriggerCustomButtons();
     void MoveActiveViewport(FVector trans, FRotator rot);
     const bool IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients);
 };

@@ -33,8 +33,11 @@ void FSmEditorManager::Tick(float DeltaSecs)
     auto Settings = GetMutableDefault<USpaceMouseConfig>();
     FSpaceMouseManager::Tick(DeltaSecs);
 
+    // TODO: ignore camera movement when the player possesses a Pawn in PIE, but not when ejected or only SIE
+
     ManageActiveViewport();
     ManageOrbitingOverlay();
+    TriggerCustomButtons();
     MoveActiveViewport(GetTranslation(), GetRotation());
     
     if(bFinishLearning)
@@ -85,7 +88,7 @@ void FSmEditorManager::ManageActiveViewport()
         if (Cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
         {
             if(Cvp == ActiveViewportClient) break;
-            if (Cvp->IsVisible() && Cvp->IsPerspective())
+            if (Cvp->IsVisible() /* && Cvp->IsPerspective() */)
             {
                 if (Cvp != ActiveViewportClient)
                 {
@@ -103,6 +106,39 @@ void FSmEditorManager::ManageActiveViewport()
                 }
             }
         }
+    }
+}
+
+void FSmEditorManager::TriggerCustomButtons()
+{
+    auto Settings = GetMutableDefault<USpaceMouseConfig>();
+    if(!Settings->ActiveInBackground)
+    {
+        if(!FPlatformApplicationMisc::IsThisApplicationForeground()) return;
+    }
+    
+    float camspeed = ActiveViewportClient->GetCameraSpeedSetting();
+    
+    if(!bLearning)
+    {
+        if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->DecreaseSpeedButton)))
+        {
+            ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
+        }
+        if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->IncreaseSpeedButton)))
+        {
+            ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
+        }
+        if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->ResetSpeedButton)))
+        {
+            ActiveViewportClient->SetCameraSpeedSetting(4);
+        }
+        if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->ResetRollButton)))
+        {
+            ActiveViewportClient->RemoveCameraRoll();
+        }
+                
+        // Editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
     }
 }
 
@@ -226,30 +262,6 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
         {
             if (ActiveViewportClient->IsPerspective())
             {
-                float camspeed = ActiveViewportClient->GetCameraSpeedSetting();
-                
-                if(!bLearning)
-                {
-                    if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->DecreaseSpeedButton)))
-                    {
-                        ActiveViewportClient->SetCameraSpeedSetting(camspeed - 1);
-                    }
-                    if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->IncreaseSpeedButton)))
-                    {
-                        ActiveViewportClient->SetCameraSpeedSetting(camspeed + 1);
-                    }
-                    if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->ResetSpeedButton)))
-                    {
-                        ActiveViewportClient->SetCameraSpeedSetting(4);
-                    }
-                    if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->ResetRollButton)))
-                    {
-                        ActiveViewportClient->RemoveCameraRoll();
-                    }
-                
-                    // Editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
-                }
-
                 if(!trans.IsNearlyZero(SMALL_NUMBER) || !rot.IsNearlyZero(SMALL_NUMBER))
                 {
                     float speedexp = FMath::Max(ActiveViewportClient->GetCameraSpeedSetting() - 8, 0);
