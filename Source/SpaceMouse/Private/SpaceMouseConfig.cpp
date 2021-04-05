@@ -9,6 +9,9 @@
 #include "DetailWidgetRow.h"
 #include "ISettingsModule.h"
 #include "SmInputDevice.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Framework/Commands/InputBindingManager.h"
+#include "Misc/MessageDialog.h"
 #include "Modules/ModuleManager.h"
 #include "Widgets/Input/SRichTextHyperlink.h"
 #include "Widgets/Text/STextBlock.h"
@@ -53,6 +56,33 @@ FUserSettings USpaceMouseConfig::GetUserSettings()
     };
 }
 
+void USpaceMouseConfig::SetDefaultBindings(bool bAskUser)
+{
+    if(bAskUser)
+    {
+        auto DialogResult = FMessageDialog::Open(
+            EAppMsgType::YesNo,
+            LOCTEXT(
+                "SmConfig_ConfirmSettingDefaultBindings",
+                "This action will overwrite any pre-existing secondary input bindings (keyboard shortcuts).\n"
+                "Are you sure you want to continue?"
+            )
+        );
+        if(DialogResult != EAppReturnType::Yes)
+        {
+            return;
+        }
+    }
+
+    auto Self = GetMutableDefault<USpaceMouseConfig>();
+    Self->ResetRollButton = FSmInputDevice::GetKeyFrom(EV3DCmd::FilterRotate);
+    Self->IncreaseSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF2);
+    Self->DecreaseSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF1);
+    Self->ResetSpeedButton = FSmInputDevice::GetKeyFrom(EV3DCmd::KeyF3);
+
+    //FInputBindingManager::Get()
+}
+
 TSharedRef<IDetailCustomization> FSpaceMouseConfigCustomization::MakeInstance()
 {
     return MakeShared<FSpaceMouseConfigCustomization>();
@@ -87,18 +117,38 @@ void FSpaceMouseConfigCustomization::CustomizeDetails(IDetailLayoutBuilder& Deta
         . AutoHeight()
         . HAlign(EHorizontalAlignment::HAlign_Left)
         . VAlign(EVerticalAlignment::VAlign_Bottom)
-        . Padding(0, 0, 0, 20)
+        . Padding(0, 0, 0, 10)
         [
             SNew(SHyperlink)
+            . Text(LOCTEXT(
+                "SmConfig_GoToKeyboardShortcuts",
+                "Go to Keyboard Shortcuts"
+            ))
             . OnNavigate(FSimpleDelegate::CreateLambda([]()
             {
                 ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
                 SettingsModule->ShowViewer("Editor", "General", "InputBindings");
             }))
+        ]
+        + SVerticalBox::Slot()
+        . AutoHeight()
+        . HAlign(EHorizontalAlignment::HAlign_Left)
+        . VAlign(EVerticalAlignment::VAlign_Bottom)
+        . Padding(0, 0, 0, 20)
+        [
+            SNew(SHyperlink)
             . Text(LOCTEXT(
-                "SmConfig_GoToKeyboardShortcuts",
-                "Go to Keyboard Shortcuts"
+                "SmConfig_PreconfigureBindings",
+                "Preconfigure default bindings based on your device model."
             ))
+            . ToolTipText(LOCTEXT(
+                "SmConfig_PreconfigureBindingsTooltip",
+                "Don't forget to save your configuration."
+            ))
+            . OnNavigate(FSimpleDelegate::CreateLambda([]()
+            {
+                USpaceMouseConfig::SetDefaultBindings(true);
+            }))
         ]
     ];
 }

@@ -142,6 +142,8 @@ public:
     FSmKey ResetRollButton;
     
     // Further editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
+
+    static void SetDefaultBindings(bool bAskUser);
 };
 
 class FSpaceMouseConfigCustomization : public IDetailCustomization
