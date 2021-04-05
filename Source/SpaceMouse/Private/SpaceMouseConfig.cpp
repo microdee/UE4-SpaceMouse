@@ -7,6 +7,7 @@
 #include "DetailCategoryBuilder.h"
 #include "DetailLayoutBuilder.h"
 #include "DetailWidgetRow.h"
+#include "Editor.h"
 #include "EditorViewportCommands.h"
 #include "ISettingsModule.h"
 #include "SmInputDevice.h"
@@ -57,6 +58,62 @@ FUserSettings USpaceMouseConfig::GetUserSettings()
             RotationCurve.GetRichCurve()
         }
     };
+}
+
+void USpaceMouseConfig::RegisterCustomInputBinding(const FUICommandInfo& Cmd)
+{
+    const FString Key = Cmd.GetBindingContext().ToString() + TEXT("_") + Cmd.GetCommandName().ToString(); 
+    CustomInputBindings.Add(Key, {Cmd.GetBindingContext(), Cmd.GetCommandName()});
+    SaveConfig();
+    UE_LOG(LogTemp, Display, TEXT("Input Binding %s / %s is handled"), *Cmd.GetBindingContext().ToString(), *Cmd.GetCommandName().ToString());
+}
+
+void USpaceMouseConfig::HandleUserDefinedChordChanged(const FUICommandInfo& Cmd)
+{
+    const auto PrimChord = Cmd.GetActiveChord(EMultipleKeyBindingIndex::Primary);
+    const auto SecChord = Cmd.GetActiveChord(EMultipleKeyBindingIndex::Secondary);
+
+    const FString Key = Cmd.GetBindingContext().ToString() + TEXT("_") + Cmd.GetCommandName().ToString();
+    
+    if(FSmInputDevice::GetButtonFrom(PrimChord->Key) != EV3DCmd::Noop)
+    {
+        RegisterCustomInputBinding(Cmd);
+    }
+    else if (FSmInputDevice::GetButtonFrom(SecChord->Key) != EV3DCmd::Noop)
+    {
+        RegisterCustomInputBinding(Cmd);
+    }
+    else if(CustomInputBindings.Contains(Key))
+    {
+        CustomInputBindings.Remove(Key);
+    }
+}
+
+void USpaceMouseConfig::RegisterInputBindingNotification()
+{
+    // Apparently the Input Binding config doesn't trigger SpaceMouse bindings,
+    // which were not configured yet during the current runtime session,
+    // despite the fact that it does keep the configuration FKey references to the SpaceMouse buttons.
+    // Attempting to work around that, we keep the custom bindings in our own config
+    // and remind the Input Binding system to kindly please consider our SpaceMouse bindings too.
+
+    GEditor->GetTimerManager().Get().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
+    {
+        auto& Ibm = FInputBindingManager::Get();
+        for(const auto Kvp : CustomInputBindings)
+        {
+            const auto [Context, Command] = Kvp.Value;
+            auto Cmd = Ibm.FindCommandInContext(Context, Command);
+            Ibm.NotifyActiveChordChanged(*Cmd.Get(), EMultipleKeyBindingIndex::Primary);
+            Ibm.NotifyActiveChordChanged(*Cmd.Get(), EMultipleKeyBindingIndex::Secondary);
+        }
+
+        Ibm.SaveInputBindings();
+        
+        Ibm.RegisterUserDefinedChordChanged(
+            FOnUserDefinedChordChanged::FDelegate::CreateUObject(this, &USpaceMouseConfig::HandleUserDefinedChordChanged)
+        );
+    }));
 }
 
 void USpaceMouseConfig::GoToSmConfig() const

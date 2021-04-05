@@ -25,8 +25,20 @@ enum class ESpaceMouseCameraBehavior : uint8
     OrbittingNoRoll
 };
 
+USTRUCT(BlueprintType)
+struct SPACEMOUSE_API FUICommandName
+{
+    GENERATED_BODY()
+    
+    UPROPERTY(BlueprintReadWrite)
+    FName Context;
+    
+    UPROPERTY(BlueprintReadWrite)
+    FName Command;
+};
+
 UCLASS(Config=Editor, defaultconfig)
-class USpaceMouseConfig : public UObject
+class SPACEMOUSE_API USpaceMouseConfig : public UObject
 {
     GENERATED_BODY()
 public:
@@ -163,15 +175,38 @@ public:
         )
     )
     FSmKey ShowInputBindingsButton;
+
+    UPROPERTY(
+        VisibleAnywhere,
+        AdvancedDisplay,
+        Config,
+        Category = "ButtonMapping",
+        meta = (
+            ToolTip = "Only SpaceMouse buttons regarded here."
+        )
+    )
+    TMap<FString, FUICommandName> CustomInputBindings;
     
     // Further editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
 
+    /**
+     * This is used for keeping the bindings from SpaceMouse persistent
+     * because of course it doesn't automatically do that for us.
+     * This even executes on the next tick because at module initialization it's just too early apparently.
+     * This is not exactly a smooth way to do things.
+     */
+    void RegisterInputBindingNotification();
+    
     void GoToSmConfig() const;
     void GoToInputBindings() const;
 
     static void SetDefaultBindings(bool bAskUser);
     static void SetCommandBinding(FInputBindingManager& Ibm, FName InCmdCtx, FName InCmd, EV3DCmd SmButton);
     static void SetCommandBinding(TSharedPtr<FUICommandInfo> InCmd, EV3DCmd SmButton);
+
+private:
+    void RegisterCustomInputBinding(const FUICommandInfo& Cmd);
+    void HandleUserDefinedChordChanged(const FUICommandInfo& Cmd);
 };
 
 class FSpaceMouseConfigCustomization : public IDetailCustomization

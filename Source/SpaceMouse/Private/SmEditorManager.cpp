@@ -26,6 +26,9 @@ void FSmEditorManager::Initialize()
     });
     bWasOrbitCamera = false;
     bWasRealtime = false;
+    
+    auto& Ibm = FInputBindingManager::Get();
+    Ibm.SaveInputBindings();
 }
 
 void FSmEditorManager::Tick(float DeltaSecs)

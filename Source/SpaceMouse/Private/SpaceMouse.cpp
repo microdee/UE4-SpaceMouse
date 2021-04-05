@@ -51,6 +51,8 @@ void FSpaceMouseModule::RegisterSettings()
         {
             SettingsSection->OnModified().BindRaw(this, &FSpaceMouseModule::HandleSettingsSaved);
         }
+
+        Settings->RegisterInputBindingNotification();
     }
 }
 
@@ -90,9 +92,6 @@ void FSpaceMouseModule::RegisterCustomPropertyTypeLayout(FName PropertyTypeName,
 
 void FSpaceMouseModule::StartupModule()
 {
-    RegisterPropertyTypeCustomizations();
-    RegisterSettings();
-
     if(FModuleManager::Get().IsModuleLoaded("SpaceMouseReader"))
         ReaderModule = FModuleManager::GetModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
     else
@@ -100,6 +99,9 @@ void FSpaceMouseModule::StartupModule()
         ReaderModule = FModuleManager::LoadModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
         //ReaderModule->StartupModule();
     }
+    
+    RegisterPropertyTypeCustomizations();
+    RegisterSettings();
     
     SmManager.Initialize();
     SmManager.Start();
