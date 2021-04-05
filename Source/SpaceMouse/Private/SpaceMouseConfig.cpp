@@ -59,6 +59,18 @@ FUserSettings USpaceMouseConfig::GetUserSettings()
     };
 }
 
+void USpaceMouseConfig::GoToSmConfig() const
+{
+    ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
+    SettingsModule->ShowViewer("Editor", "Plugins", "SpaceMouse");
+}
+
+void USpaceMouseConfig::GoToInputBindings() const
+{
+    ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
+    SettingsModule->ShowViewer("Editor", "General", "InputBindings");
+}
+
 void USpaceMouseConfig::SetDefaultBindings(bool bAskUser)
 {
     if(bAskUser)
@@ -161,8 +173,7 @@ void FSpaceMouseConfigCustomization::CustomizeDetails(IDetailLayoutBuilder& Deta
             ))
             . OnNavigate(FSimpleDelegate::CreateLambda([]()
             {
-                ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
-                SettingsModule->ShowViewer("Editor", "General", "InputBindings");
+                GetMutableDefault<USpaceMouseConfig>()->GoToInputBindings();
             }))
         ]
         + SVerticalBox::Slot()

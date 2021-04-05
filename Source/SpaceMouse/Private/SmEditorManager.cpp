@@ -140,6 +140,14 @@ void FSmEditorManager::TriggerCustomButtons()
         {
             ActiveViewportClient->RemoveCameraRoll();
         }
+        if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->ShowSpaceMousePreferencesButton)))
+        {
+            Settings->GoToSmConfig();
+        }
+        if (ButtonDownFrame(FSmInputDevice::GetButtonFrom(Settings->ShowInputBindingsButton)))
+        {
+            Settings->GoToInputBindings();
+        }
                 
         // Editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
     }

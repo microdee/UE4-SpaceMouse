@@ -166,6 +166,9 @@ public:
     
     // Further editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
 
+    void GoToSmConfig() const;
+    void GoToInputBindings() const;
+
     static void SetDefaultBindings(bool bAskUser);
     static void SetCommandBinding(FInputBindingManager& Ibm, FName InCmdCtx, FName InCmd, EV3DCmd SmButton);
     static void SetCommandBinding(TSharedPtr<FUICommandInfo> InCmd, EV3DCmd SmButton);
