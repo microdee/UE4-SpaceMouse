@@ -45,16 +45,16 @@ On default speeds (speed setting = 4) transition velocity is 1000 units/sec by d
   * SpaceMouse represents the Delta Movement of the camera in Free-flight/Helicopter fashion. All rotation is in current camera space.
 * **Camera Delta with No Roll**
   * Same as above but roll is ignored and Yaw is always in World space (instead of current camera space))
-* **Orbitting with Roll** (EXPERIMENTAL)
-  * SpaceMouse represents the Delta Movement of the camera around "the object" OR the Delta movement of "the object" in front of the camera. The pivot of orbitting is either surface point in the center of the viewport, or a fixed distance if set in the settings.
-* **Orbitting with No Roll** (EXPERIMENTAL)
+* **Orbiting with Roll** (EXPERIMENTAL)
+  * SpaceMouse represents the Delta Movement of the camera around "the object" OR the Delta movement of "the object" in front of the camera. The pivot of orbiting is either surface point in the center of the viewport, or a fixed distance if set in the settings.
+* **Orbiting with No Roll** (EXPERIMENTAL)
   * Same as above but roll is ignored and Yaw is always in World space (instead of current camera space))
 
-**Orbitting Moves/Rotates Object** When true, SpaceMouse represents the Delta movement of "the object" in front of the camera (meaning axes are inverted)
+**Orbiting Moves/Rotates Object** When true, SpaceMouse represents the Delta movement of "the object" in front of the camera (meaning axes are inverted)
 
-**Orbitting at Fixed Pivot Distance** When enabled, sets a fixed distance for the orbitting mode in UE4 units (usually cm).
+**Orbiting at Fixed Pivot Distance** When enabled, sets a fixed distance for the orbiting mode in UE4 units (usually cm).
 
-**Orbitting Line Trace Length** is the maximum possible radius of the orbitting behavior in UE4 units (usually cm).
+**Orbiting Line Trace Length** is the maximum possible radius of the orbiting behavior in UE4 units (usually cm).
 
 **Axis mappings** are conversions between the space of spacemice and the space of UE4. You can invert rotations and translations here by flipping the sign. The default values are my subjective preferences (as you can see in the coordinate system image above).
 
@@ -100,7 +100,7 @@ Upon updating from prior versions please delete both HIDUE and SpaceMouse plugin
   * Remove either this or the 3DConnexion plugin (TDxUnrealEditor) according to your preference.
 
 ## Known nuances
-* ~~Only free-fly mode is supported and every orbitting perspective viewport in focus is forced to be free-fly while any spacemice operates on them.~~
+* ~~Only free-fly mode is supported and every orbiting perspective viewport in focus is forced to be free-fly while any spacemice operates on them.~~
   * Now multiple camera behaviors are implemented
 * Camera roll is not reset when one tries to navigate viewport with traditional methods
   * There's a mappable button now to reset roll

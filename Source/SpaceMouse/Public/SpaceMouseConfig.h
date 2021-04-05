@@ -19,10 +19,11 @@ class FUICommandInfo;
 UENUM()
 enum class ESpaceMouseCameraBehavior : uint8
 {
-    CameraDeltaWithRoll,
-    CameraDeltaNoRoll,
-    OrbittingWithRoll,
-    OrbittingNoRoll
+    CameraDeltaWithRoll UMETA(ToolTip="Puck represents the movement of the camera which can move freely in all 6DoF.\nRotation is in camera space."),
+    CameraDeltaNoRoll UMETA(ToolTip="Puck represents the movement of the camera which can move freely in 5DoF (without roll).\nHorizon is kept straight.\nPitch is in camera space, Yaw is in world space."),
+    OrbitingWithRoll UMETA(ToolTip="Puck can represent either the camera orbiting around a subject, or a subject moving in front of the camera."),
+    OrbitingNoRoll UMETA(ToolTip="Puck can represent either the camera orbiting around a subject, or a subject moving in front of the camera.\nHorizon is kept straight.")
+};
 };
 
 USTRUCT(BlueprintType)
@@ -52,11 +53,25 @@ public:
     UPROPERTY(EditAnywhere, Config, Category = "Behavior")
     ESpaceMouseCameraBehavior CameraBehavior = ESpaceMouseCameraBehavior::CameraDeltaWithRoll;
 
-    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
-    bool OrbittingMovesObject = false;
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior",
+        meta = (
+            ToolTip = "Puck represents the subject moving in front of the viewport while translating"
+        )
+    )
+    bool OrbitingMovesObject = false;
 
-    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
-    bool OrbittingRotatesObject = false;
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior",
+        meta = (
+            ToolTip = "Puck represents the subject rotating in front of the viewport while rotating"
+        )
+    )
+    bool OrbitingRotatesObject = false;
 
     UPROPERTY(EditAnywhere, Config, Category = "Behavior")
     float MovementSecondsTolerance = 0.25;

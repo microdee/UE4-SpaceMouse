@@ -199,7 +199,7 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float for
         ActiveViewportClient->GetViewRotation(),
         rotDelta,
         LastOrbitDistance,
-        Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingWithRoll
+        Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbitingWithRoll
     );
 }
 
@@ -283,17 +283,17 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
     float speedmul = FMath::Pow(2, speedexp);
     speedmul *= ActiveViewportClient->GetCameraSpeed();
 
-    bool orbitMovesObject = Settings->OrbittingMovesObject;
-    bool orbitRotatesObject = Settings->OrbittingRotatesObject;
+    bool orbitMovesObject = Settings->OrbitingMovesObject;
+    bool orbitRotatesObject = Settings->OrbitingRotatesObject;
     
     if (ActiveViewportClient->IsPerspective())
     {
         FRotator currRot = ActiveViewportClient->GetViewRotation();
 
-        if (Settings->CameraBehavior >= ESpaceMouseCameraBehavior::OrbittingWithRoll)
+        if (Settings->CameraBehavior >= ESpaceMouseCameraBehavior::OrbitingWithRoll)
         {
             auto OrbRot = rot;
-            if (Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbittingNoRoll)
+            if (Settings->CameraBehavior == ESpaceMouseCameraBehavior::OrbitingNoRoll)
             {
                 OrbRot.Pitch *= currRot.Pitch > -80 && currRot.Pitch < 80;
             }
@@ -328,11 +328,11 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
             currRot.Roll = 0;
             break;
             
-        case ESpaceMouseCameraBehavior::OrbittingWithRoll:
+        case ESpaceMouseCameraBehavior::OrbitingWithRoll:
             currRot = FRotator(FQuat(currRot) * (orbitRotatesObject ? FQuat(rot).Inverse() : FQuat(rot)));
             break;
             
-        case ESpaceMouseCameraBehavior::OrbittingNoRoll:
+        case ESpaceMouseCameraBehavior::OrbitingNoRoll:
             if (MovementState->bOnMovementStartedFrame)
             {
                 ActiveViewportClient->RemoveCameraRoll();
@@ -355,7 +355,7 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
         float currZoom = ActiveViewportClient->GetOrthoZoom();
         float currZoomSpeed = currZoom / Settings->TranslationUnitsPerSec * 0.25;
         float zoomDelta = trans.X * speedmul * currZoomSpeed * 8;
-        if(Settings->OrbittingMovesObject) zoomDelta *= -1;
+        if(Settings->OrbitingMovesObject) zoomDelta *= -1;
         currZoom -= zoomDelta;
         
         if(currZoom < 1) currZoom = 1;
@@ -390,7 +390,7 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
         
         FVector orthoTrans = trans * FVector(0.0f, 1.0f, 1.0f);
         FVector posDelta = currRot.RotateVector(orthoTrans) * speedmul * currZoomSpeed;
-        if(Settings->OrbittingMovesObject) posDelta *= -1;
+        if(Settings->OrbitingMovesObject) posDelta *= -1;
         currPos += posDelta;
 
         ActiveViewportClient->ViewTransformOrthographic.SetLocation(currPos);
