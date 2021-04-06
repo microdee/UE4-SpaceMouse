@@ -179,7 +179,13 @@ const FSlateBrush* SSmKeySelector::GetKeyIconImage() const
     if (CurrentKeyValue.IsSet())
     {
         const FKey& Key = CurrentKeyValue.GetValue();
+        
+// IsDeprecated() and IsBindableToActions() functions of FKey are new in UE 4.24
+#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4240
         if (Key.IsValid() && (Key.IsDeprecated() || !Key.IsBindableToActions()))
+#else
+        if (Key.IsValid())
+#endif
         {
             return FEditorStyle::GetBrush("Icons.Warning");
         }
@@ -194,6 +200,9 @@ FText SSmKeySelector::GetKeyTooltip() const
     if (CurrentKeyValue.IsSet())
     {
         const FKey& Key = CurrentKeyValue.GetValue();
+        
+// This entire section can only be used after UE 4.24
+#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4240
         if (Key.IsValid())
         {
             if (Key.IsDeprecated())
@@ -205,6 +214,7 @@ FText SSmKeySelector::GetKeyTooltip() const
                 return LOCTEXT("SmKeySelectorNotBindable", "The selected key can't be bound to actions.");
             }
         }
+#endif
     }
     return LOCTEXT("SmKeySelector", "Select the key value.");
 }
