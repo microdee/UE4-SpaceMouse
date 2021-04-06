@@ -37,10 +37,10 @@ struct SPACEMOUSE_API FUICommandName
 {
     GENERATED_BODY()
     
-    UPROPERTY(BlueprintReadWrite)
+    UPROPERTY(BlueprintReadWrite, Category = "SpaceMouse")
     FName Context;
     
-    UPROPERTY(BlueprintReadWrite)
+    UPROPERTY(BlueprintReadWrite, Category = "SpaceMouse")
     FName Command;
 };
 
