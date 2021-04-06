@@ -5,7 +5,6 @@
 
 #include "CoreMinimal.h"
 
-#include "SmRuntimeManager.h"
 #include "UObject/Object.h"
 #include "TimerManager.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
@@ -23,50 +22,40 @@ class SPACEMOUSERUNTIME_API USpaceMouseData : public UBlueprintFunctionLibrary
 public:
     static bool bFrameRequested;
     static FTimerDelegate OnTickDel;
-    static FSmRuntimeManager Manager;
-    
-    static void LazyInit(UObject* WorldContextObj);
 
     UFUNCTION(
         BlueprintPure,
-        Category = "SpaceMouse",
-        meta = ( WorldContext = "WorldContextObj" )
+        Category = "SpaceMouse"
     )
     static void GetSpaceMouseDeltaAxes(
-        UObject* WorldContextObj,
         FVector& DeltaTranslation,
         FRotator& DeltaRotation
     );
     
     UFUNCTION(
         BlueprintPure,
-        Category = "SpaceMouse",
-        meta = ( WorldContext = "WorldContextObj" )
+        Category = "SpaceMouse"
     )
     static void GetSpaceMouseAxes(
-        UObject* WorldContextObj,
         FVector& NormalizedTranslation,
         FRotator& NormalizedRotation
     );
 
     UFUNCTION(
         BlueprintPure,
-        Category = "SpaceMouse",
-        meta = ( WorldContext = "WorldContextObj" )
+        Category = "SpaceMouse"
     )
-    static bool GetSpaceMouseButtonState(UObject* WorldContextObj, int Id);
+    static bool GetSpaceMouseButtonState(int Id);
 
     UFUNCTION(
         BlueprintPure,
-        Category = "SpaceMouse",
-        meta = ( WorldContext = "WorldContextObj" )
+        Category = "SpaceMouse"
     )
-    static bool GetSpaceMouseButtonDown(UObject* WorldContextObj, int Id);
+    static bool GetSpaceMouseButtonDown(int Id);
 
     UFUNCTION(
         BlueprintPure,
-        Category = "SpaceMouse",
-        meta = ( WorldContext = "WorldContextObj" )
+        Category = "SpaceMouse"
     )
-    static bool GetSpaceMouseButtonUp(UObject* WorldContextObj, int Id);
+    static bool GetSpaceMouseButtonUp(int Id);
 };

@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
+#include "PropertyEditorDelegates.h"
 #include "SmEditorManager.h"
 #include "LevelEditorViewport.h"
 #include "SpaceMouseConfig.h"
@@ -19,6 +20,10 @@ private:
     bool HandleSettingsSaved();
     void RegisterSettings();
     void UnregisterSettings();
+    
+	TSet<FName> RegisteredPropertyTypes;
+	void RegisterPropertyTypeCustomizations();
+	void RegisterCustomPropertyTypeLayout(FName PropertyTypeName, FOnGetPropertyTypeCustomizationInstance PropertyTypeLayoutDelegate );
 
 public:
 

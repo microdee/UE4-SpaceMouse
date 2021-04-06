@@ -54,7 +54,7 @@ int FSmButton::FromCmd(EV3DCmd CmdCode)
     return static_cast<int>(CmdCode);
 }
 
-FString FSmButton::GetNameOf(EV3DCmd Button)
+FName FSmButton::GetNameOf(EV3DCmd Button)
 {
     switch (Button)
     {

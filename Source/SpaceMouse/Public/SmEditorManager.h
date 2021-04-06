@@ -18,6 +18,9 @@ private:
 
     FTimerDelegate OnTickDel;
 
+    bool bLearning = false;
+    bool bFinishLearning = false;
+
     bool bWasOrbitCamera = false;
     bool bWasRealtime = false;
     float LastOrbitDistance = 0;
@@ -40,13 +43,16 @@ public:
 
     static bool bStarted;
 
+    void BeginLearning();
+    void EndLearning();
+    bool IsLearning() const { return bLearning; } 
+
     virtual void Initialize() override;
     virtual void Tick(float DeltaSecs) override;
     void Start();
     void ManageOrbitingOverlay();
-    void LearnButtonMappings();
-    void LearnButtonMapping(int& target);
     void ManageActiveViewport();
+    void TriggerCustomButtons();
     void MoveActiveViewport(FVector trans, FRotator rot);
     const bool IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients);
 };

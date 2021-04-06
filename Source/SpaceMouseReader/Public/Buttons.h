@@ -38,7 +38,7 @@ struct SPACEMOUSEREADER_API FSmButton
     static EV3DCmd FromID(int ButtonID);
     static int FromCmd(EV3DCmd CmdCode);
     
-    static FString GetNameOf(EV3DCmd Button);
+    static FName GetNameOf(EV3DCmd Button);
     static FString GetFriendlyNameOf(EV3DCmd Button);
 };
 
