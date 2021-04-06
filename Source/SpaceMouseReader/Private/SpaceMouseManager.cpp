@@ -5,85 +5,105 @@
 #include "SpaceMouseReader.h"
 
 #include "hidapi.h"
+#include "MovementState.h"
+#include "DeviceTypes/DeviceFactory.h"
+#include "DeviceTypes/SmDevice.h"
+
+#if PLATFORM_MAC
+#include "Mac/TDxWareReadingMethod.h"
+#include "Mac/TDxWareButtonCapabilities.h"
+#endif
 
 #if WITH_EDITOR
+#if !PLATFORM_MAC
 #include "EngineGlobals.h"
+#endif
 #include "Engine/Engine.h"
 #endif
 
 void FSpaceMouseManager::Initialize()
 {
-    Translation = FVector::ZeroVector;
-    Rotation = FRotator::ZeroRotator;
+    PrevAccumulatedData = AccumulatedData = {};
+    MovementState = MakeShared<FMovementState>();
+    Devices.Empty();
 
-    Buttons.Empty(SPACEMOUSE_BUTTONCOUNT);
-    Buttons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
-    PrevButtons.Empty(SPACEMOUSE_BUTTONCOUNT);
-    PrevButtons.AddZeroed(SPACEMOUSE_BUTTONCOUNT);
+#if PLATFORM_MAC // On mac we have to use the 3DxWare SDK (at least pretend ;) )
 
-    DeviceInfos = hid_enumerate(0, 0);
-    hid_device_info* cinfo = DeviceInfos;
+    FSmDeviceInstantiation InstInfo {
+        0, nullptr, [this]() { return GetUserSettings(); }
+    };
+    auto MacDevice = MakeShared<FSmDevice>(
+        TEXT("3DxWare driver"),
+        ESmModelConfidence::Unknown,
+        MakeShared<FTDxWareButtonCapabilities>(),
+        FTDxWareReadingMethod::GetSingleton(),
+        InstInfo
+    );
+    Devices.Add(MacDevice);
 
-    int ii = 0;
-    while (cinfo)
-    {
-        for(auto& elem : FSpaceMouseReaderModule::Prototypes)
-        {
-            uint32 vidpid = JOIN_VIDPID(static_cast<uint32>(cinfo->vendor_id), static_cast<uint32>(cinfo->product_id));
-            if(elem.Key == vidpid)
-            {
-                auto smdevice = elem.Value->NewDevice();
-                smdevice->Initialize(cinfo, ii);
-                Devices.Add(smdevice);
-                if (smdevice->DeviceOpened)
-                    DeviceOpened = true;
-                break;
-            }
-        }
-        cinfo = cinfo->next;
-        ii++;
-    }
+#else // On windows we use HID (Linux is unknown yet)
+
+    FDeviceFactory Factory {};
+    Factory.OpenConnectedDevices([this]() { return GetUserSettings(); }, Devices);
+
+#endif
+    
     Enabled = true;
+    DeviceOpened = Devices.Num() > 0;
+}
+
+bool FSpaceMouseManager::ButtonDownFrame(const EV3DCmd Button)
+{
+    auto Id = FSmButton::FromCmd(Button);
+    return AccumulatedData.Buttons[Id] && !PrevAccumulatedData.Buttons[Id]; 
+}
+
+bool FSpaceMouseManager::ButtonUpFrame(const EV3DCmd Button)
+{
+    auto Id = FSmButton::FromCmd(Button);
+    return !AccumulatedData.Buttons[Id] && PrevAccumulatedData.Buttons[Id]; 
 }
 
 void FSpaceMouseManager::Tick(float DeltaSecs)
 {
-    //Translation = FVector::ZeroVector;
-    //Rotation = FRotator::ZeroRotator;
-    FVector trans = FVector::ZeroVector;
-    FRotator rot = FRotator::ZeroRotator;
-    
-    for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-    {
-        PrevButtons[i] = Buttons[i];
-        Buttons[i] = false;
-    }
-    
-    OnMovementStartedFrame = false;
-    OnMovementEndedFrame = false;
-    
-    for (auto sm : Devices)
-    {
-        //sm->UserSettings.bPrintDebug = bPrintDebug;
-        sm->Tick(DeltaSecs);
-        trans += sm->Translation;
-        rot += sm->Rotation;
-        OnMovementStartedFrame = OnMovementStartedFrame || sm->OnMovementStartedFrame;
-        OnMovementEndedFrame = OnMovementEndedFrame || sm->OnMovementEndedFrame;
+    PrevAccumulatedData = AccumulatedData;
+    AccumulatedData = NormalizedData = {};
 
-        for (int i = 0; i < SPACEMOUSE_BUTTONCOUNT; i++)
-            Buttons[i] = Buttons[i] || sm->Buttons[i];
+    MovementState->AccumulationReset();
+    
+    for (auto SmDevice : Devices)
+    {
+        SmDevice->Tick(DeltaSecs);
+        AccumulatedData += SmDevice->ProcessedData;
+        NormalizedData += SmDevice->NormData;
+        MovementState->Accumulate(SmDevice->MovementState);
     }
-    Translation = trans;
-    Rotation = rot;
 
 #if WITH_EDITOR
-    if (bPrintDebug)
+    if (GetUserSettings().bPrintDebug)
     {
+        FString Message = TEXT("Connected SpaceMice: ") + FString::FromInt(Devices.Num());
+
+        for (const auto SmDevice : Devices)
+        {
+            Message += TEXT("\n    Device: ") + SmDevice->DeviceName;
+        }
+        
         GEngine->AddOnScreenDebugMessage(
             2000, 1.0, FColor::Cyan,
-            "Connected SpaceMice: " + FString::FromInt(Devices.Num())
+            Message
         );
+
+        for(int i=0; i<AccumulatedData.Buttons.Num(); i++)
+        {
+            if(ButtonDownFrame(FSmButton::FromID(i)))
+            {
+                GEngine->AddOnScreenDebugMessage(
+                    INDEX_NONE, 1.2, FColor::Emerald,
+                    FSmButton::GetFriendlyNameOf(FSmButton::FromID(i))
+                );
+            }
+        }
     }
 #endif
 }

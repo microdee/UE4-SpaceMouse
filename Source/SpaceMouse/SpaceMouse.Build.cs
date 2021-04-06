@@ -7,7 +7,7 @@ public class SpaceMouse : ModuleRules
 {
 	public SpaceMouse(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+		PCHUsage = ModuleRules.PCHUsageMode.NoSharedPCHs;
         bEnableUndefinedIdentifierWarnings = false;
 		CppStandard = CppStandardVersion.Cpp17;
 
@@ -32,8 +32,10 @@ public class SpaceMouse : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "InputCore",
+                "PropertyEditor",
 
-                "SpaceMouseReader"
+                "SpaceMouseReader",
+                "SpaceMouseRuntime"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -54,6 +56,8 @@ public class SpaceMouse : ModuleRules
                     "Slate",
                     "SlateCore",
                     "UnrealEd",
+                    "EditorStyle",
+                    "DetailCustomizations",
                     "LevelEditor",
 					"ApplicationCore",
 					"RHI"
