@@ -13,6 +13,7 @@
 #include "EditorViewportClient.h"
 #include "MovementState.h"
 #include "HAL/PlatformApplicationMisc.h"
+#include "SmUeVersion.h"
 #include "Framework/Application/SlateApplication.h"
 //#include "Object.h"
 
@@ -76,7 +77,7 @@ void FSmEditorManager::ManageOrbitingOverlay()
 
 void FSmEditorManager::ManageActiveViewport()
 {
-#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4220
+#if UE_VERSION >= MAKE_UE_VERSION(4, 22)
     TArray<FEditorViewportClient*> AllViewportClients = GEditor->GetAllViewportClients();
 #else
     TArray<FEditorViewportClient*> AllViewportClients = GEditor->AllViewportClients;

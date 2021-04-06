@@ -6,6 +6,7 @@
 #include "MovementState.h"
 #include "SmRuntimeManager.h"
 #include "SpaceMouseData.h"
+#include "SmUeVersion.h"
 
 #define LOCTEXT_NAMESPACE "SpaceMouseRuntime"
 
@@ -60,7 +61,7 @@ FKeyDetails FSmInputDevice::GetKeyDetailsFrom(EV3DCmd SmButton)
 }
 
 // Axis flag name has changed in UE 4.26
-#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4260
+#if UE_VERSION >= MAKE_UE_VERSION(4, 26)
 #define AXIS_FLAG Axis1D
 #else
 #define AXIS_FLAG FloatAxis

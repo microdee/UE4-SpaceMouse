@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "IPropertyTypeCustomization.h"
 #include "PropertyHandle.h"
+#include "SmUeVersion.h"
 
 /**
  * 
@@ -29,7 +30,7 @@ public:
     ) override { };
 
     // New functions in UE 4.26
-#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4260
+#if UE_VERSION >= MAKE_UE_VERSION(4, 26)
     
     virtual bool ShouldInlineKey() const override { return true; }
     

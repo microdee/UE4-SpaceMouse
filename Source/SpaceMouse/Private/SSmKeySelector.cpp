@@ -11,6 +11,7 @@
 #include "Widgets/Input/SSearchBox.h"
 #include "Styling/CoreStyle.h"
 #include "SListViewSelectorDropdownMenu.h"
+#include "SmUeVersion.h"
 
 #include "SmInputDevice.h"
 #include "SpaceMouse.h"
@@ -181,7 +182,7 @@ const FSlateBrush* SSmKeySelector::GetKeyIconImage() const
         const FKey& Key = CurrentKeyValue.GetValue();
         
 // IsDeprecated() and IsBindableToActions() functions of FKey are new in UE 4.24
-#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4240
+#if UE_VERSION >= MAKE_UE_VERSION(4, 24)
         if (Key.IsValid() && (Key.IsDeprecated() || !Key.IsBindableToActions()))
 #else
         if (Key.IsValid())
@@ -202,7 +203,7 @@ FText SSmKeySelector::GetKeyTooltip() const
         const FKey& Key = CurrentKeyValue.GetValue();
         
 // This entire section can only be used after UE 4.24
-#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4240
+#if UE_VERSION >= MAKE_UE_VERSION(4, 24)
         if (Key.IsValid())
         {
             if (Key.IsDeprecated())
@@ -271,7 +272,7 @@ FReply SSmKeySelector::ProcessHeardInput(FKey KeyHeard)
 }
 
 // "Is axis?" function name in FKey has changed in UE 4.26
-#if (ENGINE_MAJOR_VERSION * 1000 + ENGINE_MINOR_VERSION * 10) >= 4260
+#if UE_VERSION >= MAKE_UE_VERSION(4, 26)
 #define IS_AXIS() IsButtonAxis()
 #else
 #define IS_AXIS() IsFloatAxis()
