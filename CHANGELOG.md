@@ -10,6 +10,7 @@
 * [ ] Improve axis configuration UX
 * [ ] Per-device model default button bindings
 * [ ] Detect device models through the Universal Receiver
+* [ ] Depend rotation speed on FOV (of course configurable)
 
 ## 1.2.3-β
 * *RUNTIME*
@@ -29,7 +30,7 @@
 ## 1.2.2-α
 * *EDITOR*
   * __^__ Internal button mappings for devices are complete (copied from Blender)
-  * __^__ Fixed a bug with Universal Receiver not having
+  * __^__ Fixed a bug with Universal Receiver which didn't have the proper reading method configured
   * __\+__ Started MacOS support but ran into a roadblock issue
 
 ## 1.2.1-α
