@@ -64,7 +64,7 @@ bool FSpaceMouseManager::ButtonUpFrame(const EV3DCmd Button)
     return !AccumulatedData.Buttons[Id] && PrevAccumulatedData.Buttons[Id]; 
 }
 
-void FSpaceMouseManager::Tick(float DeltaSecs)
+void FSpaceMouseManager::TickManager(float DeltaSecs)
 {
     PrevAccumulatedData = AccumulatedData;
     AccumulatedData = NormalizedData = {};

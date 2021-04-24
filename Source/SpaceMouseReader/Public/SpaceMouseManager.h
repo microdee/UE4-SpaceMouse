@@ -37,7 +37,7 @@ public:
     TSharedPtr<FMovementState> MovementState;
 
     bool Enabled = false;
-    virtual void Tick(float DeltaSecs);
+    virtual void TickManager(float DeltaSecs);
     virtual void Initialize();
 
     int LastErrorCode;

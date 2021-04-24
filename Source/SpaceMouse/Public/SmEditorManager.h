@@ -4,6 +4,7 @@
 #pragma once
 
 #include "SpaceMouseManager.h"
+#include "TickableEditorObject.h"
 #include "Misc/App.h"
 #include "Input/Events.h"
 #include "TimerManager.h"
@@ -15,8 +16,6 @@ class FSmViewportOverlay;
 class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager
 {
 private:
-
-    FTimerDelegate OnTickDel;
 
     bool bLearning = false;
     bool bFinishLearning = false;
@@ -48,7 +47,7 @@ public:
     bool IsLearning() const { return bLearning; } 
 
     virtual void Initialize() override;
-    virtual void Tick(float DeltaSecs) override;
+    virtual void TickManager(float DeltaSecs) override;
     void Start();
     void ManageOrbitingOverlay();
     void ManageActiveViewport();

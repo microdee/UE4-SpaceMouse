@@ -23,7 +23,7 @@ void FSmEditorManager::Initialize()
 
     OnTickDel = OnTickDel.CreateLambda([this]()
     {
-        Tick(FApp::GetDeltaTime());
+        TickManager(FApp::GetDeltaTime());
     });
     bWasOrbitCamera = false;
     bWasRealtime = false;
@@ -32,10 +32,10 @@ void FSmEditorManager::Initialize()
     Ibm.SaveInputBindings();
 }
 
-void FSmEditorManager::Tick(float DeltaSecs)
+void FSmEditorManager::TickManager(float DeltaSecs)
 {
     auto Settings = GetMutableDefault<USpaceMouseConfig>();
-    FSpaceMouseManager::Tick(DeltaSecs);
+    FSpaceMouseManager::TickManager(DeltaSecs);
 
     // TODO: ignore camera movement when the player possesses a Pawn in PIE, but not when ejected or only SIE
 
@@ -48,8 +48,6 @@ void FSmEditorManager::Tick(float DeltaSecs)
     {
         bLearning = bFinishLearning = false;
     }
-    
-    if(Enabled) GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
 }
 
 bool FSmEditorManager::bStarted = false;

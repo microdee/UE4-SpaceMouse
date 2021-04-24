@@ -120,7 +120,7 @@ void FSmInputDevice::Tick(float DeltaTime)
 
 void FSmInputDevice::SendControllerEvents()
 {
-    Manager->Tick(FApp::GetDeltaTime());
+    Manager->TickManager(FApp::GetDeltaTime());
 
     // Send axis data only while moving and an extra frame when axis values are supposedly 0
     if(Manager->MovementState->bMoving || Manager->MovementState->bOnMovementEndedFrame)
