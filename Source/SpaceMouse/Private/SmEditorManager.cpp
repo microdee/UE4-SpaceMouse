@@ -20,11 +20,7 @@
 void FSmEditorManager::Initialize()
 {
     FSpaceMouseManager::Initialize();
-
-    OnTickDel = OnTickDel.CreateLambda([this]()
-    {
-        TickManager(FApp::GetDeltaTime());
-    });
+    
     bWasOrbitCamera = false;
     bWasRealtime = false;
     
@@ -50,15 +46,9 @@ void FSmEditorManager::TickManager(float DeltaSecs)
     }
 }
 
-bool FSmEditorManager::bStarted = false;
-
-void FSmEditorManager::Start()
+void FSmEditorManager::Tick(float DeltaTime)
 {
-    if (!bStarted)
-    {
-        bStarted = true;
-        GEditor->GetTimerManager().Get().SetTimerForNextTick(OnTickDel);
-    }
+    TickManager(DeltaTime);
 }
 
 void FSmEditorManager::ManageOrbitingOverlay()

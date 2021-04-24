@@ -13,7 +13,7 @@ struct FInputActionKeyMapping;
 class FEditorViewportClient;
 class FSmViewportOverlay;
 
-class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager
+class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager, public FTickableEditorObject
 {
 private:
 
@@ -40,18 +40,21 @@ protected:
 
 public:
 
-    static bool bStarted;
-
+    FSmEditorManager() : FTickableEditorObject() {}
+    
     void BeginLearning();
     void EndLearning();
     bool IsLearning() const { return bLearning; } 
 
     virtual void Initialize() override;
     virtual void TickManager(float DeltaSecs) override;
-    void Start();
+    virtual void Tick(float DeltaTime) override;
+    
     void ManageOrbitingOverlay();
     void ManageActiveViewport();
     void TriggerCustomButtons();
     void MoveActiveViewport(FVector trans, FRotator rot);
     const bool IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients);
+    
+    virtual TStatId GetStatId() const override { return {}; }
 };

@@ -104,7 +104,6 @@ void FSpaceMouseModule::StartupModule()
     RegisterSettings();
     
     SmManager.Initialize();
-    SmManager.Start();
 }
 
 void FSpaceMouseModule::ShutdownModule()
