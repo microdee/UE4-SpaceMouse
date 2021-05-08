@@ -7,10 +7,9 @@
 * [x] Participate properly in Unreal's Input Device system (have bindable `FKey`s and axes)
 * [x] Trigger Editor commands directly
 * [x] Support Orthographic viewports
-* [ ] Improve axis configuration UX
-* [ ] Per-device model default button bindings
-* [ ] Detect device models through the Universal Receiver
-* [ ] Depend rotation speed on FOV (of course configurable)
+* [ ] Use official 3DxWare SDK when it's available on Windows as well (use HID as a fallback)
+  * [ ] Expose it to Blueprint for archviz and other 3D tools made with UE4
+  * as per request
 
 ## 1.2.3-β
 * *RUNTIME*
@@ -54,8 +53,10 @@
 ### **Goals:**
 
 * [ ] Fix the current roadblock with macOS support.
-* [ ] Use official 3DxWare SDK when it's available on Windows as well (use HID as a fallback)
-  * as per request
+* [ ] Improve axis configuration UX
+* [ ] Per-device model default button bindings
+* [ ] Detect device models through the Universal Receiver
+* [ ] Depend rotation speed on FOV (of course configurable)
 
 # **?.?** (future)
 
