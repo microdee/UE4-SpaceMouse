@@ -30,7 +30,7 @@ public class SpaceMouseReader : ModuleRules
             PublicSystemIncludePaths.Add(Path.Combine(TDxWareDir, "inc"));
             PublicAdditionalLibraries.AddRange(new []
             {
-                Path.Combine(TDxWareDir, "lib", Target.Architecture, "TDxNavLib.lib")
+                Path.Combine(TDxWareDir, "lib", "x64", "TDxNavLib.lib")
             });
         }
         else
