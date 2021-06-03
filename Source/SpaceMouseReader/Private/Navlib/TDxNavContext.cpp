@@ -114,7 +114,7 @@ void FTDxNavContext::Open()
         $.Setter.BindRaw(this, &FTDxNavContext::OnSettingsChanged);
     );
 
-    OnOpen(Accessors);
+    OnPreOpen(Accessors);
 
     nlCreateOptions_t Options
     {

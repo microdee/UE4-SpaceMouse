@@ -59,7 +59,8 @@ public:
 
     void Open();
 
-    virtual void OnOpen(TArray<navlib::accessor_t>& Accessors) {}
+    virtual void OnPreOpen(TArray<navlib::accessor_t>& Accessors) {}
+    virtual void OnPostOpen() {}
 
     /** Name of this instance of a navigation context */
     virtual FString GetProfileName() = 0;
