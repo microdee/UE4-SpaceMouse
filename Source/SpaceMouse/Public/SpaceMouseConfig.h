@@ -69,6 +69,9 @@ public:
     bool OrbittingRotatesObject = false;
 
     UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+    bool DisplayOrbittingPivot = true;
+
+    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
     float MovementSecondsTolerance = 0.25;
     
     UPROPERTY(EditAnywhere, Config, Category = "Behavior")
