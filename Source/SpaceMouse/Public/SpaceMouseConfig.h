@@ -82,6 +82,8 @@ public:
     )
     bool OrbitingRotatesObject = false;
     
+    UPROPERTY(EditAnywhere, Config, Category = "Behavior|Orbiting")
+    bool DisplayOrbitingPivot = true;
 
     UPROPERTY(
         EditAnywhere,
