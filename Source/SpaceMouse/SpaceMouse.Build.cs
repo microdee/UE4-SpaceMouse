@@ -1,4 +1,4 @@
-// Copyright 2018-2020 David Morasz All Rights Reserved.
+// Copyright 2018-2021 David Morasz All Rights Reserved.
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 using UnrealBuildTool;
@@ -32,8 +32,10 @@ public class SpaceMouse : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "InputCore",
+                "PropertyEditor",
 
-                "SpaceMouseReader"
+                "SpaceMouseReader",
+                "SpaceMouseRuntime"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -54,6 +56,8 @@ public class SpaceMouse : ModuleRules
                     "Slate",
                     "SlateCore",
                     "UnrealEd",
+                    "EditorStyle",
+                    "DetailCustomizations",
                     "LevelEditor",
 					"ApplicationCore",
 					"RHI"

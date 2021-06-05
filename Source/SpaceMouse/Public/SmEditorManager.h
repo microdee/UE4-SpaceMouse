@@ -1,4 +1,4 @@
-// Copyright 2018-2020 David Morasz All Rights Reserved.
+// Copyright 2018-2021 David Morasz All Rights Reserved.
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #pragma once
@@ -18,6 +18,9 @@ private:
 
     FTimerDelegate OnTickDel;
 
+    bool bLearning = false;
+    bool bFinishLearning = false;
+
     bool bWasOrbitCamera = false;
     bool bWasRealtime = false;
     float LastOrbitDistance = 0;
@@ -25,7 +28,7 @@ private:
     FVector LastOrbitPivotView = FVector::ZeroVector;
 
     FEditorViewportClient* ActiveViewportClient = nullptr;
-    FString focusedVpType = "";
+    FString FocusedVpType = "";
 
     TSharedPtr<FSmViewportOverlay> OrbitingOverlay;
 
@@ -33,32 +36,23 @@ private:
     static bool AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cvp);
     FVector GetOrbitingPosDeltaOffset(FRotator rotDelta, float forwardDelta);
 
+protected:
+    virtual FUserSettings GetUserSettings() override;
+
 public:
 
     static bool bStarted;
 
-    int LastErrorCode = 0;
+    void BeginLearning();
+    void EndLearning();
+    bool IsLearning() const { return bLearning; } 
 
-    FSmEditorManager() : FSpaceMouseManager() { }
-
-    virtual void Initialize() override
-    {
-        FSpaceMouseManager::Initialize();
-
-        OnTickDel = OnTickDel.CreateLambda([this]()
-        {
-            Tick(FApp::GetDeltaTime());
-        });
-        bWasOrbitCamera = false;
-        bWasRealtime = false;
-    }
-
+    virtual void Initialize() override;
     virtual void Tick(float DeltaSecs) override;
     void Start();
     void ManageOrbitingOverlay();
-    void LearnButtonMappings();
-    void LearnButtonMapping(int& target);
     void ManageActiveViewport();
+    void TriggerCustomButtons();
     void MoveActiveViewport(FVector trans, FRotator rot);
     const bool IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients);
 };

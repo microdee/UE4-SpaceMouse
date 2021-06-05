@@ -1,54 +1,51 @@
-// Copyright 2018-2020 David Morasz All Rights Reserved.
+// Copyright 2018-2021 David Morasz All Rights Reserved.
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SmKey.h"
 #include "UObject/Interface.h"
 #include "UserSettings.h"
 #include "Curves/CurveFloat.h"
+#include "IDetailCustomization.h"
 #include "GameFramework/PlayerInput.h"
 
 #include "SpaceMouseConfig.generated.h"
 
+class FInputBindingManager;
+class FUICommandInfo;
+
 UENUM()
 enum class ESpaceMouseCameraBehavior : uint8
 {
-    CameraDeltaWithRoll,
-    CameraDeltaNoRoll,
-    OrbittingWithRoll,
-    OrbittingNoRoll
+    CameraDeltaWithRoll UMETA(ToolTip="Puck represents the movement of the camera which can move freely in all 6DoF. Rotation is in camera space."),
+    CameraDeltaNoRoll UMETA(ToolTip="Puck represents the movement of the camera which can move freely in 5DoF (without roll). Horizon is kept straight. Pitch is in camera space, Yaw is in world space."),
+    OrbitingWithRoll UMETA(ToolTip="Puck can represent either the camera orbiting around a subject, or a subject moving in front of the camera."),
+    OrbitingNoRoll UMETA(ToolTip="Puck can represent either the camera orbiting around a subject, or a subject moving in front of the camera. Horizon is kept straight.")
+};
+
+UENUM()
+enum class EOrthoSmPlane : uint8
+{
+    LateralIsZoomVerticalIsUp UMETA(ToolTip="Move puck orthogonal to the plane of the Monitor to move around, Push Forward / Pull Backward to zoom."),
+    LateralIsUpVerticalIsZoom UMETA(ToolTip="Move puck orthogonal to the plane of the Desk to move around, Push Down / Pull Up to zoom.")
 };
 
 USTRUCT(BlueprintType)
-struct FSpaceMouseKeyMapping
+struct SPACEMOUSE_API FUICommandName
 {
     GENERATED_BODY()
     
-    UPROPERTY(
-        EditAnywhere,
-        Config,
-        Category = "ButtonMapping",
-        meta = (
-            EditCondition = "LearnSpaceMouseButtonID",
-            ToolTip = "Press button to map when enabled."
-        )
-    )
-    int SpaceMouseButtonID = 1;
-
-    UPROPERTY(
-        EditAnywhere,
-        Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
-    )
-    bool LearnSpaceMouseButtonID = false;
-
-    UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
-    FInputActionKeyMapping TargetKey;
+    UPROPERTY(BlueprintReadWrite, Category = "SpaceMouse")
+    FName Context;
+    
+    UPROPERTY(BlueprintReadWrite, Category = "SpaceMouse")
+    FName Command;
 };
 
 UCLASS(Config=Editor, defaultconfig)
-class USpaceMouseConfig : public UObject
+class SPACEMOUSE_API USpaceMouseConfig : public UObject
 {
     GENERATED_BODY()
 public:
@@ -63,16 +60,60 @@ public:
     ESpaceMouseCameraBehavior CameraBehavior = ESpaceMouseCameraBehavior::CameraDeltaWithRoll;
 
     UPROPERTY(EditAnywhere, Config, Category = "Behavior")
-    bool OrbittingMovesObject = false;
-
-    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
-    bool OrbittingRotatesObject = false;
-
-    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
     float MovementSecondsTolerance = 0.25;
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior|Orbiting",
+        meta = (
+            ToolTip = "Puck represents the subject moving in front of the viewport while translating"
+        )
+    )
+    bool OrbitingMovesObject = false;
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior|Orbiting",
+        meta = (
+            ToolTip = "Puck represents the subject rotating in front of the viewport while rotating"
+        )
+    )
+    bool OrbitingRotatesObject = false;
     
-    UPROPERTY(EditAnywhere, Config, Category = "Behavior")
+    UPROPERTY(EditAnywhere, Config, Category = "Behavior|Orbiting")
+    bool DisplayOrbitingPivot = true;
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior|Orbiting",
+        meta = (
+            ToolTip = "You cannot orbit around anything larger than this. The default is 2 Km."
+        )
+    )
     float OrbitingLineTraceLength = 200000; // 2 Km
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior|Orthographic Viewports",
+        meta = (
+            ToolTip = "An arbitrary multiplier of the Zoom speed while insdide an Orthographic viewport. Negative numbers reverse direction."
+        )
+    )
+    float OrthoZoomSpeed = 1.0;
+
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "Behavior|Orthographic Viewports",
+        meta = (
+            ToolTip = "Select the plane of the device (2 axes) which will control the panning motion inside an Orthographic viewport. See tooltips for specific explanations."
+        )
+    )
+    EOrthoSmPlane OrthoPanningPlane = EOrthoSmPlane::LateralIsZoomVerticalIsUp;
 
     UPROPERTY(EditAnywhere, Config, Category = "Rotation")
     float RotationDegreesPerSec = 270;
@@ -128,76 +169,101 @@ public:
 
     UPROPERTY(
         EditAnywhere,
+        Config,
         Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
+        meta = (
+            ToolTip = "Only SpaceMouse buttons regarded here."
+        )
     )
-    bool LearnIncreaseSpeed = false;
+    FSmKey IncreaseSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
         Config,
         Category = "ButtonMapping",
         meta = (
-            EditCondition = "LearnIncreaseSpeed",
-            ToolTip = "Press button to map when enabled."
+            ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    int IncreaseSpeedButtonID = 1;
-
-    UPROPERTY(
-        EditAnywhere,
-        Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
-    )
-    bool LearnDecreaseSpeed = false;
+    FSmKey DecreaseSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
         Config,
         Category = "ButtonMapping",
         meta = (
-            EditCondition = "LearnDecreaseSpeed",
-            ToolTip = "Press button to map when enabled."
+            ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    int DecreaseSpeedButtonID = 0;
-
-    UPROPERTY(
-        EditAnywhere,
-        Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
-    )
-    bool LearnResetSpeed = false;
+    FSmKey ResetSpeedButton;
 
     UPROPERTY(
         EditAnywhere,
         Config,
         Category = "ButtonMapping",
         meta = (
-            EditCondition = "LearnResetSpeed",
-            ToolTip = "Press button to map when enabled."
+            ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    int ResetSpeedButtonID = 2;
-
-    UPROPERTY(
-        EditAnywhere,
-        Category = "ButtonMapping",
-        meta = (InlineEditConditionToggle)
-    )
-    bool LearnResetRoll = false;
+    FSmKey ResetRollButton;
 
     UPROPERTY(
         EditAnywhere,
         Config,
         Category = "ButtonMapping",
         meta = (
-            EditCondition = "LearnResetRoll",
-            ToolTip = "Press button to map when enabled."
+            ToolTip = "Only SpaceMouse buttons regarded here."
         )
     )
-    int ResetRollButtonID = 3;
+    FSmKey ShowSpaceMousePreferencesButton;
 
-    UPROPERTY(EditAnywhere, Config, Category = "ButtonMapping")
-    TArray<FSpaceMouseKeyMapping> CustomKeyMappings;
+    UPROPERTY(
+        EditAnywhere,
+        Config,
+        Category = "ButtonMapping",
+        meta = (
+            ToolTip = "Only SpaceMouse buttons regarded here."
+        )
+    )
+    FSmKey ShowInputBindingsButton;
+
+    UPROPERTY(
+        VisibleAnywhere,
+        AdvancedDisplay,
+        Config,
+        Category = "ButtonMapping",
+        meta = (
+            ToolTip = "Only SpaceMouse buttons regarded here."
+        )
+    )
+    TMap<FString, FUICommandName> CustomInputBindings;
+    
+    // Further editor actions have been off-loaded to Keyboard Shortcuts in Editor Preferences
+
+    /**
+     * This is used for keeping the bindings from SpaceMouse persistent
+     * because of course it doesn't automatically do that for us.
+     * This even executes on the next tick because at module initialization it's just too early apparently.
+     * This is not exactly a smooth way to do things.
+     */
+    void RegisterInputBindingNotification();
+    
+    void GoToSmConfig() const;
+    void GoToInputBindings() const;
+
+    static void SetDefaultBindings(bool bAskUser);
+    static void SetCommandBinding(FInputBindingManager& Ibm, FName InCmdCtx, FName InCmd, EV3DCmd SmButton);
+    static void SetCommandBinding(TSharedPtr<FUICommandInfo> InCmd, EV3DCmd SmButton);
+
+private:
+    void RegisterCustomInputBinding(const FUICommandInfo& Cmd);
+    void HandleUserDefinedChordChanged(const FUICommandInfo& Cmd);
+};
+
+class FSpaceMouseConfigCustomization : public IDetailCustomization
+{
+public:
+    static TSharedRef< IDetailCustomization > MakeInstance();
+
+    virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
 };

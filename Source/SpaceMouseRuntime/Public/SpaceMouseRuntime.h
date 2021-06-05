@@ -1,20 +1,15 @@
-// Copyright 2018-2020 David Morasz All Rights Reserved.
+// Copyright 2018-2021 David Morasz All Rights Reserved.
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Modules/ModuleManager.h"
-#include "TimerManager.h"
+#include "IInputDeviceModule.h"
 
 //General Log
-DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseRuntime, Log, All);
 
-#define SPACEMOUSE_BUTTONCOUNT 48
-
-#define BUTTONDOWN(id) (Buttons[id] && !PrevButtons[id])
-
-class FSpaceMouseRuntimeModule : public IModuleInterface
+class FSpaceMouseRuntimeModule : public IInputDeviceModule
 {
 public:
 
@@ -23,5 +18,5 @@ public:
     virtual void ShutdownModule() override;
     virtual bool SupportsDynamicReloading() override { return true; }
     
-    class FSpaceMouseReaderModule* ReaderModule;
+    virtual TSharedPtr< class IInputDevice > CreateInputDevice(const TSharedRef< class FGenericApplicationMessageHandler >& InMessageHandler) override;
 };

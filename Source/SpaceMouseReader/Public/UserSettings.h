@@ -1,4 +1,5 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright 2018-2021 David Morasz All Rights Reserved.
+// This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #pragma once
 
@@ -12,10 +13,16 @@ struct FMovementSettings
 {
     GENERATED_BODY()
     
+    UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     FVector XAxisMap {0, -1,  0}; // Pitch
+    
+    UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     FVector YAxisMap {1,  0,  0}; // Yaw
+    
+    UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     FVector ZAxisMap {0,  0, -1}; // Roll
     
+    UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
     float UnitsPerSec = 1000;
     
     const FRichCurve* Curve = nullptr;

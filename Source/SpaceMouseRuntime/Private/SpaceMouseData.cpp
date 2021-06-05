@@ -1,32 +1,41 @@
-// Copyright 2018-2020 David Morasz All Rights Reserved.
+// Copyright 2018-2021 David Morasz All Rights Reserved.
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #include "SpaceMouseData.h"
+
+#include "SmRuntimeManager.h"
+#include "SmInputDevice.h"
 #include "Engine/World.h"
 
 bool USpaceMouseData::bFrameRequested = false;
 
 FTimerDelegate USpaceMouseData::OnTickDel;
-FSpaceMouseManager USpaceMouseData::Manager;
 
-void USpaceMouseData::GetSpaceMouseData(UObject* WorldContextObj, FVector& DeltaTranslation, FRotator& DeltaRotation, TArray<bool>& Buttons)
+void USpaceMouseData::GetSpaceMouseDeltaAxes(FVector& DeltaTranslation, FRotator& DeltaRotation)
 {
-    if (!bFrameRequested)
-    {
+    DeltaTranslation = FSmInputDevice::Manager->GetTranslation();
+    DeltaRotation = FSmInputDevice::Manager->GetRotation();
+}
 
-        OnTickDel = OnTickDel.CreateLambda([WorldContextObj]()
-        {
-            if (!bFrameRequested) return;
-            USpaceMouseData::Manager.Tick(FApp::GetDeltaTime());
-            USpaceMouseData::bFrameRequested = false;
-        });
-        //Manager.Initialize();
+void USpaceMouseData::GetSpaceMouseAxes(FVector& NormalizedTranslation,
+    FRotator& NormalizedRotation)
+{
+    
+    NormalizedTranslation = FSmInputDevice::Manager->GetNormalizedTranslation();
+    NormalizedRotation = FSmInputDevice::Manager->GetNormalizedRotation();
+}
 
-        USpaceMouseData::bFrameRequested = true;
-        WorldContextObj->GetWorld()->GetTimerManager().SetTimerForNextTick(USpaceMouseData::OnTickDel);
-    }
+bool USpaceMouseData::GetSpaceMouseButtonState(int Id)
+{
+    return FSmInputDevice::Manager->GetButtons()[Id];
+}
 
-    DeltaTranslation = Manager.GetTranslation();
-    DeltaRotation = Manager.GetRotation();
-    Buttons = Manager.GetButtons();
+bool USpaceMouseData::GetSpaceMouseButtonDown(int Id)
+{
+    return FSmInputDevice::Manager->ButtonDownFrame(FSmButton::FromID(Id));
+}
+
+bool USpaceMouseData::GetSpaceMouseButtonUp(int Id)
+{
+    return FSmInputDevice::Manager->ButtonUpFrame(FSmButton::FromID(Id));
 }
