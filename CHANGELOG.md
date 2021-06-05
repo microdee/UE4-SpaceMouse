@@ -1,15 +1,26 @@
 
-# **1.2** (WIP) (Github)
+# **1.3** (WIP)
 
 ### **Goals:**
-* [x] Completely rewrite the SpaceMouseReader module to support more data sources and just have better code quality
-* [ ] MacOS support. **Postponed to 1.3 :(**
-* [x] Participate properly in Unreal's Input Device system (have bindable `FKey`s and axes)
-* [x] Trigger Editor commands directly
-* [x] Support Orthographic viewports
+
+* [ ] Fix the current roadblock with macOS support.
+* [ ] Use official 3DxWare SDK when it's available on Windows as well (use HID as a fallback)
+  * as per request
 * [ ] Improve axis configuration UX
 * [ ] Per-device model default button bindings
 * [ ] Detect device models through the Universal Receiver
+
+# **1.2** (Current) (Marketplace)
+
+### **Goals:**
+* [x] Completely rewrite the SpaceMouseReader module to support more data sources and just have better code quality
+* [x] Participate properly in Unreal's Input Device system (have bindable `FKey`s and axes)
+* [x] Trigger Editor commands directly
+* [x] Support Orthographic viewports
+
+## 1.2.4
+
+* Release to Marketplace, only compliance changes are made
 
 ## 1.2.3-β
 * *RUNTIME*
@@ -47,14 +58,6 @@
 
 ## <= 1.1.4 
 [See releases](https://github.com/microdee/UE4-SpaceMouse/releases)
-
-# **1.3** (roadmap)
-
-### **Goals:**
-
-* [ ] Fix the current roadblock with macOS support.
-* [ ] Use official 3DxWare SDK when it's available on Windows as well (use HID as a fallback)
-  * as per request
 
 # **?.?** (future)
 
