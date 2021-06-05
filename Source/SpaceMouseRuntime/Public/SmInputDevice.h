@@ -1,4 +1,5 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright 2018-2021 David Morasz All Rights Reserved.
+// This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 #pragma once
 
