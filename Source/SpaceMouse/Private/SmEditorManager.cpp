@@ -65,9 +65,10 @@ void FSmEditorManager::Start()
 
 void FSmEditorManager::ManageOrbitingOverlay()
 {
+    auto Settings = GetMutableDefault<USpaceMouseConfig>();
     if(MovementState->bOnMovementStartedFrame
         && ActiveViewportClient
-        && FSpaceMouseModule::Settings->DisplayOrbittingPivot)
+        && Settings->DisplayOrbitingPivot)
     {
         OrbitingOverlay = MakeShared<FSmViewportOverlay>(ActiveViewportClient);
     }
