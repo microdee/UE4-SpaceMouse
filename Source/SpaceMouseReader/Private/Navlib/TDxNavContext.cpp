@@ -1,5 +1,6 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
+#if WITH_3DX_NAVLIB
 
 #include "Navlib/TDxNavContext.h"
 #include "Navlib/NavlibAccessor.h"
@@ -134,3 +135,5 @@ void FTDxNavContext::Open()
         Navlib = {};
     }
 }
+
+#endif

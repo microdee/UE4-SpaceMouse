@@ -2,6 +2,8 @@
 
 #pragma once
 
+#if WITH_3DX_NAVLIB
+
 #include "CoreMinimal.h"
 #include <navlib/navlib.h>
 #include <navlib/navlib_types.h>
@@ -145,3 +147,5 @@ private:
     navlib::nlHandle_t Navlib {};
     TUniquePtr<FTDxNavConnection> Connection;
 };
+
+#endif

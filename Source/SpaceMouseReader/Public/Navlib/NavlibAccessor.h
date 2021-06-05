@@ -2,6 +2,8 @@
 
 #pragma once
 
+#if WITH_3DX_NAVLIB
+
 #include "CoreMinimal.h"
 
 #include <navlib/navlib_types.h>
@@ -93,3 +95,5 @@ public:
         OutArray.Add(NlAccessor);
     }
 };
+
+#endif

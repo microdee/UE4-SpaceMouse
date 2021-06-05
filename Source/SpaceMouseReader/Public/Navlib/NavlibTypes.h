@@ -2,6 +2,8 @@
 
 #pragma once
 
+#if WITH_3DX_NAVLIB
+
 #include "CoreMinimal.h"
 
 #include <navlib/navlib_types.h>
@@ -114,3 +116,5 @@ namespace navlib
         ({TCHAR_TO_ANSI(*$), $.Len()})
     );
 }
+
+#endif
