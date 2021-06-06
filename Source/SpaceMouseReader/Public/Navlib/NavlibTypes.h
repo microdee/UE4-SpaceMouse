@@ -18,8 +18,8 @@
     { \
         typedef MUnreal FUnreal; \
         typedef MNavlib FNavlib; \
-        static FUnreal From(const FNavlib& $) { return MoveTemp<FUnreal>(DECLARE_TO_UNREAL_BODY##FromBody); } \
-        static FNavlib To(const FUnreal& $) { return MoveTemp<FNavlib>(DECLARE_TO_UNREAL_BODY##ToBody); } \
+        static FUnreal From(const FNavlib& $) { return DECLARE_TO_UNREAL_BODY##FromBody; } \
+        static FNavlib To(const FUnreal& $) { return DECLARE_TO_UNREAL_BODY##ToBody; } \
     }
 
 namespace navlib
