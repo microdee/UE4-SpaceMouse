@@ -12,7 +12,7 @@
 
 
 #define DECLARE_TO_UNREAL_BODY(...) __VA_ARGS__
-#define DECLARE_TO_UNREAL(MNavlib, MUnreal, FromBody, ToBody, SetValBody, GetValBody) \
+#define DECLARE_TO_UNREAL(MNavlib, MUnreal, FromBody, ToBody) \
     template<> \
     struct TUnreal<MNavlib> \
     { \
@@ -24,6 +24,9 @@
 
 namespace navlib
 {
+    template<typename T>
+    FORCEINLINE float FCast(const T& $) { return static_cast<float>($); }
+    
     template<typename TNavlibType>
     struct TUnreal
     {
@@ -33,19 +36,19 @@ namespace navlib
 
     DECLARE_TO_UNREAL(
         point_t, FVector,
-        ({$.x, $.y, $.z}),
+        ({FCast($.x), FCast($.y), FCast($.z)}),
         ({$.X, $.Y, $.Z})
     );
 
     DECLARE_TO_UNREAL(
         vector_t, FVector,
-        ({$.x, $.y, $.z}),
+        ({FCast($.x), FCast($.y), FCast($.z)}),
         ({$.X, $.Y, $.Z})
     );
 
     DECLARE_TO_UNREAL(
         plane_t, FPlane,
-        ({$.x, $.y, $.z, $.d}),
+        ({FCast($.x), FCast($.y), FCast($.z), FCast($.d)}),
         ({$.X, $.Y, $.Z, $.W})
     );
 
@@ -59,26 +62,26 @@ namespace navlib
         frustum_t, FMatrix,
         ({
             {
-                -($.farVal + $.nearVal) / ($.farVal-$.nearVal),
+                FCast(-($.farVal + $.nearVal) / ($.farVal-$.nearVal)),
                 0.0f,
                 0.0f,
-                -2.0f * $.nearVal * $.farVal / ($.farVal-$.nearVal)
+                FCast(-2.0 * $.nearVal * $.farVal / ($.farVal-$.nearVal))
             },
             {
-                ($.right+$.left) / ($.right - $.left),
-                2.0f * $.nearVal / ($.right - $.left),
+                FCast(($.right+$.left) / ($.right - $.left)),
+                FCast(2.0 * $.nearVal / ($.right - $.left)),
                 0.0f,
                 0.0f
             },
             {
-                ($.top + $.bottom) / ($.top - $.bottom),
+                FCast(($.top + $.bottom) / ($.top - $.bottom)),
                 0.0f,
-                2.0f * $.nearVal / ($.top - $.bottom),
+                FCast(2.0 * $.nearVal / ($.top - $.bottom)),
                 0.0f
             },
             {1.0f, 0.0f, 0.0f, 0.0f}
         }),
-        ([&](){
+        ([&]() -> frustum_t {
             FPlane L, R, T, B, N, F;
             if(!$.GetFrustumLeftPlane(L)) return {};
             if(!$.GetFrustumRightPlane(R)) return {};
@@ -95,10 +98,10 @@ namespace navlib
     DECLARE_TO_UNREAL(
         matrix_t, FMatrix,
         ({
-            {$.m00, $.m01, $.m02, $.m03},
-            {$.m10, $.m11, $.m12, $.m13},
-            {$.m20, $.m21, $.m22, $.m23},
-            {$.m30, $.m31, $.m32, $.m33}
+            {FCast($.m00), FCast($.m01), FCast($.m02), FCast($.m03)},
+            {FCast($.m10), FCast($.m11), FCast($.m12), FCast($.m13)},
+            {FCast($.m20), FCast($.m21), FCast($.m22), FCast($.m23)},
+            {FCast($.m30), FCast($.m31), FCast($.m32), FCast($.m33)}
         }),
         ({
             $.M[0][0], $.M[0][1], $.M[0][2], $.M[0][3],
@@ -111,13 +114,13 @@ namespace navlib
     DECLARE_TO_UNREAL(
         string_t, FString,
         (FString($.length, ANSI_TO_TCHAR($.p))),
-        ({TCHAR_TO_ANSI(*$), $.Len()})
+        ({TCHAR_TO_ANSI(*$), static_cast<size_t>($.Len())})
     );
 
     DECLARE_TO_UNREAL(
         cstr_t, FString,
         (FString($.length, ANSI_TO_TCHAR($.p))),
-        ({TCHAR_TO_ANSI(*$), $.Len()})
+        ({TCHAR_TO_ANSI(*$), static_cast<size_t>($.Len())})
     );
     
     enum class EProperty : uint8
@@ -290,7 +293,7 @@ namespace navlib
 
             check(!Result);
         }
-
+        
         operator FTypeUe& () { return FromNl(Get()); }
         operator FTypeNl& () { return Get(); }
 
