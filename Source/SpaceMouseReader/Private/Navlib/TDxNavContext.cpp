@@ -12,6 +12,8 @@ FTDxNavContext::FTDxNavContext()
 
 FTDxNavContext::~FTDxNavContext()
 {
+    using namespace navlib;
+    if(Navlib) NlClose(Navlib);
 }
 
 void FTDxNavContext::Open()
