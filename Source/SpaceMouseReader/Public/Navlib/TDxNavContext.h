@@ -7,44 +7,50 @@
 #include "CoreMinimal.h"
 #include "NavlibTypes.h"
 
-#define NL_PROP_R(Name) \
+#define NL_PROP_R(MSelf, Name) \
     static long Name##Reader(const navlib::param_t param, const navlib::property_t name, navlib::value_t *value) \
     { \
-        auto& Prop = reinterpret_cast<FTDxNavContext*>(param)->Name; \
-        *value = Prop.GetCached(); \
-        return Prop.IsAvailable() ? 0 : navlib::make_result_code(navlib::navlib_errc::no_data_available); \
+        auto Self = reinterpret_cast<MSelf*>(param); \
+        auto& Prop = Self->Name; \
+        if (Self->Is##Name##Available()) \
+        { \
+            Self->On##Name##Get(Prop); \
+            *value = Prop.GetCached(); \
+            return 0; \
+        } \
+        return navlib::make_result_code(navlib::navlib_errc::no_data_available); \
     }
 
-#define NL_PROP_W(Name) \
+#define NL_PROP_W(MSelf, Name) \
     static long Name##Writer(const navlib::param_t param, const navlib::property_t name, const navlib::value_t *value) \
     { \
-        reinterpret_cast<FTDxNavContext*>(param)->Name = value; \
+        /* reinterpret_cast<MSelf*>(param)->Name = value; */ \
+        reinterpret_cast<MSelf*>(param)->Name.SetCached(*value); \
         return 0; \
     }
 
-#define NL_PROP_ACC_R(Name) &FTDxNavContext::Name##Reader
-#define NL_PROP_ACC_W(Name) &FTDxNavContext::Name##Writer
+#define NL_PROP_ACC_R(MSelf, Name) &MSelf::Name##Reader
+#define NL_PROP_ACC_W(MSelf, Name) &MSelf::Name##Writer
 
 #define NL_PROP_()
 #define NL_PROP_ACC_() nullptr
 
-#define NL_PROP(Name, Read, Write) \
+#define NL_PROP(MSelf, Name, Read, Write) \
     public: using F##Name##Property = navlib::TProperty<navlib::EProperty::Name>; \
     protected: virtual bool Is##Name##Available() { return true; } \
-    protected: virtual void On##Name##Set(const F##Name##Property::FTypeUe& InValue) { } \
+    protected: virtual void On##Name##Set(const F##Name##Property& InValue) { } \
+    protected: virtual void On##Name##Get(F##Name##Property& InValue) { } \
     public: F##Name##Property Name { \
         Navlib, \
-        F##Name##Property::FChange::CreateRaw(this, &FTDxNavContext::On##Name##Set), \
-        F##Name##Property::FAvailable::CreateRaw(this, &FTDxNavContext::Is##Name##Available) \
     }; \
-    private: NL_PROP_##Read(Name) NL_PROP_##Write(Name) \
+    private: NL_PROP_##Read(MSelf, Name) NL_PROP_##Write(MSelf, Name) \
     private: void Add##Name##Accessor(TArray<navlib::accessor_t>& OutArray) \
     { \
         navlib::accessor_t Accessor; \
         Accessor.name = decltype(Name)::GetProperty(); \
         Accessor.param = reinterpret_cast<navlib::param_t>(this); \
-        Accessor.fnGet = NL_PROP_ACC_##Read(Name); \
-        Accessor.fnSet = NL_PROP_ACC_##Write(Name); \
+        Accessor.fnGet = NL_PROP_ACC_##Read(MSelf, Name); \
+        Accessor.fnSet = NL_PROP_ACC_##Write(MSelf, Name); \
         OutArray.Add(Accessor); \
     } \
 
@@ -71,44 +77,44 @@ public:
 
     // Navlib properties with their boilerplate
 
-    NL_PROP(Active                ,   ,   );
-    NL_PROP(Focus                 ,   ,   );
-    NL_PROP(Motion                ,   , W );
-    NL_PROP(CoordinateSystem      , R ,   );
-    NL_PROP(DevicePresent         ,   ,   );
-    NL_PROP(EventsKeyPress        ,   , W );
-    NL_PROP(EventsKeyRelease      ,   , W );
-    NL_PROP(Transaction           ,   , W );
-    NL_PROP(FrameTime             , R ,   );
-    NL_PROP(FrameTimingSource     , R ,   );
-    NL_PROP(ViewAffine            , R , W );
-    NL_PROP(ViewConstructionPlane , R ,   );
-    NL_PROP(ViewExtents           , R , W );
-    NL_PROP(ViewFov               , R , W );
-    NL_PROP(ViewFrustum           , R ,   );
-    NL_PROP(ViewPerspective       , R ,   );
-    NL_PROP(ViewRotatable         , R ,   );
-    NL_PROP(ViewTarget            , R ,   );
-    NL_PROP(ViewsFront            , R ,   );
-    NL_PROP(PivotPosition         , R , W );
-    NL_PROP(PivotUser             ,   ,   );
-    NL_PROP(PivotVisible          ,   , W );
-    NL_PROP(HitLookfrom           ,   , W );
-    NL_PROP(HitDirection          ,   , W );
-    NL_PROP(HitAperture           ,   , W );
-    NL_PROP(HitLookat             , R ,   );
-    NL_PROP(HitSelectionOnly      ,   , W );
-    NL_PROP(SelectionAffine       , R , W );
-    NL_PROP(SelectionEmpty        , R ,   );
-    NL_PROP(SelectionExtents      , R ,   );
-    NL_PROP(ModelExtents          , R ,   );
-    NL_PROP(PointerPosition       , R ,   );
-    NL_PROP(CommandsTree          ,   ,   );
-    NL_PROP(CommandsActiveSet     ,   ,   );
-    NL_PROP(CommandsActiveCommand ,   , W );
-    NL_PROP(Images                ,   ,   );
-    NL_PROP(Settings              ,   ,   );
-    NL_PROP(SettingsChanged       ,   , W );
+    NL_PROP(FTDxNavContext, Active                ,   ,   );
+    NL_PROP(FTDxNavContext, Focus                 ,   ,   );
+    NL_PROP(FTDxNavContext, Motion                ,   , W );
+    NL_PROP(FTDxNavContext, CoordinateSystem      , R ,   );
+    NL_PROP(FTDxNavContext, DevicePresent         ,   ,   );
+    NL_PROP(FTDxNavContext, EventsKeyPress        ,   , W );
+    NL_PROP(FTDxNavContext, EventsKeyRelease      ,   , W );
+    NL_PROP(FTDxNavContext, Transaction           ,   , W );
+    NL_PROP(FTDxNavContext, FrameTime             , R ,   );
+    NL_PROP(FTDxNavContext, FrameTimingSource     , R ,   );
+    NL_PROP(FTDxNavContext, ViewAffine            , R , W );
+    NL_PROP(FTDxNavContext, ViewConstructionPlane , R ,   );
+    NL_PROP(FTDxNavContext, ViewExtents           , R , W );
+    NL_PROP(FTDxNavContext, ViewFov               , R , W );
+    NL_PROP(FTDxNavContext, ViewFrustum           , R ,   );
+    NL_PROP(FTDxNavContext, ViewPerspective       , R ,   );
+    NL_PROP(FTDxNavContext, ViewRotatable         , R ,   );
+    NL_PROP(FTDxNavContext, ViewTarget            , R ,   );
+    NL_PROP(FTDxNavContext, ViewsFront            , R ,   );
+    NL_PROP(FTDxNavContext, PivotPosition         , R , W );
+    NL_PROP(FTDxNavContext, PivotUser             ,   ,   );
+    NL_PROP(FTDxNavContext, PivotVisible          ,   , W );
+    NL_PROP(FTDxNavContext, HitLookfrom           ,   , W );
+    NL_PROP(FTDxNavContext, HitDirection          ,   , W );
+    NL_PROP(FTDxNavContext, HitAperture           ,   , W );
+    NL_PROP(FTDxNavContext, HitLookat             , R ,   );
+    NL_PROP(FTDxNavContext, HitSelectionOnly      ,   , W );
+    NL_PROP(FTDxNavContext, SelectionAffine       , R , W );
+    NL_PROP(FTDxNavContext, SelectionEmpty        , R ,   );
+    NL_PROP(FTDxNavContext, SelectionExtents      , R ,   );
+    NL_PROP(FTDxNavContext, ModelExtents          , R ,   );
+    NL_PROP(FTDxNavContext, PointerPosition       , R ,   );
+    NL_PROP(FTDxNavContext, CommandsTree          ,   ,   );
+    NL_PROP(FTDxNavContext, CommandsActiveSet     ,   ,   );
+    NL_PROP(FTDxNavContext, CommandsActiveCommand ,   , W );
+    NL_PROP(FTDxNavContext, Images                ,   ,   );
+    NL_PROP(FTDxNavContext, Settings              ,   ,   );
+    NL_PROP(FTDxNavContext, SettingsChanged       ,   , W );
 
     // TODO command tree
 

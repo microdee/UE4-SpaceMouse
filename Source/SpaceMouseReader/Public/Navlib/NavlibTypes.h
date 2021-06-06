@@ -25,7 +25,11 @@
 namespace navlib
 {
     template<typename TNavlibType>
-    struct TUnreal {};
+    struct TUnreal
+    {
+        typedef TNavlibType FUnreal; \
+        typedef TNavlibType FNavlib; \
+    };
 
     DECLARE_TO_UNREAL(
         point_t, FVector,
@@ -202,44 +206,46 @@ namespace navlib
     template<EProperty TProp>
     struct TPropType {};
     
-    template<> struct TPropType<EProperty::Active>                { using FType = bool; };
-    template<> struct TPropType<EProperty::Focus>                 { using FType = bool; };
-    template<> struct TPropType<EProperty::Motion>                { using FType = bool; };
-    template<> struct TPropType<EProperty::CoordinateSystem>      { using FType = matrix; };
-    template<> struct TPropType<EProperty::DevicePresent>         { using FType = bool; };
-    template<> struct TPropType<EProperty::EventsKeyPress>        { using FType = long; };
-    template<> struct TPropType<EProperty::EventsKeyRelease>      { using FType = long; };
-    template<> struct TPropType<EProperty::Transaction>           { using FType = long; };
-    template<> struct TPropType<EProperty::FrameTime>             { using FType = double; };
-    template<> struct TPropType<EProperty::FrameTimingSource>     { using FType = long; };
-    template<> struct TPropType<EProperty::ViewAffine>            { using FType = matrix; };
-    template<> struct TPropType<EProperty::ViewConstructionPlane> { using FType = plane; };
-    template<> struct TPropType<EProperty::ViewExtents>           { using FType = box; };
-    template<> struct TPropType<EProperty::ViewFov>               { using FType = float; };
-    template<> struct TPropType<EProperty::ViewFrustum>           { using FType = frustum; };
-    template<> struct TPropType<EProperty::ViewPerspective>       { using FType = bool; };
-    template<> struct TPropType<EProperty::ViewRotatable>         { using FType = bool; };
-    template<> struct TPropType<EProperty::ViewTarget>            { using FType = point; };
-    template<> struct TPropType<EProperty::ViewsFront>            { using FType = matrix; };
-    template<> struct TPropType<EProperty::PivotPosition>         { using FType = point; };
-    template<> struct TPropType<EProperty::PivotUser>             { using FType = bool; };
-    template<> struct TPropType<EProperty::PivotVisible>          { using FType = bool; };
-    template<> struct TPropType<EProperty::HitLookfrom>           { using FType = point; };
-    template<> struct TPropType<EProperty::HitDirection>          { using FType = vector; };
-    template<> struct TPropType<EProperty::HitAperture>           { using FType = float; };
-    template<> struct TPropType<EProperty::HitLookat>             { using FType = point; };
-    template<> struct TPropType<EProperty::HitSelectionOnly>      { using FType = bool; };
-    template<> struct TPropType<EProperty::SelectionAffine>       { using FType = matrix; };
-    template<> struct TPropType<EProperty::SelectionEmpty>        { using FType = bool; };
-    template<> struct TPropType<EProperty::SelectionExtents>      { using FType = box; };
-    template<> struct TPropType<EProperty::ModelExtents>          { using FType = box; };
-    template<> struct TPropType<EProperty::PointerPosition>       { using FType = point; };
-    template<> struct TPropType<EProperty::CommandsTree>          { using FType = SiActionNodeEx_t*; };
-    template<> struct TPropType<EProperty::CommandsActiveSet>     { using FType = string_t; };
-    template<> struct TPropType<EProperty::CommandsActiveCommand> { using FType = string_t; };
-    template<> struct TPropType<EProperty::Images>                { using FType = imagearray_t; };
-    template<> struct TPropType<EProperty::Settings>              { using FType = string_t; };
-    template<> struct TPropType<EProperty::SettingsChanged>       { using FType = long; };
+#define NL_PROPERTY_TYPE(Type, Name) template<> struct TPropType<EProperty::Name> { typedef Type FType; }
+    
+    NL_PROPERTY_TYPE( bool              , Active );
+    NL_PROPERTY_TYPE( bool              , Focus );
+    NL_PROPERTY_TYPE( bool              , Motion );
+    NL_PROPERTY_TYPE( matrix            , CoordinateSystem );
+    NL_PROPERTY_TYPE( bool              , DevicePresent );
+    NL_PROPERTY_TYPE( long              , EventsKeyPress );
+    NL_PROPERTY_TYPE( long              , EventsKeyRelease );
+    NL_PROPERTY_TYPE( long              , Transaction );
+    NL_PROPERTY_TYPE( double            , FrameTime );
+    NL_PROPERTY_TYPE( long              , FrameTimingSource );
+    NL_PROPERTY_TYPE( matrix            , ViewAffine );
+    NL_PROPERTY_TYPE( plane             , ViewConstructionPlane );
+    NL_PROPERTY_TYPE( box               , ViewExtents );
+    NL_PROPERTY_TYPE( float             , ViewFov );
+    NL_PROPERTY_TYPE( frustum           , ViewFrustum );
+    NL_PROPERTY_TYPE( bool              , ViewPerspective );
+    NL_PROPERTY_TYPE( bool              , ViewRotatable );
+    NL_PROPERTY_TYPE( point             , ViewTarget );
+    NL_PROPERTY_TYPE( matrix            , ViewsFront );
+    NL_PROPERTY_TYPE( point             , PivotPosition );
+    NL_PROPERTY_TYPE( bool              , PivotUser );
+    NL_PROPERTY_TYPE( bool              , PivotVisible );
+    NL_PROPERTY_TYPE( point             , HitLookfrom );
+    NL_PROPERTY_TYPE( vector            , HitDirection );
+    NL_PROPERTY_TYPE( float             , HitAperture );
+    NL_PROPERTY_TYPE( point             , HitLookat );
+    NL_PROPERTY_TYPE( bool              , HitSelectionOnly );
+    NL_PROPERTY_TYPE( matrix            , SelectionAffine );
+    NL_PROPERTY_TYPE( bool              , SelectionEmpty );
+    NL_PROPERTY_TYPE( box               , SelectionExtents );
+    NL_PROPERTY_TYPE( box               , ModelExtents );
+    NL_PROPERTY_TYPE( point             , PointerPosition );
+    NL_PROPERTY_TYPE( SiActionNodeEx_t* , CommandsTree );
+    NL_PROPERTY_TYPE( string_t          , CommandsActiveSet );
+    NL_PROPERTY_TYPE( string_t          , CommandsActiveCommand );
+    NL_PROPERTY_TYPE( imagearray_t      , Images );
+    NL_PROPERTY_TYPE( string_t          , Settings );
+    NL_PROPERTY_TYPE( long              , SettingsChanged );
 
     template<EProperty TProp>
     class TProperty
@@ -249,9 +255,6 @@ namespace navlib
         using FTypeNl = typename TPropType<TProp>::FType;
         using FConversion = TUnreal<FTypeNl>;
         using FTypeUe = typename FConversion::FUnreal;
-        
-        DECLARE_DELEGATE_TwoParams(FChange, FTypeUe, FTypeNl);
-        DECLARE_DELEGATE_RetVal(bool, FAvailable);
 
         static FTypeNl FromUe(const FTypeUe& $) { return MoveTemp(FConversion::To($)); }
         static FTypeUe FromNl(const FTypeNl& $) { return MoveTemp(FConversion::From($)); }
@@ -261,14 +264,7 @@ namespace navlib
             return GPropertyMap[static_cast<uint8>(TProp)];
         }
 
-        explicit TProperty(
-            const nlHandle_t& InCtx,
-            FChange InOnSet,
-            FAvailable InIsAvailable
-        ) : Ctx(InCtx)
-          , OnSet(InOnSet)
-          , IsAvailableDel(InIsAvailable)
-        {}
+        explicit TProperty(const nlHandle_t& InCtx) : Ctx(InCtx) {}
         
         FTypeNl GetCached() { return Cache; }
         void SetCached(const FTypeNl& InVal) { Cache = InVal; }
@@ -295,15 +291,8 @@ namespace navlib
             check(!Result);
         }
 
-        bool IsAvailable() const
-        {
-            return IsAvailableDel.Execute();
-        }
-
         operator FTypeUe& () { return FromNl(Get()); }
-        operator const FTypeUe& () { return FromNl(Get()); }
         operator FTypeNl& () { return Get(); }
-        operator const FTypeNl& () { return Get(); }
 
         FSelf& operator=(value_t* InVal)
         {
@@ -330,8 +319,6 @@ namespace navlib
     private:
         nlHandle_t Ctx;
         FTypeNl Cache {};
-        FChange OnSet;
-        FAvailable IsAvailableDel;
     };
 }
 

@@ -3,7 +3,6 @@
 #if WITH_3DX_NAVLIB
 
 #include "Navlib/TDxNavContext.h"
-#include "Navlib/NavlibAccessor.h"
 
 #include "SpaceMouseReader.h"
 
