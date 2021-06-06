@@ -5,54 +5,54 @@
 #if WITH_3DX_NAVLIB
 
 #include "CoreMinimal.h"
-#include <navlib/navlib.h>
-#include <navlib/navlib_types.h>
+#include "NavlibTypes.h"
+
+#define NL_PROP_R(Name) \
+    static long Name##Reader(const navlib::param_t param, const navlib::property_t name, navlib::value_t *value) \
+    { \
+        auto& Prop = reinterpret_cast<FTDxNavContext*>(param)->Name; \
+        *value = Prop.GetCached(); \
+        return Prop.IsAvailable() ? 0 : navlib::make_result_code(navlib::navlib_errc::no_data_available); \
+    }
+
+#define NL_PROP_W(Name) \
+    static long Name##Writer(const navlib::param_t param, const navlib::property_t name, const navlib::value_t *value) \
+    { \
+        reinterpret_cast<FTDxNavContext*>(param)->Name = value; \
+        return 0; \
+    }
+
+#define NL_PROP_ACC_R(Name) &FTDxNavContext::Name##Reader
+#define NL_PROP_ACC_W(Name) &FTDxNavContext::Name##Writer
+
+#define NL_PROP_()
+#define NL_PROP_ACC_() nullptr
+
+#define NL_PROP(Name, Read, Write) \
+    public: using F##Name##Property = navlib::TProperty<navlib::EProperty::Name>; \
+    protected: virtual bool Is##Name##Available() { return true; } \
+    protected: virtual void On##Name##Set(const F##Name##Property::FTypeUe& InValue) { } \
+    public: F##Name##Property Name { \
+        Navlib, \
+        F##Name##Property::FChange::CreateRaw(this, &FTDxNavContext::On##Name##Set), \
+        F##Name##Property::FAvailable::CreateRaw(this, &FTDxNavContext::Is##Name##Available) \
+    }; \
+    private: NL_PROP_##Read(Name) NL_PROP_##Write(Name) \
+    private: void Add##Name##Accessor(TArray<navlib::accessor_t>& OutArray) \
+    { \
+        navlib::accessor_t Accessor; \
+        Accessor.name = decltype(Name)::GetProperty(); \
+        Accessor.param = reinterpret_cast<navlib::param_t>(this); \
+        Accessor.fnGet = NL_PROP_ACC_##Read(Name); \
+        Accessor.fnSet = NL_PROP_ACC_##Write(Name); \
+        OutArray.Add(Accessor); \
+    } \
 
 /**
  * 
  */
 class SPACEMOUSEREADER_API FTDxNavContext
 {
-    friend class FTDxNavConnection;
-    
-public:
-
-    template<typename TVal>
-    struct TResult
-    {
-        TVal Value {};
-        long Result = 0;
-        
-        TResult()
-            : Value({})
-            , Result(navlib::make_result_code(navlib::navlib_errc::no_data_available))
-        {}
-        
-        TResult(TVal InValue)
-            : Value(InValue)
-            , Result(0)
-        {}
-    private:
-        explicit TResult(TVal InValue, long InResult)
-            : Value(InValue)
-            , Result(InResult)
-        {}
-    public:
-        static TResult<TVal> Error(long InError)
-        {
-            return TResult(Value, navlib::make_result_code(InError));
-        }
-
-        operator TVal () { return Value; }
-    };
-
-protected:
-    
-    template<typename TVal>
-    static TResult<TVal> Error(long InError)
-    {
-        return {{}, InError};
-    }
     
 public:
     
@@ -60,92 +60,63 @@ public:
     virtual ~FTDxNavContext();
 
     void Open();
-
+    
+protected:
     virtual void OnPreOpen(TArray<navlib::accessor_t>& Accessors) {}
     virtual void OnPostOpen() {}
-
+    
+public:
     /** Name of this instance of a navigation context */
     virtual FString GetProfileName() = 0;
 
-    // Navlib property getters setters
-    // Set* is a Getter in Navlib and On* is a Setter in Navlib
-    
-    virtual void OnMotion(bool Value) {} // write_access
-    
-    virtual TResult<navlib::matrix_t> SetCoordinateSystem() { return {}; } // read_access
-    
-    virtual void OnEventsKeyPress(long Value) {} // write_access
-    
-    virtual void OnEventsKeyRelease(long Value) {} // write_access
-    
-    virtual void OnTransaction(long Value) {} // write_access
-    
-    virtual TResult<double> SetFrameTime() { return {}; } // read_access
-    
-    virtual TResult<long> SetFrameTimingSource() { return {}; } // read_access
-    
-    virtual void OnViewAffine(navlib::matrix_t Value) {} // read_write_access
-    
-    virtual TResult<navlib::matrix_t> SetViewAffine() { return {}; } // read_write_access
-    
-    virtual TResult<navlib::plane_t> SetViewConstructionPlane() { return {}; } // read_access
-    
-    virtual void OnViewExtents(navlib::box_t Value) {} // read_write_access
-    
-    virtual TResult<navlib::box_t> SetViewExtents() { return {}; } // read_write_access
-    
-    virtual void OnViewFov(float Value) {} // read_write_access
-    
-    virtual TResult<float> SetViewFov() { return {}; } // read_write_access
-    
-    virtual TResult<navlib::frustum_t> SetViewFrustum() { return {}; } // read_access
-    
-    virtual TResult<bool> SetViewPerspective() { return {}; } // read_access
-    
-    virtual TResult<bool> SetViewRotatable() { return {}; } // read_access
-    
-    virtual TResult<navlib::point_t> SetViewTarget() { return {}; } // read_access
-    
-    virtual TResult<navlib::matrix_t> SetViewsFront() { return {}; } // read_access
-    
-    virtual void OnPivotPosition(navlib::point_t Value) {} // read_write_access
-    
-    virtual TResult<navlib::point_t> SetPivotPosition() { return {}; } // read_write_access
-    
-    virtual void OnPivotVisible(bool Value) {} // write_access
-    
-    virtual void OnHitLookfrom(navlib::point_t Value) {} // write_access
-    
-    virtual void OnHitDirection(navlib::vector_t Value) {} // write_access
-    
-    virtual void OnHitAperture(float Value) {} // write_access
-    
-    virtual TResult<navlib::point_t> SetHitLookat() { return {}; } // read_access
-    
-    virtual void OnHitSelectionOnly(bool Value) {} // write_access
-    
-    virtual void OnSelectionAffine(navlib::matrix_t Value) {} // read_write_access
-    
-    virtual TResult<navlib::matrix_t> SetSelectionAffine() { return {}; } // read_write_access
-    
-    virtual TResult<bool> SetSelectionEmpty() { return {}; } // read_access
-    
-    virtual TResult<navlib::box_t> SetSelectionExtents() { return {}; } // read_access
-    
-    virtual TResult<navlib::box_t> SetModelExtents() { return {}; } // read_access
-    
-    virtual TResult<navlib::point_t> SetPointerPosition() { return {}; } // read_access
+    // Navlib properties with their boilerplate
+
+    NL_PROP(Active                ,   ,   );
+    NL_PROP(Focus                 ,   ,   );
+    NL_PROP(Motion                ,   , W );
+    NL_PROP(CoordinateSystem      , R ,   );
+    NL_PROP(DevicePresent         ,   ,   );
+    NL_PROP(EventsKeyPress        ,   , W );
+    NL_PROP(EventsKeyRelease      ,   , W );
+    NL_PROP(Transaction           ,   , W );
+    NL_PROP(FrameTime             , R ,   );
+    NL_PROP(FrameTimingSource     , R ,   );
+    NL_PROP(ViewAffine            , R , W );
+    NL_PROP(ViewConstructionPlane , R ,   );
+    NL_PROP(ViewExtents           , R , W );
+    NL_PROP(ViewFov               , R , W );
+    NL_PROP(ViewFrustum           , R ,   );
+    NL_PROP(ViewPerspective       , R ,   );
+    NL_PROP(ViewRotatable         , R ,   );
+    NL_PROP(ViewTarget            , R ,   );
+    NL_PROP(ViewsFront            , R ,   );
+    NL_PROP(PivotPosition         , R , W );
+    NL_PROP(PivotUser             ,   ,   );
+    NL_PROP(PivotVisible          ,   , W );
+    NL_PROP(HitLookfrom           ,   , W );
+    NL_PROP(HitDirection          ,   , W );
+    NL_PROP(HitAperture           ,   , W );
+    NL_PROP(HitLookat             , R ,   );
+    NL_PROP(HitSelectionOnly      ,   , W );
+    NL_PROP(SelectionAffine       , R , W );
+    NL_PROP(SelectionEmpty        , R ,   );
+    NL_PROP(SelectionExtents      , R ,   );
+    NL_PROP(ModelExtents          , R ,   );
+    NL_PROP(PointerPosition       , R ,   );
+    NL_PROP(CommandsTree          ,   ,   );
+    NL_PROP(CommandsActiveSet     ,   ,   );
+    NL_PROP(CommandsActiveCommand ,   , W );
+    NL_PROP(Images                ,   ,   );
+    NL_PROP(Settings              ,   ,   );
+    NL_PROP(SettingsChanged       ,   , W );
 
     // TODO command tree
-    
-    virtual void OnSettingsChanged(long Value) {} // write_access
 
     // End of Navlib getters/setters
     
 private:
     
     navlib::nlHandle_t Navlib {};
-    TUniquePtr<FTDxNavConnection> Connection;
 };
 
 #endif

@@ -1,31 +1,31 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+#include "Containers/StaticArray.h"
 
 #if WITH_3DX_NAVLIB
 
 #include "CoreMinimal.h"
 
 #include <navlib/navlib_types.h>
+#include <navlib/navlib.h>
 
 
 #define DECLARE_TO_UNREAL_BODY(...) __VA_ARGS__
-#define DECLARE_TO_UNREAL(MNavlib, MUnreal, FromBody, ToBody) \
+#define DECLARE_TO_UNREAL(MNavlib, MUnreal, FromBody, ToBody, SetValBody, GetValBody) \
     template<> \
     struct TUnreal<MNavlib> \
     { \
         typedef MUnreal FUnreal; \
         typedef MNavlib FNavlib; \
-        static FUnreal From(const FNavlib& $) { return DECLARE_TO_UNREAL_BODY##FromBody; } \
-        static FNavlib To(const FUnreal& $) { return DECLARE_TO_UNREAL_BODY##ToBody; } \
+        static FUnreal From(const FNavlib& $) { return MoveTemp<FUnreal>(DECLARE_TO_UNREAL_BODY##FromBody); } \
+        static FNavlib To(const FUnreal& $) { return MoveTemp<FNavlib>(DECLARE_TO_UNREAL_BODY##ToBody); } \
     }
 
 namespace navlib
 {
     template<typename TNavlibType>
-    struct TUnreal
-    {
-    };
+    struct TUnreal {};
 
     DECLARE_TO_UNREAL(
         point_t, FVector,
@@ -115,6 +115,224 @@ namespace navlib
         (FString($.length, ANSI_TO_TCHAR($.p))),
         ({TCHAR_TO_ANSI(*$), $.Len()})
     );
+    
+    enum class EProperty : uint8
+    {
+        Active,
+        Focus,
+        Motion,
+        CoordinateSystem,
+        DevicePresent,
+        EventsKeyPress,
+        EventsKeyRelease,
+        Transaction,
+        FrameTime,
+        FrameTimingSource,
+        ViewAffine,
+        ViewConstructionPlane,
+        ViewExtents,
+        ViewFov,
+        ViewFrustum,
+        ViewPerspective,
+        ViewRotatable,
+        ViewTarget,
+        ViewsFront,
+        PivotPosition,
+        PivotUser,
+        PivotVisible,
+        HitLookfrom,
+        HitDirection,
+        HitAperture,
+        HitLookat,
+        HitSelectionOnly,
+        SelectionAffine,
+        SelectionEmpty,
+        SelectionExtents,
+        ModelExtents,
+        PointerPosition,
+        CommandsTree,
+        CommandsActiveSet,
+        CommandsActiveCommand,
+        Images,
+        Settings,
+        SettingsChanged
+    };
+
+    inline TArray GPropertyMap {
+        active_k,
+        focus_k,
+        motion_k,
+        coordinate_system_k,
+        device_present_k,
+        events_keyPress_k,
+        events_keyRelease_k,
+        transaction_k,
+        frame_time_k,
+        frame_timing_source_k,
+        view_affine_k,
+        view_constructionPlane_k,
+        view_extents_k,
+        view_fov_k,
+        view_frustum_k,
+        view_perspective_k,
+        view_rotatable_k,
+        view_target_k,
+        views_front_k,
+        pivot_position_k,
+        pivot_user_k,
+        pivot_visible_k,
+        hit_lookfrom_k,
+        hit_direction_k,
+        hit_aperture_k,
+        hit_lookat_k,
+        hit_selectionOnly_k,
+        selection_affine_k,
+        selection_empty_k,
+        selection_extents_k,
+        model_extents_k,
+        pointer_position_k,
+        commands_tree_k,
+        commands_activeSet_k,
+        commands_activeCommand_k,
+        images_k,
+        settings_k,
+        settings_changed_k
+    };
+
+    template<EProperty TProp>
+    struct TPropType {};
+    
+    template<> struct TPropType<EProperty::Active>                { using FType = bool; };
+    template<> struct TPropType<EProperty::Focus>                 { using FType = bool; };
+    template<> struct TPropType<EProperty::Motion>                { using FType = bool; };
+    template<> struct TPropType<EProperty::CoordinateSystem>      { using FType = matrix; };
+    template<> struct TPropType<EProperty::DevicePresent>         { using FType = bool; };
+    template<> struct TPropType<EProperty::EventsKeyPress>        { using FType = long; };
+    template<> struct TPropType<EProperty::EventsKeyRelease>      { using FType = long; };
+    template<> struct TPropType<EProperty::Transaction>           { using FType = long; };
+    template<> struct TPropType<EProperty::FrameTime>             { using FType = double; };
+    template<> struct TPropType<EProperty::FrameTimingSource>     { using FType = long; };
+    template<> struct TPropType<EProperty::ViewAffine>            { using FType = matrix; };
+    template<> struct TPropType<EProperty::ViewConstructionPlane> { using FType = plane; };
+    template<> struct TPropType<EProperty::ViewExtents>           { using FType = box; };
+    template<> struct TPropType<EProperty::ViewFov>               { using FType = float; };
+    template<> struct TPropType<EProperty::ViewFrustum>           { using FType = frustum; };
+    template<> struct TPropType<EProperty::ViewPerspective>       { using FType = bool; };
+    template<> struct TPropType<EProperty::ViewRotatable>         { using FType = bool; };
+    template<> struct TPropType<EProperty::ViewTarget>            { using FType = point; };
+    template<> struct TPropType<EProperty::ViewsFront>            { using FType = matrix; };
+    template<> struct TPropType<EProperty::PivotPosition>         { using FType = point; };
+    template<> struct TPropType<EProperty::PivotUser>             { using FType = bool; };
+    template<> struct TPropType<EProperty::PivotVisible>          { using FType = bool; };
+    template<> struct TPropType<EProperty::HitLookfrom>           { using FType = point; };
+    template<> struct TPropType<EProperty::HitDirection>          { using FType = vector; };
+    template<> struct TPropType<EProperty::HitAperture>           { using FType = float; };
+    template<> struct TPropType<EProperty::HitLookat>             { using FType = point; };
+    template<> struct TPropType<EProperty::HitSelectionOnly>      { using FType = bool; };
+    template<> struct TPropType<EProperty::SelectionAffine>       { using FType = matrix; };
+    template<> struct TPropType<EProperty::SelectionEmpty>        { using FType = bool; };
+    template<> struct TPropType<EProperty::SelectionExtents>      { using FType = box; };
+    template<> struct TPropType<EProperty::ModelExtents>          { using FType = box; };
+    template<> struct TPropType<EProperty::PointerPosition>       { using FType = point; };
+    template<> struct TPropType<EProperty::CommandsTree>          { using FType = SiActionNodeEx_t*; };
+    template<> struct TPropType<EProperty::CommandsActiveSet>     { using FType = string_t; };
+    template<> struct TPropType<EProperty::CommandsActiveCommand> { using FType = string_t; };
+    template<> struct TPropType<EProperty::Images>                { using FType = imagearray_t; };
+    template<> struct TPropType<EProperty::Settings>              { using FType = string_t; };
+    template<> struct TPropType<EProperty::SettingsChanged>       { using FType = long; };
+
+    template<EProperty TProp>
+    class TProperty
+    {
+    public:
+        using FSelf = TProperty<TProp>;
+        using FTypeNl = typename TPropType<TProp>::FType;
+        using FConversion = TUnreal<FTypeNl>;
+        using FTypeUe = typename FConversion::FUnreal;
+        
+        DECLARE_DELEGATE_TwoParams(FChange, FTypeUe, FTypeNl);
+        DECLARE_DELEGATE_RetVal(bool, FAvailable);
+
+        static FTypeNl FromUe(const FTypeUe& $) { return MoveTemp(FConversion::To($)); }
+        static FTypeUe FromNl(const FTypeNl& $) { return MoveTemp(FConversion::From($)); }
+        
+        static property_t GetProperty()
+        {
+            return GPropertyMap[static_cast<uint8>(TProp)];
+        }
+
+        explicit TProperty(
+            const nlHandle_t& InCtx,
+            FChange InOnSet,
+            FAvailable InIsAvailable
+        ) : Ctx(InCtx)
+          , OnSet(InOnSet)
+          , IsAvailableDel(InIsAvailable)
+        {}
+        
+        FTypeNl GetCached() { return Cache; }
+        void SetCached(const FTypeNl& InVal) { Cache = InVal; }
+
+        FTypeNl Get()
+        {
+            value_t Val;
+            if(NlReadValue(Ctx, GetProperty(), &Val))
+            {
+                return Cache;
+            }
+
+            FTypeNl TypedVal = Val;
+            return Val;
+        }
+
+        void Set(const FTypeNl& InVal)
+        {
+            SetCached(InVal);
+            
+            value_t Val(InVal);
+            auto Result = NlWriteValue(Ctx, GetProperty(), &Val);
+
+            check(!Result);
+        }
+
+        bool IsAvailable() const
+        {
+            return IsAvailableDel.Execute();
+        }
+
+        operator FTypeUe& () { return FromNl(Get()); }
+        operator const FTypeUe& () { return FromNl(Get()); }
+        operator FTypeNl& () { return Get(); }
+        operator const FTypeNl& () { return Get(); }
+
+        FSelf& operator=(value_t* InVal)
+        {
+            Set(*InVal);
+            return *this;
+        }
+        FSelf& operator=(const value_t* InVal)
+        {
+            Set(*InVal);
+            return *this;
+        }
+
+        FSelf& operator=(const FTypeUe& InVal)
+        {
+            Set(FromUe(InVal));
+            return *this;
+        }
+        FSelf& operator=(const FTypeNl& InVal)
+        {
+            Set(InVal);
+            return *this;
+        }
+    
+    private:
+        nlHandle_t Ctx;
+        FTypeNl Cache {};
+        FChange OnSet;
+        FAvailable IsAvailableDel;
+    };
 }
 
 #endif
