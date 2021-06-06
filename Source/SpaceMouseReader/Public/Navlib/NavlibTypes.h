@@ -255,12 +255,12 @@ namespace navlib
     {
     public:
         using FSelf = TProperty<TProp>;
-        using FTypeNl = typename TPropType<TProp>::FType;
-        using FConversion = TUnreal<FTypeNl>;
-        using FTypeUe = typename FConversion::FUnreal;
+        using FTypeNL = typename TPropType<TProp>::FType;
+        using FConversion = TUnreal<FTypeNL>;
+        using FTypeUE = typename FConversion::FUnreal;
 
-        static FTypeNl FromUe(const FTypeUe& $) { return MoveTemp(FConversion::To($)); }
-        static FTypeUe FromNl(const FTypeNl& $) { return MoveTemp(FConversion::From($)); }
+        static FTypeNL FromUE(const FTypeUE& $) { return MoveTemp(FConversion::To($)); }
+        static FTypeUE FromNL(const FTypeNL& $) { return MoveTemp(FConversion::From($)); }
         
         static property_t GetProperty()
         {
@@ -269,10 +269,12 @@ namespace navlib
 
         explicit TProperty(const nlHandle_t& InCtx) : Ctx(InCtx) {}
         
-        FTypeNl GetCached() { return Cache; }
-        void SetCached(const FTypeNl& InVal) { Cache = InVal; }
+        FTypeNL GetCached() { return Cache; }
+        FTypeUE GetCachedUE() { return FromNL(Cache); }
+        void SetCached(const FTypeNL& InVal) { Cache = InVal; }
+        void SetCachedUE(const FTypeUE& InVal) { Cache = FromUE(InVal); }
 
-        FTypeNl Get()
+        FTypeNL Get()
         {
             value_t Val;
             if(NlReadValue(Ctx, GetProperty(), &Val))
@@ -280,11 +282,13 @@ namespace navlib
                 return Cache;
             }
 
-            FTypeNl TypedVal = Val;
+            FTypeNL TypedVal = Val;
             return Val;
         }
 
-        void Set(const FTypeNl& InVal)
+        FTypeUE GetUE() { return FromNL(Get()); }
+
+        void Set(const FTypeNL& InVal)
         {
             SetCached(InVal);
             
@@ -293,35 +297,12 @@ namespace navlib
 
             check(!Result);
         }
-        
-        operator FTypeUe& () { return FromNl(Get()); }
-        operator FTypeNl& () { return Get(); }
 
-        FSelf& operator=(value_t* InVal)
-        {
-            Set(*InVal);
-            return *this;
-        }
-        FSelf& operator=(const value_t* InVal)
-        {
-            Set(*InVal);
-            return *this;
-        }
-
-        FSelf& operator=(const FTypeUe& InVal)
-        {
-            Set(FromUe(InVal));
-            return *this;
-        }
-        FSelf& operator=(const FTypeNl& InVal)
-        {
-            Set(InVal);
-            return *this;
-        }
+        void SetUE(const FTypeUE& InVal) { Set(FromUE(InVal)); }
     
     private:
         nlHandle_t Ctx;
-        FTypeNl Cache {};
+        FTypeNL Cache {};
     };
 }
 
