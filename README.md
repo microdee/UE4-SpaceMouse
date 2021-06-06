@@ -26,7 +26,7 @@
   
 **Pre-Compiled for UE 4.23 .. 4.26.**
 
-Demo video: https://youtu.be/Qibig0gQWvE
+Demo video: https://youtu.be/owcSTzs8p-8
 
 **[Download manually for free](https://github.com/microdee/UE4-SpaceMouse/releases/latest)**
 
