@@ -32,8 +32,8 @@
 #define NL_PROP_ACC_R(MSelf, Name) &MSelf::Name##Reader
 #define NL_PROP_ACC_W(MSelf, Name) &MSelf::Name##Writer
 
-#define NL_PROP_()
-#define NL_PROP_ACC_() nullptr
+#define NL_PROP_(...)
+#define NL_PROP_ACC_(...) nullptr
 
 #define NL_PROP(MSelf, Name, Read, Write) \
     public: using F##Name##Property = navlib::TProperty<navlib::EProperty::Name>; \
