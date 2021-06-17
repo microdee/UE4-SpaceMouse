@@ -228,7 +228,7 @@ namespace navlib
     NL_PROPERTY_TYPE( frustum           , ViewFrustum );
     NL_PROPERTY_TYPE( bool              , ViewPerspective );
     NL_PROPERTY_TYPE( bool              , ViewRotatable );
-    NL_PROPERTY_TYPE( point             , ViewTarget );
+    NL_PROPERTY_TYPE( point             , ViewTarget ); // ???
     NL_PROPERTY_TYPE( matrix            , ViewsFront );
     NL_PROPERTY_TYPE( point             , PivotPosition );
     NL_PROPERTY_TYPE( bool              , PivotUser );
@@ -274,7 +274,7 @@ namespace navlib
         void SetCached(const FTypeNL& InVal) { Cache = InVal; }
         void SetCachedUE(const FTypeUE& InVal) { Cache = FromUE(InVal); }
 
-        FTypeNL Get()
+        FTypeNL Get() const
         {
             value_t Val;
             if(NlReadValue(Ctx, GetProperty(), &Val))
@@ -286,7 +286,7 @@ namespace navlib
             return Val;
         }
 
-        FTypeUE GetUE() { return FromNL(Get()); }
+        FTypeUE GetUE() const { return FromNL(Get()); }
 
         void Set(const FTypeNL& InVal)
         {
