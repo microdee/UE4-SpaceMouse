@@ -2,21 +2,22 @@
 
 #if WITH_3DX_NAVLIB
 
+#include "Misc/App.h"
 #include "Navlib/TDxNavContext.h"
 
 #include "SpaceMouseReader.h"
 
-FTDxNavContext::FTDxNavContext()
+FTDxNavContextBase::FTDxNavContextBase()
 {
 }
 
-FTDxNavContext::~FTDxNavContext()
+FTDxNavContextBase::~FTDxNavContextBase()
 {
     using namespace navlib;
     if(Navlib) NlClose(Navlib);
 }
 
-void FTDxNavContext::Open()
+void FTDxNavContextBase::Open()
 {
     using namespace navlib;
 
@@ -79,7 +80,43 @@ void FTDxNavContext::Open()
     )) {
         UE_LOG(LogSmReader, Error, TEXT("Could not connect to 3DxWare Navlib, %l"), CreationError)
         Navlib = {};
+        return;
     }
+
+    OnPostOpen();
+}
+
+void FTDxNavContext::OnPostOpen()
+{
+    OnCoordinateSystemGet(CoordinateSystem);
+    OnViewsFrontGet(ViewsFront);
+    OnFrameTimeGet(FrameTime);
+    OnFrameTimingSourceGet(FrameTimingSource);
+}
+
+void FTDxNavContext::OnCoordinateSystemGet(FCoordinateSystemProperty& InValue)
+{
+    InValue.SetUE({
+        {0.0f, 1.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 1.0f, 0.0f},
+        {-1.0f, 0.0f, 0.0f, 0.0f},
+        {0.0f, 0.0f, 0.0f, 1.0f}
+    });
+}
+
+void FTDxNavContext::OnViewsFrontGet(FViewsFrontProperty& InValue)
+{
+    InValue.SetUE(FMatrix::Identity);
+}
+
+void FTDxNavContext::OnFrameTimeGet(FFrameTimeProperty& InValue)
+{
+    InValue.SetUE(FApp::GetCurrentTime());
+}
+
+void FTDxNavContext::OnFrameTimingSourceGet(FFrameTimingSourceProperty& InValue)
+{
+    InValue.Set(1); // 0 = SpaceMouse, 1 = Application
 }
 
 #endif

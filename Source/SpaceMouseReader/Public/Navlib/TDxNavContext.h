@@ -57,13 +57,13 @@
 /**
  * 
  */
-class SPACEMOUSEREADER_API FTDxNavContext
+class SPACEMOUSEREADER_API FTDxNavContextBase
 {
     
 public:
     
-    FTDxNavContext();
-    virtual ~FTDxNavContext();
+    FTDxNavContextBase();
+    virtual ~FTDxNavContextBase();
 
     void Open();
     
@@ -77,44 +77,44 @@ public:
 
     // Navlib properties with their boilerplate
 
-    NL_PROP(FTDxNavContext, Active                ,   ,   );
-    NL_PROP(FTDxNavContext, Focus                 ,   ,   );
-    NL_PROP(FTDxNavContext, Motion                ,   , W );
-    NL_PROP(FTDxNavContext, CoordinateSystem      , R ,   );
-    NL_PROP(FTDxNavContext, DevicePresent         ,   ,   );
-    NL_PROP(FTDxNavContext, EventsKeyPress        ,   , W );
-    NL_PROP(FTDxNavContext, EventsKeyRelease      ,   , W );
-    NL_PROP(FTDxNavContext, Transaction           ,   , W );
-    NL_PROP(FTDxNavContext, FrameTime             , R ,   );
-    NL_PROP(FTDxNavContext, FrameTimingSource     , R ,   );
-    NL_PROP(FTDxNavContext, ViewAffine            , R , W );
-    NL_PROP(FTDxNavContext, ViewConstructionPlane , R ,   );
-    NL_PROP(FTDxNavContext, ViewExtents           , R , W );
-    NL_PROP(FTDxNavContext, ViewFov               , R , W );
-    NL_PROP(FTDxNavContext, ViewFrustum           , R ,   );
-    NL_PROP(FTDxNavContext, ViewPerspective       , R ,   );
-    NL_PROP(FTDxNavContext, ViewRotatable         , R ,   );
-    NL_PROP(FTDxNavContext, ViewTarget            , R ,   );
-    NL_PROP(FTDxNavContext, ViewsFront            , R ,   );
-    NL_PROP(FTDxNavContext, PivotPosition         , R , W );
-    NL_PROP(FTDxNavContext, PivotUser             ,   ,   );
-    NL_PROP(FTDxNavContext, PivotVisible          ,   , W );
-    NL_PROP(FTDxNavContext, HitLookfrom           ,   , W );
-    NL_PROP(FTDxNavContext, HitDirection          ,   , W );
-    NL_PROP(FTDxNavContext, HitAperture           ,   , W );
-    NL_PROP(FTDxNavContext, HitLookat             , R ,   );
-    NL_PROP(FTDxNavContext, HitSelectionOnly      ,   , W );
-    NL_PROP(FTDxNavContext, SelectionAffine       , R , W );
-    NL_PROP(FTDxNavContext, SelectionEmpty        , R ,   );
-    NL_PROP(FTDxNavContext, SelectionExtents      , R ,   );
-    NL_PROP(FTDxNavContext, ModelExtents          , R ,   );
-    NL_PROP(FTDxNavContext, PointerPosition       , R ,   );
-    NL_PROP(FTDxNavContext, CommandsTree          ,   ,   );
-    NL_PROP(FTDxNavContext, CommandsActiveSet     ,   ,   );
-    NL_PROP(FTDxNavContext, CommandsActiveCommand ,   , W );
-    NL_PROP(FTDxNavContext, Images                ,   ,   );
-    NL_PROP(FTDxNavContext, Settings              ,   ,   );
-    NL_PROP(FTDxNavContext, SettingsChanged       ,   , W );
+    NL_PROP(FTDxNavContextBase, Active                ,   ,   );
+    NL_PROP(FTDxNavContextBase, Focus                 ,   ,   );
+    NL_PROP(FTDxNavContextBase, Motion                ,   , W );
+    NL_PROP(FTDxNavContextBase, CoordinateSystem      , R ,   );
+    NL_PROP(FTDxNavContextBase, DevicePresent         ,   ,   );
+    NL_PROP(FTDxNavContextBase, EventsKeyPress        ,   , W );
+    NL_PROP(FTDxNavContextBase, EventsKeyRelease      ,   , W );
+    NL_PROP(FTDxNavContextBase, Transaction           ,   , W );
+    NL_PROP(FTDxNavContextBase, FrameTime             , R ,   );
+    NL_PROP(FTDxNavContextBase, FrameTimingSource     , R ,   );
+    NL_PROP(FTDxNavContextBase, ViewAffine            , R , W );
+    NL_PROP(FTDxNavContextBase, ViewConstructionPlane , R ,   );
+    NL_PROP(FTDxNavContextBase, ViewExtents           , R , W );
+    NL_PROP(FTDxNavContextBase, ViewFov               , R , W );
+    NL_PROP(FTDxNavContextBase, ViewFrustum           , R ,   );
+    NL_PROP(FTDxNavContextBase, ViewPerspective       , R ,   );
+    NL_PROP(FTDxNavContextBase, ViewRotatable         , R ,   );
+    NL_PROP(FTDxNavContextBase, ViewTarget            , R ,   );
+    NL_PROP(FTDxNavContextBase, ViewsFront            , R ,   );
+    NL_PROP(FTDxNavContextBase, PivotPosition         , R , W );
+    NL_PROP(FTDxNavContextBase, PivotUser             ,   ,   );
+    NL_PROP(FTDxNavContextBase, PivotVisible          ,   , W );
+    NL_PROP(FTDxNavContextBase, HitLookfrom           ,   , W );
+    NL_PROP(FTDxNavContextBase, HitDirection          ,   , W );
+    NL_PROP(FTDxNavContextBase, HitAperture           ,   , W );
+    NL_PROP(FTDxNavContextBase, HitLookat             , R ,   );
+    NL_PROP(FTDxNavContextBase, HitSelectionOnly      ,   , W );
+    NL_PROP(FTDxNavContextBase, SelectionAffine       , R , W );
+    NL_PROP(FTDxNavContextBase, SelectionEmpty        , R ,   );
+    NL_PROP(FTDxNavContextBase, SelectionExtents      , R ,   );
+    NL_PROP(FTDxNavContextBase, ModelExtents          , R ,   );
+    NL_PROP(FTDxNavContextBase, PointerPosition       , R ,   );
+    NL_PROP(FTDxNavContextBase, CommandsTree          ,   ,   );
+    NL_PROP(FTDxNavContextBase, CommandsActiveSet     ,   ,   );
+    NL_PROP(FTDxNavContextBase, CommandsActiveCommand ,   , W );
+    NL_PROP(FTDxNavContextBase, Images                ,   ,   );
+    NL_PROP(FTDxNavContextBase, Settings              ,   ,   );
+    NL_PROP(FTDxNavContextBase, SettingsChanged       ,   , W );
 
     // TODO command tree
 
@@ -123,6 +123,17 @@ public:
 private:
     
     navlib::nlHandle_t Navlib {};
+};
+
+class SPACEMOUSEREADER_API FTDxNavContext : public FTDxNavContextBase
+{
+protected:
+    virtual void OnPostOpen() override;
+public:
+    virtual void OnCoordinateSystemGet(FCoordinateSystemProperty& InValue) override;
+    virtual void OnViewsFrontGet(FViewsFrontProperty& InValue) override;
+    virtual void OnFrameTimeGet(FFrameTimeProperty& InValue) override;
+    virtual void OnFrameTimingSourceGet(FFrameTimingSourceProperty& InValue) override;
 };
 
 #endif
