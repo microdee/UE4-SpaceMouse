@@ -1,0 +1,75 @@
+// Copyright 2018-2021 David Morasz All Rights Reserved.
+// This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
+
+#include "SmNavContext.h"
+#include "Navlib/TDxNavContext.h"
+
+FSmNavContextInternal::FSmNavContextInternal(TWeakObjectPtr<USmNavContext> InAssociatedNavCtx)
+    : FTDxNavContext()
+    , AssociatedNavCtx(InAssociatedNavCtx)
+{ }
+
+void FSmNavContextInternal::OnPostOpen()
+{
+    if(AssociatedNavCtx.IsValid())
+        AssociatedNavCtx->OnPostOpen();
+}
+
+FString FSmNavContextInternal::GetProfileName()
+{
+    if(AssociatedNavCtx.IsValid())
+        return AssociatedNavCtx->GetProfileName();
+    return TEXT("Unnamed Unreal Engine Runtime Navigation Context");
+}
+
+{{ for prop in properties }}
+bool FSmNavContextInternal::Is{{ prop.name }}Available()
+{
+    if(AssociatedNavCtx.IsValid())
+        return AssociatedNavCtx->Is{{ prop.name }}Available();
+    return false;
+}
+
+void FSmNavContextInternal::On{{ prop.name }}Get(F{{ prop.name }}Property& InValue)
+{
+    {{ prop.ue_type }} Output {};
+    if(AssociatedNavCtx.IsValid())
+    {
+        AssociatedNavCtx->On{{ prop.name }}Get(Output);
+        InValue.SetUE(Output);
+    }
+}
+
+void FSmNavContextInternal::On{{ prop.name }}Set(const F{{ prop.name }}Property& InValue)
+{
+    if(AssociatedNavCtx.IsValid())
+        AssociatedNavCtx->On{{ prop.name }}Set(InValue.GetUE());
+}
+{{ end }}
+
+void USmNavContext::PostLoad()
+{
+    NavlibCtx = MakeUnique<FSmNavContextInternal>(this);
+}
+
+FString USmNavContext::GetProfileName_Implementation()
+{
+    return TEXT("Unnamed Unreal Engine Runtime Navigation Context");
+}
+
+void USmNavContext::Open()
+{
+    if(NavlibCtx) NavlibCtx->Open();
+}
+
+void USmNavContext::OnPostOpen_Implementation() { }
+
+{{ for prop in properties }}
+bool USmNavContext::Is{{ prop.name }}Available_Implementation()
+{
+    return true;
+}
+
+void USmNavContext::On{{ prop.name }}Get_Implementation({{ prop.ue_type }}& Output) { }
+void USmNavContext::On{{ prop.name }}Set_Implementation({{ prop.ue_type }} Input) { }
+{{ end }}

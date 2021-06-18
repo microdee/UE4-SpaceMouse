@@ -1,0 +1,60 @@
+// Copyright 2018-2021 David Morasz All Rights Reserved.
+// This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Navlib/TDxNavContext.h"
+
+#include "SmNavContext.generated.h"
+
+class USmNavContext;
+
+class SPACEMOUSERUNTIME_API FSmNavContextInternal : public FTDxNavContext
+{
+public:
+    FSmNavContextInternal(TWeakObjectPtr<USmNavContext> InAssociatedNavCtx);
+
+    virtual void OnPostOpen() override;
+    virtual FString GetProfileName() override;
+
+    {{ for prop in properties }}
+    virtual bool Is{{ prop.name }}Available() override;
+    virtual void On{{ prop.name }}Get(F{{ prop.name }}Property& InValue) override;
+    virtual void On{{ prop.name }}Set(const F{{ prop.name }}Property& InValue) override;
+    {{ end }}
+    
+protected:
+    TWeakObjectPtr<USmNavContext> AssociatedNavCtx;
+};
+
+UCLASS(BlueprintType, Blueprintable, Abstract)
+class SPACEMOUSERUNTIME_API USmNavContext : public UObject
+{
+    GENERATED_BODY()
+protected:
+    TUniquePtr<FSmNavContextInternal> NavlibCtx;
+
+    virtual void PostLoad() override;
+
+public:
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
+    FString GetProfileName();
+
+    UFUNCTION(BlueprintCallable, Category = "SpaceMouse")
+    void Open();
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
+    void OnPostOpen();
+
+    {{ for prop in properties }}
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
+    bool Is{{ prop.name }}Available();
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
+    void On{{ prop.name }}Get( UPARAM(ref) {{ prop.ue_type }}& Output );
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
+    void On{{ prop.name }}Set( {{ prop.ue_type }} Input );
+    {{ end }}
+};

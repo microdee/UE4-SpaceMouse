@@ -30,8 +30,10 @@ namespace navlib
     template<typename TNavlibType>
     struct TUnreal
     {
-        typedef TNavlibType FUnreal; \
-        typedef TNavlibType FNavlib; \
+        typedef TNavlibType FUnreal;
+        typedef TNavlibType FNavlib;
+        static FUnreal From(const FNavlib& $) { return $; }
+        static FNavlib To(const FUnreal& $) { return $; }
     };
 
     DECLARE_TO_UNREAL(
@@ -259,8 +261,8 @@ namespace navlib
         using FConversion = TUnreal<FTypeNL>;
         using FTypeUE = typename FConversion::FUnreal;
 
-        static FTypeNL FromUE(const FTypeUE& $) { return MoveTemp(FConversion::To($)); }
-        static FTypeUE FromNL(const FTypeNL& $) { return MoveTemp(FConversion::From($)); }
+        static FTypeNL FromUE(const FTypeUE& $) { return FConversion::To($); }
+        static FTypeUE FromNL(const FTypeNL& $) { return FConversion::From($); }
         
         static property_t GetProperty()
         {
