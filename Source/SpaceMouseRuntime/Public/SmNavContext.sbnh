@@ -48,12 +48,20 @@ public:
     void OnPostOpen();
 
     {{ for prop in properties }}
+    
+    /** Return true if {{ prop.name }} is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool Is{{ prop.name }}Available();
 
+    /**
+{{ prop.docs }}
+     */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void On{{ prop.name }}Get( UPARAM(ref) {{ prop.ue_type }}& Output );
 
+    /**
+{{ prop.docs }}
+     */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void On{{ prop.name }}Set( {{ prop.ue_type }} Input );
     {{ end }}

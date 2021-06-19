@@ -11,6 +11,7 @@ FSmNavContextInternal::FSmNavContextInternal(TWeakObjectPtr<USmNavContext> InAss
 
 void FSmNavContextInternal::OnPostOpen()
 {
+    FTDxNavContext::OnPostOpen();
     if(AssociatedNavCtx.IsValid())
         AssociatedNavCtx->OnPostOpen();
 }
