@@ -90,6 +90,12 @@ bool FViewportNavContext::IsMotionFinishedFrame() const
     return PrevMotion && (CurrMotion ^ PrevMotion);
 }
 
+FString FViewportNavContext::GetProfileName()
+{
+    auto VpType = AssociatedVp->GetEditorViewportWidget()->GetType().ToString();
+    return FString::Printf(TEXT("Unreal Engine (%s)"), *VpType);
+}
+
 void FViewportNavContext::OnNavlibEndFrame()
 {
     if(Motion.Get())

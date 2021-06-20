@@ -24,6 +24,8 @@ public:
     bool IsMotionStartedFrame() const;
     bool IsMotionFinishedFrame() const;
 
+    virtual FString GetProfileName() override;
+
     virtual void OnNavlibEndFrame() override;
 
     virtual void OnViewPerspectiveSet(const FViewPerspectiveProperty& InValue) override;
