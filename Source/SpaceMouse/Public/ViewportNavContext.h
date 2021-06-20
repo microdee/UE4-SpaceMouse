@@ -7,6 +7,8 @@
 
 #if WITH_3DX_NAVLIB
 
+#define WITH_DEBUG_PRINT 1
+
 class FSceneView;
 /**
  * 

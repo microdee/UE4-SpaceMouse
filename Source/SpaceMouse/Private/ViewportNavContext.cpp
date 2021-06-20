@@ -173,12 +173,49 @@ void FViewportNavContext::OnViewFovSet(const FViewFovProperty& InValue)
 
 void FViewportNavContext::OnViewAffineGet(FViewAffineProperty& InValue)
 {
+    FTransform ViewTr(
+        AssociatedVp->GetViewRotation(),
+        AssociatedVp->GetViewLocation()
+    );
     if(auto View = GetSceneView())
-        InValue.SetUE(View->ViewMatrices.GetViewMatrix());
+    {
+#if WITH_DEBUG_PRINT
+        {
+            auto $ = ViewTr.ToMatrixNoScale();
+            GEngine->AddOnScreenDebugMessage(
+                reinterpret_cast<uint64>(this) ^ __LINE__, 100.0f, FColor::Purple,
+                FString::Printf(
+                    TEXT("ViewAffine Get:\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n"),
+                    $.M[0][0], $.M[0][1], $.M[0][2], $.M[0][3],
+                    $.M[1][0], $.M[1][1], $.M[1][2], $.M[1][3],
+                    $.M[2][0], $.M[2][1], $.M[2][2], $.M[2][3],
+                    $.M[3][0], $.M[3][1], $.M[3][2], $.M[3][3]
+                )
+            );
+        }
+#endif
+        InValue.SetUE(ViewTr.ToMatrixNoScale());
+    }
 }
 
 void FViewportNavContext::OnViewAffineSet(const FViewAffineProperty& InValue)
-{
+{   
+#if WITH_DEBUG_PRINT
+    {
+        auto $ = InValue.GetUE();
+        GEngine->AddOnScreenDebugMessage(
+            reinterpret_cast<uint64>(this) ^ __LINE__, 100.0f, FColor::Purple,
+            FString::Printf(
+                TEXT("ViewAffine Set:\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n"),
+                $.M[0][0], $.M[0][1], $.M[0][2], $.M[0][3],
+                $.M[1][0], $.M[1][1], $.M[1][2], $.M[1][3],
+                $.M[2][0], $.M[2][1], $.M[2][2], $.M[2][3],
+                $.M[3][0], $.M[3][1], $.M[3][2], $.M[3][3]
+            )
+        );
+    }
+#endif
+    
     FTransform InTr(InValue.GetUE());
     AssociatedVp->SetViewLocation(InTr.GetLocation());
     AssociatedVp->SetViewRotation(FRotator(InTr.GetRotation()));

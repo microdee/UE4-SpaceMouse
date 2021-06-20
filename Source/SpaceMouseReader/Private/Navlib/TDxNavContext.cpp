@@ -103,12 +103,16 @@ void FTDxNavContext::OnPostOpen()
 
 void FTDxNavContext::OnCoordinateSystemGet(FCoordinateSystemProperty& InValue)
 {
+#if 1
     InValue.SetUE({
         {0.0f, 1.0f, 0.0f, 0.0f},
         {0.0f, 0.0f, 1.0f, 0.0f},
-        {-1.0f, 0.0f, 0.0f, 0.0f},
+        {1.0f, 0.0f, 0.0f, 0.0f},
         {0.0f, 0.0f, 0.0f, 1.0f}
     });
+#else
+    InValue.SetUE(FMatrix::Identity);
+#endif
 }
 
 void FTDxNavContext::OnViewsFrontGet(FViewsFrontProperty& InValue)
