@@ -54,6 +54,7 @@ void FSmEditorManagerBase::Initialize()
 void FSmEditorManagerBase::TickManager(float DeltaSecs)
 {
     FSpaceMouseManager::TickManager(DeltaSecs);
+    ManageActiveViewport();
 }
 
 void FSmEditorManagerBase::Tick(float DeltaTime)
