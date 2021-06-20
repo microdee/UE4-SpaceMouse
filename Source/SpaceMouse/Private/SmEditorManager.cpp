@@ -168,17 +168,6 @@ void FSmEditorManager::OnActiveViewportChanged(FEditorViewportClient* Current, F
     bWasRealtime = Current->IsRealtime();
 }
 
-void FSmEditorManager::BeginLearning()
-{
-    bLearning = true;
-    bFinishLearning = false;
-}
-
-void FSmEditorManager::EndLearning()
-{
-    bFinishLearning = true;
-}
-
 bool FSmEditorManager::AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cvp)
 {
     static TSet<FName> IncompatibleViewports =

@@ -43,6 +43,17 @@ bool FSmEditorManagerBase::IsActiveViewportInvalid() const
     return !IsViewportValid(ActiveViewportClient);
 }
 
+void FSmEditorManagerBase::BeginLearning()
+{
+    bLearning = true;
+    bFinishLearning = false;
+}
+
+void FSmEditorManagerBase::EndLearning()
+{
+    bFinishLearning = true;
+}
+
 void FSmEditorManagerBase::Initialize()
 {
     FSpaceMouseManager::Initialize();

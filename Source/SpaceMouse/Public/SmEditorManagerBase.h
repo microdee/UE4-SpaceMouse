@@ -17,6 +17,9 @@ public:
     FSmEditorManagerBase();
     
 protected:
+
+    bool bLearning = false;
+    bool bFinishLearning = false;
     
     FEditorViewportClient* ActiveViewportClient = nullptr;
     
@@ -31,6 +34,10 @@ protected:
     virtual void OnEnumerateViewport(FEditorViewportClient* Current) {}
     
 public:
+    
+    void BeginLearning();
+    void EndLearning();
+    bool IsLearning() const { return bLearning; } 
     
     virtual void Initialize() override;
     virtual void TickManager(float DeltaSecs) override;

@@ -40,10 +40,6 @@ protected:
 public:
 
     FSmEditorManager() : FSmEditorManagerBase() {}
-    
-    void BeginLearning();
-    void EndLearning();
-    bool IsLearning() const { return bLearning; } 
 
     virtual void Initialize() override;
     virtual void TickManager(float DeltaSecs) override;
