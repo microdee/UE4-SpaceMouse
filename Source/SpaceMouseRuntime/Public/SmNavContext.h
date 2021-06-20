@@ -141,7 +141,7 @@ public:
      * instance to true.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnActiveGet( UPARAM(ref) bool& Output );
+    bool OnActiveGet();
 
 
     /** Return true if Focus is currently available, and or makes sense */
@@ -155,7 +155,7 @@ public:
      * keyboard focus. This will set 3DMouse focus to the navlib connection.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnFocusGet( UPARAM(ref) bool& Output );
+    bool OnFocusGet();
 
 
 
@@ -220,7 +220,7 @@ public:
      * mouse event rate and is about 60Hz.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewAffineGet( UPARAM(ref) FMatrix& Output );
+    FMatrix OnViewAffineGet();
 
     /**
      * Specifies the matrix of the camera in the view.
@@ -248,7 +248,7 @@ public:
      * rotated.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewConstructionPlaneGet( UPARAM(ref) FPlane& Output );
+    FPlane OnViewConstructionPlaneGet();
 
 
     /** Return true if ViewExtents is currently available, and or makes sense */
@@ -262,7 +262,7 @@ public:
      * coordinates. The navlib will only access this property if the view is orthographic.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewExtentsGet( UPARAM(ref) FBox& Output );
+    FBox OnViewExtentsGet();
 
     /**
      * Specifies the orthographic extents the view in camera coordinates
@@ -281,7 +281,7 @@ public:
      * Specifies the field-of-view of a perspective camera/view in radians
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewFovGet( UPARAM(ref) float& Output );
+    float OnViewFovGet();
 
     /**
      * Specifies the field-of-view of a perspective camera/view in radians
@@ -302,7 +302,7 @@ public:
      * property and leave the client to change the frustum as it wishes.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewFrustumGet( UPARAM(ref) FMatrix& Output );
+    FMatrix OnViewFrustumGet();
 
 
     /** Return true if ViewPerspective is currently available, and or makes sense */
@@ -317,7 +317,7 @@ public:
      * in the navlib if the projection is orthographic or when it changes.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewPerspectiveGet( UPARAM(ref) bool& Output );
+    bool OnViewPerspectiveGet();
 
 
     /** Return true if ViewRotatable is currently available, and or makes sense */
@@ -331,7 +331,7 @@ public:
      * can only be panned and zoomed.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewRotatableGet( UPARAM(ref) bool& Output );
+    bool OnViewRotatableGet();
 
 
     /** Return true if ViewTarget is currently available, and or makes sense */
@@ -348,7 +348,7 @@ public:
      * camera rotating.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewTargetGet( UPARAM(ref) FVector& Output );
+    FVector OnViewTargetGet();
 
 
     /** Return true if ViewsFront is currently available, and or makes sense */
@@ -365,7 +365,7 @@ public:
      * to update the property to the new value.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewsFrontGet( UPARAM(ref) FMatrix& Output );
+    FMatrix OnViewsFrontGet();
 
 
     /** Return true if PivotPosition is currently available, and or makes sense */
@@ -380,7 +380,7 @@ public:
      * by the application.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnPivotPositionGet( UPARAM(ref) FVector& Output );
+    FVector OnPivotPositionGet();
 
     /**
      * The pivot_position_k property specifies the center of rotation of the model in world coordinates.
@@ -406,7 +406,7 @@ public:
      * navlib’s pivot algorithm continues to be overridden until this property is set back to false.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnPivotUserGet( UPARAM(ref) bool& Output );
+    bool OnPivotUserGet();
 
 
 
@@ -458,7 +458,7 @@ public:
      * the hit-test properties and querying this property.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnHitLookatGet( UPARAM(ref) FVector& Output );
+    FVector OnHitLookatGet();
 
 
 
@@ -484,7 +484,7 @@ public:
      * navlib attempts to achieve is related to the 3D mouse event rate and is about 60Hz.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnSelectionAffineGet( UPARAM(ref) FMatrix& Output );
+    FMatrix OnSelectionAffineGet();
 
     /**
      * Specifies the matrix of the selection.
@@ -506,7 +506,7 @@ public:
      * When true, nothing is selected.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnSelectionEmptyGet( UPARAM(ref) bool& Output );
+    bool OnSelectionEmptyGet();
 
 
     /** Return true if SelectionExtents is currently available, and or makes sense */
@@ -520,7 +520,7 @@ public:
      * will only access this property if the selection_empty_k is false.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnSelectionExtentsGet( UPARAM(ref) FBox& Output );
+    FBox OnSelectionExtentsGet();
 
 
     /** Return true if ModelExtents is currently available, and or makes sense */
@@ -531,7 +531,7 @@ public:
      * Defines the bounding box of the model in world coordinates.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnModelExtentsGet( UPARAM(ref) FBox& Output );
+    FBox OnModelExtentsGet();
 
 
     /** Return true if PointerPosition is currently available, and or makes sense */
@@ -545,7 +545,7 @@ public:
      * In OpenGL the position would typically be retrieved using gluUnProject with winZ set to 0.0.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnPointerPositionGet( UPARAM(ref) FVector& Output );
+    FVector OnPointerPositionGet();
 
 
 };

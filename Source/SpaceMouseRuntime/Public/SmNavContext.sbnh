@@ -57,7 +57,7 @@ public:
 {{ prop.docs }}
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void On{{ prop.name }}Get( UPARAM(ref) {{ prop.ue_type }}& Output );
+    {{ prop.ue_type }} On{{ prop.name }}Get();
     {{~ end ~}}
 
     {{~ if prop.write ~}}

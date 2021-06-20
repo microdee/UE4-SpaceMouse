@@ -33,10 +33,9 @@ bool FSmNavContextInternal::IsActiveAvailable()
 
 void FSmNavContextInternal::OnActiveGet(FActiveProperty& InValue)
 {
-    bool Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsActiveAvailable())
     {
-        AssociatedNavCtx->OnActiveGet(Output);
+        bool Output = AssociatedNavCtx->OnActiveGet();
         InValue.SetUE(Output);
     }
 }
@@ -51,10 +50,9 @@ bool FSmNavContextInternal::IsFocusAvailable()
 
 void FSmNavContextInternal::OnFocusGet(FFocusProperty& InValue)
 {
-    bool Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsFocusAvailable())
     {
-        AssociatedNavCtx->OnFocusGet(Output);
+        bool Output = AssociatedNavCtx->OnFocusGet();
         InValue.SetUE(Output);
     }
 }
@@ -104,10 +102,9 @@ bool FSmNavContextInternal::IsViewAffineAvailable()
 
 void FSmNavContextInternal::OnViewAffineGet(FViewAffineProperty& InValue)
 {
-    FMatrix Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewAffineAvailable())
     {
-        AssociatedNavCtx->OnViewAffineGet(Output);
+        FMatrix Output = AssociatedNavCtx->OnViewAffineGet();
         InValue.SetUE(Output);
     }
 }
@@ -127,10 +124,9 @@ bool FSmNavContextInternal::IsViewConstructionPlaneAvailable()
 
 void FSmNavContextInternal::OnViewConstructionPlaneGet(FViewConstructionPlaneProperty& InValue)
 {
-    FPlane Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewConstructionPlaneAvailable())
     {
-        AssociatedNavCtx->OnViewConstructionPlaneGet(Output);
+        FPlane Output = AssociatedNavCtx->OnViewConstructionPlaneGet();
         InValue.SetUE(Output);
     }
 }
@@ -145,10 +141,9 @@ bool FSmNavContextInternal::IsViewExtentsAvailable()
 
 void FSmNavContextInternal::OnViewExtentsGet(FViewExtentsProperty& InValue)
 {
-    FBox Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewExtentsAvailable())
     {
-        AssociatedNavCtx->OnViewExtentsGet(Output);
+        FBox Output = AssociatedNavCtx->OnViewExtentsGet();
         InValue.SetUE(Output);
     }
 }
@@ -168,10 +163,9 @@ bool FSmNavContextInternal::IsViewFovAvailable()
 
 void FSmNavContextInternal::OnViewFovGet(FViewFovProperty& InValue)
 {
-    float Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewFovAvailable())
     {
-        AssociatedNavCtx->OnViewFovGet(Output);
+        float Output = AssociatedNavCtx->OnViewFovGet();
         InValue.SetUE(Output);
     }
 }
@@ -191,10 +185,9 @@ bool FSmNavContextInternal::IsViewFrustumAvailable()
 
 void FSmNavContextInternal::OnViewFrustumGet(FViewFrustumProperty& InValue)
 {
-    FMatrix Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewFrustumAvailable())
     {
-        AssociatedNavCtx->OnViewFrustumGet(Output);
+        FMatrix Output = AssociatedNavCtx->OnViewFrustumGet();
         InValue.SetUE(Output);
     }
 }
@@ -209,10 +202,9 @@ bool FSmNavContextInternal::IsViewPerspectiveAvailable()
 
 void FSmNavContextInternal::OnViewPerspectiveGet(FViewPerspectiveProperty& InValue)
 {
-    bool Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewPerspectiveAvailable())
     {
-        AssociatedNavCtx->OnViewPerspectiveGet(Output);
+        bool Output = AssociatedNavCtx->OnViewPerspectiveGet();
         InValue.SetUE(Output);
     }
 }
@@ -227,10 +219,9 @@ bool FSmNavContextInternal::IsViewRotatableAvailable()
 
 void FSmNavContextInternal::OnViewRotatableGet(FViewRotatableProperty& InValue)
 {
-    bool Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewRotatableAvailable())
     {
-        AssociatedNavCtx->OnViewRotatableGet(Output);
+        bool Output = AssociatedNavCtx->OnViewRotatableGet();
         InValue.SetUE(Output);
     }
 }
@@ -245,10 +236,9 @@ bool FSmNavContextInternal::IsViewTargetAvailable()
 
 void FSmNavContextInternal::OnViewTargetGet(FViewTargetProperty& InValue)
 {
-    FVector Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewTargetAvailable())
     {
-        AssociatedNavCtx->OnViewTargetGet(Output);
+        FVector Output = AssociatedNavCtx->OnViewTargetGet();
         InValue.SetUE(Output);
     }
 }
@@ -263,10 +253,9 @@ bool FSmNavContextInternal::IsViewsFrontAvailable()
 
 void FSmNavContextInternal::OnViewsFrontGet(FViewsFrontProperty& InValue)
 {
-    FMatrix Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsViewsFrontAvailable())
     {
-        AssociatedNavCtx->OnViewsFrontGet(Output);
+        FMatrix Output = AssociatedNavCtx->OnViewsFrontGet();
         InValue.SetUE(Output);
     }
 }
@@ -281,10 +270,9 @@ bool FSmNavContextInternal::IsPivotPositionAvailable()
 
 void FSmNavContextInternal::OnPivotPositionGet(FPivotPositionProperty& InValue)
 {
-    FVector Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsPivotPositionAvailable())
     {
-        AssociatedNavCtx->OnPivotPositionGet(Output);
+        FVector Output = AssociatedNavCtx->OnPivotPositionGet();
         InValue.SetUE(Output);
     }
 }
@@ -304,10 +292,9 @@ bool FSmNavContextInternal::IsPivotUserAvailable()
 
 void FSmNavContextInternal::OnPivotUserGet(FPivotUserProperty& InValue)
 {
-    bool Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsPivotUserAvailable())
     {
-        AssociatedNavCtx->OnPivotUserGet(Output);
+        bool Output = AssociatedNavCtx->OnPivotUserGet();
         InValue.SetUE(Output);
     }
 }
@@ -350,10 +337,9 @@ bool FSmNavContextInternal::IsHitLookatAvailable()
 
 void FSmNavContextInternal::OnHitLookatGet(FHitLookatProperty& InValue)
 {
-    FVector Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsHitLookatAvailable())
     {
-        AssociatedNavCtx->OnHitLookatGet(Output);
+        FVector Output = AssociatedNavCtx->OnHitLookatGet();
         InValue.SetUE(Output);
     }
 }
@@ -375,10 +361,9 @@ bool FSmNavContextInternal::IsSelectionAffineAvailable()
 
 void FSmNavContextInternal::OnSelectionAffineGet(FSelectionAffineProperty& InValue)
 {
-    FMatrix Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsSelectionAffineAvailable())
     {
-        AssociatedNavCtx->OnSelectionAffineGet(Output);
+        FMatrix Output = AssociatedNavCtx->OnSelectionAffineGet();
         InValue.SetUE(Output);
     }
 }
@@ -398,10 +383,9 @@ bool FSmNavContextInternal::IsSelectionEmptyAvailable()
 
 void FSmNavContextInternal::OnSelectionEmptyGet(FSelectionEmptyProperty& InValue)
 {
-    bool Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsSelectionEmptyAvailable())
     {
-        AssociatedNavCtx->OnSelectionEmptyGet(Output);
+        bool Output = AssociatedNavCtx->OnSelectionEmptyGet();
         InValue.SetUE(Output);
     }
 }
@@ -416,10 +400,9 @@ bool FSmNavContextInternal::IsSelectionExtentsAvailable()
 
 void FSmNavContextInternal::OnSelectionExtentsGet(FSelectionExtentsProperty& InValue)
 {
-    FBox Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsSelectionExtentsAvailable())
     {
-        AssociatedNavCtx->OnSelectionExtentsGet(Output);
+        FBox Output = AssociatedNavCtx->OnSelectionExtentsGet();
         InValue.SetUE(Output);
     }
 }
@@ -434,10 +417,9 @@ bool FSmNavContextInternal::IsModelExtentsAvailable()
 
 void FSmNavContextInternal::OnModelExtentsGet(FModelExtentsProperty& InValue)
 {
-    FBox Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsModelExtentsAvailable())
     {
-        AssociatedNavCtx->OnModelExtentsGet(Output);
+        FBox Output = AssociatedNavCtx->OnModelExtentsGet();
         InValue.SetUE(Output);
     }
 }
@@ -452,10 +434,9 @@ bool FSmNavContextInternal::IsPointerPositionAvailable()
 
 void FSmNavContextInternal::OnPointerPositionGet(FPointerPositionProperty& InValue)
 {
-    FVector Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(IsPointerPositionAvailable())
     {
-        AssociatedNavCtx->OnPointerPositionGet(Output);
+        FVector Output = AssociatedNavCtx->OnPointerPositionGet();
         InValue.SetUE(Output);
     }
 }
@@ -485,14 +466,20 @@ bool USmNavContext::IsActiveAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnActiveGet_Implementation(bool& Output) { }
+bool USmNavContext::OnActiveGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsFocusAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnFocusGet_Implementation(bool& Output) { }
+bool USmNavContext::OnFocusGet_Implementation()
+{
+    return {};
+}
 
 void USmNavContext::OnMotionSet_Implementation(bool Input) { }
 
@@ -509,7 +496,10 @@ bool USmNavContext::IsViewAffineAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnViewAffineGet_Implementation(FMatrix& Output) { }
+FMatrix USmNavContext::OnViewAffineGet_Implementation()
+{
+    return {};
+}
 void USmNavContext::OnViewAffineSet_Implementation(FMatrix Input) { }
 
 bool USmNavContext::IsViewConstructionPlaneAvailable_Implementation()
@@ -517,14 +507,20 @@ bool USmNavContext::IsViewConstructionPlaneAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnViewConstructionPlaneGet_Implementation(FPlane& Output) { }
+FPlane USmNavContext::OnViewConstructionPlaneGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsViewExtentsAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnViewExtentsGet_Implementation(FBox& Output) { }
+FBox USmNavContext::OnViewExtentsGet_Implementation()
+{
+    return {};
+}
 void USmNavContext::OnViewExtentsSet_Implementation(FBox Input) { }
 
 bool USmNavContext::IsViewFovAvailable_Implementation()
@@ -532,7 +528,10 @@ bool USmNavContext::IsViewFovAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnViewFovGet_Implementation(float& Output) { }
+float USmNavContext::OnViewFovGet_Implementation()
+{
+    return {};
+}
 void USmNavContext::OnViewFovSet_Implementation(float Input) { }
 
 bool USmNavContext::IsViewFrustumAvailable_Implementation()
@@ -540,42 +539,60 @@ bool USmNavContext::IsViewFrustumAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnViewFrustumGet_Implementation(FMatrix& Output) { }
+FMatrix USmNavContext::OnViewFrustumGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsViewPerspectiveAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnViewPerspectiveGet_Implementation(bool& Output) { }
+bool USmNavContext::OnViewPerspectiveGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsViewRotatableAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnViewRotatableGet_Implementation(bool& Output) { }
+bool USmNavContext::OnViewRotatableGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsViewTargetAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnViewTargetGet_Implementation(FVector& Output) { }
+FVector USmNavContext::OnViewTargetGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsViewsFrontAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnViewsFrontGet_Implementation(FMatrix& Output) { }
+FMatrix USmNavContext::OnViewsFrontGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsPivotPositionAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnPivotPositionGet_Implementation(FVector& Output) { }
+FVector USmNavContext::OnPivotPositionGet_Implementation()
+{
+    return {};
+}
 void USmNavContext::OnPivotPositionSet_Implementation(FVector Input) { }
 
 bool USmNavContext::IsPivotUserAvailable_Implementation()
@@ -583,7 +600,10 @@ bool USmNavContext::IsPivotUserAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnPivotUserGet_Implementation(bool& Output) { }
+bool USmNavContext::OnPivotUserGet_Implementation()
+{
+    return {};
+}
 
 void USmNavContext::OnPivotVisibleSet_Implementation(bool Input) { }
 
@@ -598,7 +618,10 @@ bool USmNavContext::IsHitLookatAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnHitLookatGet_Implementation(FVector& Output) { }
+FVector USmNavContext::OnHitLookatGet_Implementation()
+{
+    return {};
+}
 
 void USmNavContext::OnHitSelectionOnlySet_Implementation(bool Input) { }
 
@@ -607,7 +630,10 @@ bool USmNavContext::IsSelectionAffineAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnSelectionAffineGet_Implementation(FMatrix& Output) { }
+FMatrix USmNavContext::OnSelectionAffineGet_Implementation()
+{
+    return {};
+}
 void USmNavContext::OnSelectionAffineSet_Implementation(FMatrix Input) { }
 
 bool USmNavContext::IsSelectionEmptyAvailable_Implementation()
@@ -615,25 +641,37 @@ bool USmNavContext::IsSelectionEmptyAvailable_Implementation()
     return true;
 }
 
-void USmNavContext::OnSelectionEmptyGet_Implementation(bool& Output) { }
+bool USmNavContext::OnSelectionEmptyGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsSelectionExtentsAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnSelectionExtentsGet_Implementation(FBox& Output) { }
+FBox USmNavContext::OnSelectionExtentsGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsModelExtentsAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnModelExtentsGet_Implementation(FBox& Output) { }
+FBox USmNavContext::OnModelExtentsGet_Implementation()
+{
+    return {};
+}
 
 bool USmNavContext::IsPointerPositionAvailable_Implementation()
 {
     return true;
 }
 
-void USmNavContext::OnPointerPositionGet_Implementation(FVector& Output) { }
+FVector USmNavContext::OnPointerPositionGet_Implementation()
+{
+    return {};
+}

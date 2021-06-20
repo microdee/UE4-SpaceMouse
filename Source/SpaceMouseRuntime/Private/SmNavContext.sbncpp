@@ -34,10 +34,9 @@ bool FSmNavContextInternal::Is{{ prop.name }}Available()
 
 void FSmNavContextInternal::On{{ prop.name }}Get(F{{ prop.name }}Property& InValue)
 {
-    {{ prop.ue_type }} Output {};
-    if(AssociatedNavCtx.IsValid())
+    if(Is{{ prop.name }}Available())
     {
-        AssociatedNavCtx->On{{ prop.name }}Get(Output);
+        {{ prop.ue_type }} Output = AssociatedNavCtx->On{{ prop.name }}Get();
         InValue.SetUE(Output);
     }
 }
@@ -76,7 +75,10 @@ bool USmNavContext::Is{{ prop.name }}Available_Implementation()
     return true;
 }
 
-void USmNavContext::On{{ prop.name }}Get_Implementation({{ prop.ue_type }}& Output) { }
+{{ prop.ue_type }} USmNavContext::On{{ prop.name }}Get_Implementation()
+{
+    return {};
+}
 {{~ end ~}}
 {{~ if prop.write ~}}
 void USmNavContext::On{{ prop.name }}Set_Implementation({{ prop.ue_type }} Input) { }
