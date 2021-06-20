@@ -40,9 +40,7 @@
     protected: virtual bool Is##Name##Available() { return true; } \
     protected: virtual void On##Name##Set(const F##Name##Property& InValue) { } \
     protected: virtual void On##Name##Get(F##Name##Property& InValue) { } \
-    public: F##Name##Property Name { \
-        Navlib, \
-    }; \
+    public: F##Name##Property Name; \
     private: NL_PROP_##Read(MSelf, Name) NL_PROP_##Write(MSelf, Name) \
     private: void Add##Name##Accessor(TArray<navlib::accessor_t>& OutArray) \
     { \
@@ -51,6 +49,7 @@
         Accessor.param = reinterpret_cast<navlib::param_t>(this); \
         Accessor.fnGet = NL_PROP_ACC_##Read(MSelf, Name); \
         Accessor.fnSet = NL_PROP_ACC_##Write(MSelf, Name); \
+        Name.SetCtx({}, Navlib); \
         OutArray.Add(Accessor); \
     } \
 
@@ -122,7 +121,7 @@ public:
     
 private:
     
-    TSharedPtr<navlib::FNlHandle> Navlib;
+    TSharedPtr<navlib::FNlHandle> Navlib {};
 };
 
 class SPACEMOUSEREADER_API FTDxNavContext : public FTDxNavContextBase

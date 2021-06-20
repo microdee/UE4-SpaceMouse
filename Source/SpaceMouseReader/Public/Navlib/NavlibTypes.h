@@ -22,6 +22,8 @@
         static FNavlib To(const FUnreal& $) { return DECLARE_TO_UNREAL_BODY##ToBody; } \
     }
 
+class FTDxNavContextBase;
+
 namespace navlib
 {
     template<typename T>
@@ -256,17 +258,30 @@ namespace navlib
     {
     public:
         nlHandle_t Handle;
-        FNlHandle(nlHandle_t InHandle) : Handle(InHandle) {}
+    };
+
+    template<typename T>
+    struct TBadge
+    {
+        friend T;
+    private:
+        TBadge() {}
     };
 
     template<EProperty TProp>
     class TProperty
-    {
+    {        
     public:
         using FSelf = TProperty<TProp>;
         using FTypeNL = typename TPropType<TProp>::FType;
         using FConversion = TUnreal<FTypeNL>;
         using FTypeUE = typename FConversion::FUnreal;
+    
+    private:
+        TSharedPtr<FNlHandle> Ctx;
+        FTypeNL Cache {};
+    
+    public:
 
         static FTypeNL FromUE(const FTypeUE& $) { return FConversion::To($); }
         static FTypeUE FromNL(const FTypeNL& $) { return FConversion::From($); }
@@ -275,8 +290,6 @@ namespace navlib
         {
             return GPropertyMap[static_cast<uint8>(TProp)];
         }
-
-        explicit TProperty(TSharedPtr<FNlHandle> InCtx) : Ctx(InCtx) {}
         
         FTypeNL GetCached() { return Cache; }
         FTypeUE GetCachedUE() { return FromNL(Cache); }
@@ -308,10 +321,11 @@ namespace navlib
         }
 
         void SetUE(const FTypeUE& InVal) { Set(FromUE(InVal)); }
-    
-    private:
-        TSharedPtr<FNlHandle> Ctx;
-        FTypeNL Cache {};
+
+        void SetCtx(TBadge<FTDxNavContextBase> Badge, TSharedPtr<FNlHandle> InCtx)
+        {
+            Ctx = InCtx;
+        }
     };
 }
 

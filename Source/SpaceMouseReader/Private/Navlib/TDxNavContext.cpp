@@ -21,6 +21,8 @@ void FTDxNavContextBase::Open()
 {
     using namespace navlib;
 
+    Navlib = MakeShared<FNlHandle>();
+    
     TArray<accessor_t> Accessors;
     
     AddActiveAccessor(Accessors);
@@ -81,11 +83,12 @@ void FTDxNavContextBase::Open()
         &Options
     )) {
         UE_LOG(LogSmReader, Error, TEXT("Could not connect to 3DxWare Navlib, %l"), CreationError)
+        Navlib->Handle = 0;
         Navlib.Reset();
         return;
     }
 
-    Navlib = MakeShared<FNlHandle>(OutHandle);
+    Navlib->Handle = OutHandle;
 
     OnPostOpen();
 }
