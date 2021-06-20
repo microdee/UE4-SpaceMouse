@@ -119,4 +119,12 @@ void FTDxNavContext::OnFrameTimingSourceGet(FFrameTimingSourceProperty& InValue)
     InValue.Set(1); // 0 = SpaceMouse, 1 = Application
 }
 
+void FTDxNavContext::OnTransactionSet(const FTransactionProperty& InValue)
+{
+    if(InValue.Get() == 0)
+    {
+        OnNavlibEndFrame();
+    }
+}
+
 #endif

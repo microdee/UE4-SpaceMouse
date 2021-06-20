@@ -129,11 +129,14 @@ class SPACEMOUSEREADER_API FTDxNavContext : public FTDxNavContextBase
 {
 protected:
     virtual void OnPostOpen() override;
+
+    virtual void OnNavlibEndFrame() { }
 public:
     virtual void OnCoordinateSystemGet(FCoordinateSystemProperty& InValue) override;
     virtual void OnViewsFrontGet(FViewsFrontProperty& InValue) override;
     virtual void OnFrameTimeGet(FFrameTimeProperty& InValue) override;
     virtual void OnFrameTimingSourceGet(FFrameTimingSourceProperty& InValue) override;
+    virtual void OnTransactionSet(const FTransactionProperty& InValue) override;
 };
 
 #endif
