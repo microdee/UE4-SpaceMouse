@@ -18,122 +18,92 @@ public:
     virtual void OnPostOpen() override;
     virtual FString GetProfileName() override;
 
-    
     virtual bool IsActiveAvailable() override;
     virtual void OnActiveGet(FActiveProperty& InValue) override;
-    virtual void OnActiveSet(const FActiveProperty& InValue) override;
     
     virtual bool IsFocusAvailable() override;
     virtual void OnFocusGet(FFocusProperty& InValue) override;
-    virtual void OnFocusSet(const FFocusProperty& InValue) override;
     
-    virtual bool IsMotionAvailable() override;
-    virtual void OnMotionGet(FMotionProperty& InValue) override;
+    
+    
     virtual void OnMotionSet(const FMotionProperty& InValue) override;
     
-    virtual bool IsDevicePresentAvailable() override;
-    virtual void OnDevicePresentGet(FDevicePresentProperty& InValue) override;
+    
     virtual void OnDevicePresentSet(const FDevicePresentProperty& InValue) override;
     
-    virtual bool IsEventsKeyPressAvailable() override;
-    virtual void OnEventsKeyPressGet(FEventsKeyPressProperty& InValue) override;
+    
     virtual void OnEventsKeyPressSet(const FEventsKeyPressProperty& InValue) override;
     
-    virtual bool IsEventsKeyReleaseAvailable() override;
-    virtual void OnEventsKeyReleaseGet(FEventsKeyReleaseProperty& InValue) override;
+    
     virtual void OnEventsKeyReleaseSet(const FEventsKeyReleaseProperty& InValue) override;
     
-    virtual bool IsTransactionAvailable() override;
-    virtual void OnTransactionGet(FTransactionProperty& InValue) override;
-    virtual void OnTransactionSet(const FTransactionProperty& InValue) override;
     
+    virtual void OnTransactionSet(const FTransactionProperty& InValue) override;
     virtual bool IsViewAffineAvailable() override;
     virtual void OnViewAffineGet(FViewAffineProperty& InValue) override;
     virtual void OnViewAffineSet(const FViewAffineProperty& InValue) override;
-    
     virtual bool IsViewConstructionPlaneAvailable() override;
     virtual void OnViewConstructionPlaneGet(FViewConstructionPlaneProperty& InValue) override;
-    virtual void OnViewConstructionPlaneSet(const FViewConstructionPlaneProperty& InValue) override;
     
     virtual bool IsViewExtentsAvailable() override;
     virtual void OnViewExtentsGet(FViewExtentsProperty& InValue) override;
     virtual void OnViewExtentsSet(const FViewExtentsProperty& InValue) override;
-    
     virtual bool IsViewFovAvailable() override;
     virtual void OnViewFovGet(FViewFovProperty& InValue) override;
     virtual void OnViewFovSet(const FViewFovProperty& InValue) override;
-    
     virtual bool IsViewFrustumAvailable() override;
     virtual void OnViewFrustumGet(FViewFrustumProperty& InValue) override;
-    virtual void OnViewFrustumSet(const FViewFrustumProperty& InValue) override;
     
     virtual bool IsViewPerspectiveAvailable() override;
     virtual void OnViewPerspectiveGet(FViewPerspectiveProperty& InValue) override;
-    virtual void OnViewPerspectiveSet(const FViewPerspectiveProperty& InValue) override;
     
     virtual bool IsViewRotatableAvailable() override;
     virtual void OnViewRotatableGet(FViewRotatableProperty& InValue) override;
-    virtual void OnViewRotatableSet(const FViewRotatableProperty& InValue) override;
     
     virtual bool IsViewTargetAvailable() override;
     virtual void OnViewTargetGet(FViewTargetProperty& InValue) override;
-    virtual void OnViewTargetSet(const FViewTargetProperty& InValue) override;
     
     virtual bool IsViewsFrontAvailable() override;
     virtual void OnViewsFrontGet(FViewsFrontProperty& InValue) override;
-    virtual void OnViewsFrontSet(const FViewsFrontProperty& InValue) override;
     
     virtual bool IsPivotPositionAvailable() override;
     virtual void OnPivotPositionGet(FPivotPositionProperty& InValue) override;
     virtual void OnPivotPositionSet(const FPivotPositionProperty& InValue) override;
-    
     virtual bool IsPivotUserAvailable() override;
     virtual void OnPivotUserGet(FPivotUserProperty& InValue) override;
-    virtual void OnPivotUserSet(const FPivotUserProperty& InValue) override;
     
-    virtual bool IsPivotVisibleAvailable() override;
-    virtual void OnPivotVisibleGet(FPivotVisibleProperty& InValue) override;
+    
+    
     virtual void OnPivotVisibleSet(const FPivotVisibleProperty& InValue) override;
     
-    virtual bool IsHitLookfromAvailable() override;
-    virtual void OnHitLookfromGet(FHitLookfromProperty& InValue) override;
+    
     virtual void OnHitLookfromSet(const FHitLookfromProperty& InValue) override;
     
-    virtual bool IsHitDirectionAvailable() override;
-    virtual void OnHitDirectionGet(FHitDirectionProperty& InValue) override;
+    
     virtual void OnHitDirectionSet(const FHitDirectionProperty& InValue) override;
     
-    virtual bool IsHitApertureAvailable() override;
-    virtual void OnHitApertureGet(FHitApertureProperty& InValue) override;
-    virtual void OnHitApertureSet(const FHitApertureProperty& InValue) override;
     
+    virtual void OnHitApertureSet(const FHitApertureProperty& InValue) override;
     virtual bool IsHitLookatAvailable() override;
     virtual void OnHitLookatGet(FHitLookatProperty& InValue) override;
-    virtual void OnHitLookatSet(const FHitLookatProperty& InValue) override;
     
-    virtual bool IsHitSelectionOnlyAvailable() override;
-    virtual void OnHitSelectionOnlyGet(FHitSelectionOnlyProperty& InValue) override;
+    
+    
     virtual void OnHitSelectionOnlySet(const FHitSelectionOnlyProperty& InValue) override;
-    
     virtual bool IsSelectionAffineAvailable() override;
     virtual void OnSelectionAffineGet(FSelectionAffineProperty& InValue) override;
     virtual void OnSelectionAffineSet(const FSelectionAffineProperty& InValue) override;
-    
     virtual bool IsSelectionEmptyAvailable() override;
     virtual void OnSelectionEmptyGet(FSelectionEmptyProperty& InValue) override;
-    virtual void OnSelectionEmptySet(const FSelectionEmptyProperty& InValue) override;
     
     virtual bool IsSelectionExtentsAvailable() override;
     virtual void OnSelectionExtentsGet(FSelectionExtentsProperty& InValue) override;
-    virtual void OnSelectionExtentsSet(const FSelectionExtentsProperty& InValue) override;
     
     virtual bool IsModelExtentsAvailable() override;
     virtual void OnModelExtentsGet(FModelExtentsProperty& InValue) override;
-    virtual void OnModelExtentsSet(const FModelExtentsProperty& InValue) override;
     
     virtual bool IsPointerPositionAvailable() override;
     virtual void OnPointerPositionGet(FPointerPositionProperty& InValue) override;
-    virtual void OnPointerPositionSet(const FPointerPositionProperty& InValue) override;
     
     
 protected:
@@ -159,8 +129,6 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnPostOpen();
 
-    
-    
     /** Return true if Active is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsActiveAvailable();
@@ -175,17 +143,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnActiveGet( UPARAM(ref) bool& Output );
 
-    /**
-     * Specifies that the navigation instance is currently active.
-     *
-     * Clients that have multiple navigation instances open need to inform the navlib which of them is 
-     * the target for 3D Mouse input. They do this by setting the active_k property of a navigation 
-     * instance to true.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnActiveSet( bool Input );
-    
-    
+
     /** Return true if Focus is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsFocusAvailable();
@@ -199,31 +157,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnFocusGet( UPARAM(ref) bool& Output );
 
-    /**
-     * Specifies that the application has keyboard focus.
-     *
-     * Clients that run in container applications via the NLServer proxy set this property to indicate
-     * keyboard focus. This will set 3DMouse focus to the navlib connection.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnFocusSet( bool Input );
-    
-    
-    /** Return true if Motion is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsMotionAvailable();
 
-    /**
-     * Specifies that a motion model is active.
-     *
-     * The motion_k property is set to true by the navlib to notify the client that it is executing a
-     * motion model and will update the camera matrix regularly. This is useful for clients that need
-     * to run an animation loop. When the navlib has finished navigating the camera position it will
-     * set the property to false. By setting motion_k to false, a client may temporarily interrupt a
-     * navigation communication and forces the Navlib to reinitialize the navigation.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnMotionGet( UPARAM(ref) bool& Output );
 
     /**
      * Specifies that a motion model is active.
@@ -236,18 +170,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnMotionSet( bool Input );
-    
-    
-    /** Return true if DevicePresent is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsDevicePresentAvailable();
 
-    /**
-     * Specifies whether a device is present
-     * Currently this always returns true.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnDevicePresentGet( UPARAM(ref) bool& Output );
 
     /**
      * Specifies whether a device is present
@@ -255,57 +178,21 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnDevicePresentSet( bool Input );
-    
-    
-    /** Return true if EventsKeyPress is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsEventsKeyPressAvailable();
 
-    /**
-     * V3DK press event.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnEventsKeyPressGet( UPARAM(ref) int& Output );
 
     /**
      * V3DK press event.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnEventsKeyPressSet( int Input );
-    
-    
-    /** Return true if EventsKeyRelease is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsEventsKeyReleaseAvailable();
 
-    /**
-     * V3DK release event.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnEventsKeyReleaseGet( UPARAM(ref) int& Output );
 
     /**
      * V3DK release event.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnEventsKeyReleaseSet( int Input );
-    
-    
-    /** Return true if Transaction is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsTransactionAvailable();
 
-    /**
-     * Specifies the navigation transaction.
-     *
-     * The Navigation Library can set more than one client property for a single navigation frame. For 
-     * example when navigating in an orthographic projection possibly both the view affine and extents 
-     * will be modified depending on the 3DMouse input. The Navigation Library will set the 
-     * transaction_k property to a value >0 at the beginning of a navigation frame and to 0 at the end. 
-     * Clients that need to actively refresh the view can trigger the refresh when the value is set to 0.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnTransactionGet( UPARAM(ref) int& Output );
 
     /**
      * Specifies the navigation transaction.
@@ -318,8 +205,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnTransactionSet( int Input );
-    
-    
+
     /** Return true if ViewAffine is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewAffineAvailable();
@@ -347,8 +233,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewAffineSet( FMatrix Input );
-    
-    
+
     /** Return true if ViewConstructionPlane is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewConstructionPlaneAvailable();
@@ -365,19 +250,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewConstructionPlaneGet( UPARAM(ref) FPlane& Output );
 
-    /**
-     * Specifies the plane equation of the construction plane as a normal and a distance (general form 
-     * of the equation of a plane).
-     *
-     * This property is used by the Navigation Library to distinguish views used for construction in an 
-     * orthographic projection: typically the top, right left etc. views. The Navigation Library assumes 
-     * that when the camera’s look-at axis is parallel to the plane normal the view should not be 
-     * rotated.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewConstructionPlaneSet( FPlane Input );
-    
-    
+
     /** Return true if ViewExtents is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewExtentsAvailable();
@@ -399,8 +272,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewExtentsSet( FBox Input );
-    
-    
+
     /** Return true if ViewFov is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewFovAvailable();
@@ -416,8 +288,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewFovSet( float Input );
-    
-    
+
     /** Return true if ViewFrustum is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewFrustumAvailable();
@@ -433,18 +304,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewFrustumGet( UPARAM(ref) FMatrix& Output );
 
-    /**
-     * Specifies the frustum of a perspective camera/view in camera coordinates
-     *
-     * The navlib uses this property to calculate the field-of-view of the perspective camera. The 
-     * frustum is also used in algorithms that need to determine if the model is currently visible. The
-     * navlib will not write to this property. Instead, if necessary, the navlib will write to the view_fov_k 
-     * property and leave the client to change the frustum as it wishes.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewFrustumSet( FMatrix Input );
-    
-    
+
     /** Return true if ViewPerspective is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewPerspectiveAvailable();
@@ -459,17 +319,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewPerspectiveGet( UPARAM(ref) bool& Output );
 
-    /**
-     * Specifies the projection of the view/camera
-     *
-     * This property defaults to true. If the client does not supply a function for the navlib to query the 
-     * view’s projection (which it will generally do at the onset of motion), then it must set the property 
-     * in the navlib if the projection is orthographic or when it changes.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewPerspectiveSet( bool Input );
-    
-    
+
     /** Return true if ViewRotatable is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewRotatableAvailable();
@@ -483,16 +333,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewRotatableGet( UPARAM(ref) bool& Output );
 
-    /**
-     * Specifies whether the view can be rotated.
-     *
-     * This property is generally used to differentiate between orthographic 3D views and views that 
-     * can only be panned and zoomed.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewRotatableSet( bool Input );
-    
-    
+
     /** Return true if ViewTarget is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewTargetAvailable();
@@ -509,19 +350,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewTargetGet( UPARAM(ref) FVector& Output );
 
-    /**
-     * Specifies the target constraint of the view/camera.
-     *
-     * The camera target is the point in space the camera is constrained to look at by a ‘lookat’
-     * controller attached to the camera. The side effects of the controller are that panning the 
-     * constrained camera will also result in a camera rotation due to the camera being constrained to 
-     * keep the target position in the center of the view. Similarly panning the target will result in the 
-     * camera rotating.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewTargetSet( FVector Input );
-    
-    
+
     /** Return true if ViewsFront is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsViewsFrontAvailable();
@@ -538,19 +367,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnViewsFrontGet( UPARAM(ref) FMatrix& Output );
 
-    /**
-     * Specifies the orientation of the view designated as the front view.
-     *
-     * The Navigation Library will only query the value of this property when the connection is
-     * created. It is used to orientate the model to one of the 'Front', 'Back', 'Right', 'Left' etc.
-     * views in response to the respective pre-defined view commands. If the orientation of the front
-     * view is redefined after the connection is opened by the user, the client application is required
-     * to update the property to the new value.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnViewsFrontSet( FMatrix Input );
-    
-    
+
     /** Return true if PivotPosition is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsPivotPositionAvailable();
@@ -574,8 +391,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnPivotPositionSet( FVector Input );
-    
-    
+
     /** Return true if PivotUser is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsPivotUserAvailable();
@@ -592,31 +408,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnPivotUserGet( UPARAM(ref) bool& Output );
 
-    /**
-     * The pivot_user_k property specifies whether an application specified pivot is being used.
-     *
-     * To clear a pivot set by the application and to use the pivot algorithm in the navlib, the 
-     * application sets this property to false. To override the navlib pivot algorithm the application can 
-     * either set this property to true, which will cause the navlib to query the pivot position it should 
-     * use, or the application can set the pivot position directly using the pivot_position_k property. The 
-     * navlib’s pivot algorithm continues to be overridden until this property is set back to false.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnPivotUserSet( bool Input );
-    
-    
-    /** Return true if PivotVisible is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsPivotVisibleAvailable();
 
-    /**
-     * The pivot_visible_k property specifies whether the pivot widget should be displayed.
-     *
-     * In the default configuration this property is set by the navlib to true when the user starts to move 
-     * the model and to false when the user has finished moving the model.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnPivotVisibleGet( UPARAM(ref) bool& Output );
 
     /**
      * The pivot_visible_k property specifies whether the pivot widget should be displayed.
@@ -626,19 +418,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnPivotVisibleSet( bool Input );
-    
-    
-    /** Return true if HitLookfrom is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsHitLookfromAvailable();
 
-    /**
-     * Defines the origin of the ray used for hit-testing in world coordinates.
-     *
-     * This property is set by the navlib
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnHitLookfromGet( UPARAM(ref) FVector& Output );
 
     /**
      * Defines the origin of the ray used for hit-testing in world coordinates.
@@ -647,19 +427,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnHitLookfromSet( FVector Input );
-    
-    
-    /** Return true if HitDirection is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsHitDirectionAvailable();
 
-    /**
-     * Defines the direction of the ray used for hit-testing in world coordinates.
-     *
-     * This property is set by the navlib
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnHitDirectionGet( UPARAM(ref) FVector& Output );
 
     /**
      * Defines the direction of the ray used for hit-testing in world coordinates.
@@ -668,19 +436,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnHitDirectionSet( FVector Input );
-    
-    
-    /** Return true if HitAperture is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsHitApertureAvailable();
 
-    /**
-     * Defines the diameter of the ray used for hit-testing.
-     *
-     * This property is set by the navlib
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnHitApertureGet( UPARAM(ref) float& Output );
 
     /**
      * Defines the diameter of the ray used for hit-testing.
@@ -689,8 +445,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnHitApertureSet( float Input );
-    
-    
+
     /** Return true if HitLookat is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsHitLookatAvailable();
@@ -699,34 +454,13 @@ public:
      * Specifies the point of the model that is hit by the ray originating from the lookfrom position.
      *
      * This property is queried by the navlib. The navlib will generally calculate if it is possible to hit a 
-     * part of the model from the model_extents_k and slection_extents_k properties before setting up 
+     * part of the model from the model_extents_k and selection_extents_k properties before setting up 
      * the hit-test properties and querying this property.
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnHitLookatGet( UPARAM(ref) FVector& Output );
 
-    /**
-     * Specifies the point of the model that is hit by the ray originating from the lookfrom position.
-     *
-     * This property is queried by the navlib. The navlib will generally calculate if it is possible to hit a 
-     * part of the model from the model_extents_k and slection_extents_k properties before setting up 
-     * the hit-test properties and querying this property.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnHitLookatSet( FVector Input );
-    
-    
-    /** Return true if HitSelectionOnly is currently available, and or makes sense */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    bool IsHitSelectionOnlyAvailable();
 
-    /**
-     * Specifies whether the hit-testing is to be limited solely to the current selection set.
-     *
-     * This property is set by the navlib
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnHitSelectionOnlyGet( UPARAM(ref) bool& Output );
 
     /**
      * Specifies whether the hit-testing is to be limited solely to the current selection set.
@@ -735,8 +469,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnHitSelectionOnlySet( bool Input );
-    
-    
+
     /** Return true if SelectionAffine is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsSelectionAffineAvailable();
@@ -764,8 +497,7 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnSelectionAffineSet( FMatrix Input );
-    
-    
+
     /** Return true if SelectionEmpty is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsSelectionEmptyAvailable();
@@ -776,13 +508,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnSelectionEmptyGet( UPARAM(ref) bool& Output );
 
-    /**
-     * When true, nothing is selected.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnSelectionEmptySet( bool Input );
-    
-    
+
     /** Return true if SelectionExtents is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsSelectionExtentsAvailable();
@@ -796,16 +522,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnSelectionExtentsGet( UPARAM(ref) FBox& Output );
 
-    /**
-     * Defines the bounding box of the selection in world coordinates
-     *
-     * This extents of the selection are returned as a bounding box in world coordinates. The navlib 
-     * will only access this property if the selection_empty_k is false.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnSelectionExtentsSet( FBox Input );
-    
-    
+
     /** Return true if ModelExtents is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsModelExtentsAvailable();
@@ -816,13 +533,7 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnModelExtentsGet( UPARAM(ref) FBox& Output );
 
-    /**
-     * Defines the bounding box of the model in world coordinates.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnModelExtentsSet( FBox Input );
-    
-    
+
     /** Return true if PointerPosition is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool IsPointerPositionAvailable();
@@ -836,13 +547,5 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnPointerPositionGet( UPARAM(ref) FVector& Output );
 
-    /**
-     * Defines the position of the mouse cursor on the projection plane in world coordinates.
-     * The property is readonly.
-     *
-     * In OpenGL the position would typically be retrieved using gluUnProject with winZ set to 0.0.
-     */
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
-    void OnPointerPositionSet( FVector Input );
-    
+
 };

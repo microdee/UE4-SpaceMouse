@@ -18,11 +18,11 @@ public:
     virtual void OnPostOpen() override;
     virtual FString GetProfileName() override;
 
-    {{ for prop in properties }}
-    virtual bool Is{{ prop.name }}Available() override;
-    virtual void On{{ prop.name }}Get(F{{ prop.name }}Property& InValue) override;
-    virtual void On{{ prop.name }}Set(const F{{ prop.name }}Property& InValue) override;
-    {{ end }}
+    {{~ for prop in properties ~}}
+    {{ if prop.read -}} virtual bool Is{{ prop.name }}Available() override; {{- end }}
+    {{ if prop.read -}} virtual void On{{ prop.name }}Get(F{{ prop.name }}Property& InValue) override; {{- end }}
+    {{ if prop.write -}} virtual void On{{ prop.name }}Set(const F{{ prop.name }}Property& InValue) override; {{- end }}
+    {{~ end ~}}
     
 protected:
     TWeakObjectPtr<USmNavContext> AssociatedNavCtx;
@@ -47,8 +47,8 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void OnPostOpen();
 
-    {{ for prop in properties }}
-    
+    {{~ for prop in properties ~}}
+    {{~ if prop.read ~}}
     /** Return true if {{ prop.name }} is currently available, and or makes sense */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     bool Is{{ prop.name }}Available();
@@ -58,11 +58,14 @@ public:
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void On{{ prop.name }}Get( UPARAM(ref) {{ prop.ue_type }}& Output );
+    {{~ end ~}}
 
+    {{~ if prop.write ~}}
     /**
 {{ prop.docs }}
      */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SpaceMouse")
     void On{{ prop.name }}Set( {{ prop.ue_type }} Input );
-    {{ end }}
+    {{~ end }}
+    {{~ end ~}}
 };

@@ -24,6 +24,7 @@ FString FSmNavContextInternal::GetProfileName()
 }
 
 {{ for prop in properties }}
+{{~ if prop.read ~}}
 bool FSmNavContextInternal::Is{{ prop.name }}Available()
 {
     if(AssociatedNavCtx.IsValid())
@@ -40,12 +41,15 @@ void FSmNavContextInternal::On{{ prop.name }}Get(F{{ prop.name }}Property& InVal
         InValue.SetUE(Output);
     }
 }
+{{~ end ~}}
 
+{{~ if prop.write ~}}
 void FSmNavContextInternal::On{{ prop.name }}Set(const F{{ prop.name }}Property& InValue)
 {
     if(AssociatedNavCtx.IsValid())
         AssociatedNavCtx->On{{ prop.name }}Set(InValue.GetUE());
 }
+{{~ end ~}}
 {{ end }}
 
 void USmNavContext::PostLoad()
@@ -66,11 +70,15 @@ void USmNavContext::Open()
 void USmNavContext::OnPostOpen_Implementation() { }
 
 {{ for prop in properties }}
+{{~ if prop.read ~}}
 bool USmNavContext::Is{{ prop.name }}Available_Implementation()
 {
     return true;
 }
 
 void USmNavContext::On{{ prop.name }}Get_Implementation({{ prop.ue_type }}& Output) { }
+{{~ end ~}}
+{{~ if prop.write ~}}
 void USmNavContext::On{{ prop.name }}Set_Implementation({{ prop.ue_type }} Input) { }
+{{~ end ~}}
 {{ end }}
