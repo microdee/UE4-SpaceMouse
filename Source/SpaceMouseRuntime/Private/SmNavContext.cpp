@@ -445,6 +445,7 @@ void FSmNavContextInternal::OnPointerPositionGet(FPointerPositionProperty& InVal
 
 void USmNavContext::PostLoad()
 {
+    Super::PostLoad();
     NavlibCtx = MakeUnique<FSmNavContextInternal>(this);
 }
 

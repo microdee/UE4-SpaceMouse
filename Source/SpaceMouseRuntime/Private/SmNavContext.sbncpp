@@ -53,6 +53,7 @@ void FSmNavContextInternal::On{{ prop.name }}Set(const F{{ prop.name }}Property&
 
 void USmNavContext::PostLoad()
 {
+    Super::PostLoad();
     NavlibCtx = MakeUnique<FSmNavContextInternal>(this);
 }
 
