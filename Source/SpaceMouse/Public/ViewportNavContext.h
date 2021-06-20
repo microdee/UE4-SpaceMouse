@@ -19,7 +19,7 @@ public:
 
     FSceneView* GetSceneView();
     virtual void OnPostOpen() override;
-    void Tick(float DeltaSeconds);
+    virtual void Tick(float DeltaSeconds);
 
     bool IsMotionStartedFrame() const;
     bool IsMotionFinishedFrame() const;

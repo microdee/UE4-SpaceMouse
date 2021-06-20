@@ -341,8 +341,8 @@ void FViewportNavContext::CalcSelectionBounds()
         {
             FVector Center, Extent;
             Actor->GetActorBounds(true, Center, Extent, true);
-            MinLocation = FMath::Min(MinLocation, Center - Extent * 0.5f);
-            MaxLocation = FMath::Max(MaxLocation, Center + Extent * 0.5f);
+            MinLocation = MinLocation.ComponentMin(Center - Extent * 0.5f);
+            MaxLocation = MaxLocation.ComponentMax(Center + Extent * 0.5f);
         }
     }
     bSelectionBoundsFrame = true;
