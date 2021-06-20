@@ -69,7 +69,7 @@ void FTDxNavContextBase::Open()
     nlCreateOptions_t Options
     {
         sizeof(nlCreateOptions_t),
-        true,
+        false,
         nlOptions_t::none
     };
 
@@ -118,7 +118,7 @@ void FTDxNavContext::OnViewsFrontGet(FViewsFrontProperty& InValue)
 
 void FTDxNavContext::OnFrameTimeGet(FFrameTimeProperty& InValue)
 {
-    InValue.SetUE(FApp::GetCurrentTime());
+    InValue.SetUE(FApp::GetCurrentTime() * 1000);
 }
 
 void FTDxNavContext::OnFrameTimingSourceGet(FFrameTimingSourceProperty& InValue)

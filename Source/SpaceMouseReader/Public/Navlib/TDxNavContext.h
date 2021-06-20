@@ -24,8 +24,10 @@
 #define NL_PROP_W(MSelf, Name) \
     static long Name##Writer(const navlib::param_t param, const navlib::property_t name, const navlib::value_t *value) \
     { \
+        auto Self = reinterpret_cast<MSelf*>(param); \
         auto InVal = static_cast<F##Name##Property::FTypeNL>(*value); \
-        reinterpret_cast<MSelf*>(param)->Name.SetCached(InVal); \
+        Self->Name.SetCached(InVal); \
+        Self->On##Name##Set(Self->Name); \
         return 0; \
     }
 

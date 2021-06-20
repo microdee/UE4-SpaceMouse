@@ -21,6 +21,10 @@ FViewportNavContext::~FViewportNavContext()
 
 FSceneView* FViewportNavContext::GetSceneView()
 {
+    if(!AssociatedVp->IsVisible()) return nullptr;
+    if(AssociatedVp->Viewport->GetSizeXY().X <= 0 || AssociatedVp->Viewport->GetSizeXY().Y <= 0)
+        return nullptr;
+    
     if(!ViewCached)
     {
         FSceneViewFamilyContext ViewFamily(FSceneViewFamily::ConstructionValues(
@@ -51,6 +55,7 @@ void FViewportNavContext::OnPostOpen()
 
 void FViewportNavContext::Tick(float DeltaSeconds)
 {
+    OnFrameTimeGet(FrameTime);
     if(IsMotionStartedFrame())
     {
         bWasRealtime = AssociatedVp->IsRealtime();
@@ -168,8 +173,8 @@ void FViewportNavContext::OnViewFovSet(const FViewFovProperty& InValue)
 
 void FViewportNavContext::OnViewAffineGet(FViewAffineProperty& InValue)
 {
-    auto View = GetSceneView();
-    InValue.SetUE(View->ViewMatrices.GetViewMatrix());
+    if(auto View = GetSceneView())
+        InValue.SetUE(View->ViewMatrices.GetViewMatrix());
 }
 
 void FViewportNavContext::OnViewAffineSet(const FViewAffineProperty& InValue)
@@ -181,8 +186,8 @@ void FViewportNavContext::OnViewAffineSet(const FViewAffineProperty& InValue)
 
 void FViewportNavContext::OnViewFrustumGet(FViewFrustumProperty& InValue)
 {
-    auto View = GetSceneView();
-    InValue.SetUE(View->ViewMatrices.GetProjectionMatrix());
+    if(auto View = GetSceneView())
+        InValue.SetUE(View->ViewMatrices.GetProjectionMatrix());
 }
 
 void FViewportNavContext::OnPivotPositionSet(const FPivotPositionProperty& InValue)
@@ -285,12 +290,13 @@ bool FViewportNavContext::AllowPerspectiveCameraMoveEvent() const
 bool FViewportNavContext::IsLevelEditorViewport()
 {
     auto VpType = AssociatedVp->GetEditorViewportWidget()->GetType();
-    return VpType == FName("SLevelEditorViewport");
+    return VpType == FName("SLevelViewport");
 }
 
 void FViewportNavContext::CalcHitTest()
 {
     if(bHitFrame) return;
+    if(!GetSceneView()) return;
     
     const bool WithAperture = false;
     float TempLength = 10000;
