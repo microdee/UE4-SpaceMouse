@@ -19,23 +19,18 @@
 
 void FSmEditorManager::Initialize()
 {
-    FSpaceMouseManager::Initialize();
-    
     bWasOrbitCamera = false;
     bWasRealtime = false;
     
-    auto& Ibm = FInputBindingManager::Get();
-    Ibm.SaveInputBindings();
+    FSmEditorManagerBase::Initialize();
 }
 
 void FSmEditorManager::TickManager(float DeltaSecs)
 {
-    auto Settings = GetMutableDefault<USpaceMouseConfig>();
-    FSpaceMouseManager::TickManager(DeltaSecs);
+    FSmEditorManagerBase::TickManager(DeltaSecs);
 
     // TODO: ignore camera movement when the player possesses a Pawn in PIE, but not when ejected or only SIE
 
-    ManageActiveViewport();
     ManageOrbitingOverlay();
     TriggerCustomButtons();
     MoveActiveViewport(GetTranslation(), GetRotation());
@@ -63,44 +58,6 @@ void FSmEditorManager::ManageOrbitingOverlay()
     if(MovementState->bOnMovementEndedFrame)
     {
         OrbitingOverlay.Reset();
-    }
-}
-
-void FSmEditorManager::ManageActiveViewport()
-{
-#if UE_VERSION >= MAKE_UE_VERSION(4, 22)
-    TArray<FEditorViewportClient*> AllViewportClients = GEditor->GetAllViewportClients();
-#else
-    TArray<FEditorViewportClient*> AllViewportClients = GEditor->AllViewportClients;
-#endif
-
-    if (IsActiveViewportInvalid(AllViewportClients)) ActiveViewportClient = nullptr;
-
-    for (FEditorViewportClient* Cvp : AllViewportClients)
-    {
-        if (!Cvp) continue;
-        if (!Cvp->GetEditorViewportWidget().Get()) continue;
-        if (Cvp->GetEditorViewportWidget().Get()->HasAnyUserFocusOrFocusedDescendants())
-        {
-            if(Cvp == ActiveViewportClient) break;
-            if (Cvp->IsVisible() /* && Cvp->IsPerspective() */)
-            {
-                if (Cvp != ActiveViewportClient)
-                {
-                    if (ActiveViewportClient)
-                    {
-                        ActiveViewportClient->ToggleOrbitCamera(bWasOrbitCamera);
-                        ActiveViewportClient->SetRealtime(bWasRealtime);
-                    }
-                    bWasOrbitCamera = Cvp->ShouldOrbitCamera();
-                    bWasRealtime = Cvp->IsRealtime();
-                    //cvp->ToggleOrbitCamera(false);
-                    //cvp->SetRealtime(true);
-                    ActiveViewportClient = Cvp;
-                    break;
-                }
-            }
-        }
     }
 }
 
@@ -200,6 +157,17 @@ FUserSettings FSmEditorManager::GetUserSettings()
     return GetMutableDefault<USpaceMouseConfig>()->GetUserSettings();
 }
 
+void FSmEditorManager::OnActiveViewportChanged(FEditorViewportClient* Current, FEditorViewportClient* Previous)
+{
+    if (Previous)
+    {
+        Previous->ToggleOrbitCamera(bWasOrbitCamera);
+        Previous->SetRealtime(bWasRealtime);
+    }
+    bWasOrbitCamera = Current->ShouldOrbitCamera();
+    bWasRealtime = Current->IsRealtime();
+}
+
 void FSmEditorManager::BeginLearning()
 {
     bLearning = true;
@@ -209,24 +177,6 @@ void FSmEditorManager::BeginLearning()
 void FSmEditorManager::EndLearning()
 {
     bFinishLearning = true;
-}
-
-FKeyEvent FSmEditorManager::GetKeyEventFromKey(const FInputActionKeyMapping& mapping)
-{
-    const uint32* kc;
-    const uint32* cc;
-    FInputKeyManager::Get().GetCodesFromKey(mapping.Key, kc, cc);
-    
-    return FKeyEvent(
-        mapping.Key, FModifierKeysState(
-            mapping.bShift, false,
-            mapping.bCtrl, false,
-            mapping.bAlt, false,
-            mapping.bCmd, false,
-            false
-        ),
-        0, false, cc ? *cc : 0, kc ? *kc : 0
-    );
 }
 
 bool FSmEditorManager::AllowPerspectiveCameraMoveEvent(FEditorViewportClient* cvp)
@@ -404,14 +354,4 @@ void FSmEditorManager::MoveActiveViewport(FVector trans, FRotator rot)
         ActiveViewportClient->MoveViewportCamera(FVector::ZeroVector, FRotator::ZeroRotator);
     }
     ActiveViewportClient->Viewport->InvalidateHitProxy();
-}
-
-const bool FSmEditorManager::IsActiveViewportInvalid(const TArray<FEditorViewportClient*>& AllViewportClients)
-{
-    bool bActiveViewportInvalid = true;
-    for (FEditorViewportClient* Cvp : AllViewportClients)
-    {
-        if (Cvp == ActiveViewportClient) return false;
-    }
-    return true;
 }
