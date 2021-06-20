@@ -122,7 +122,7 @@ public:
     
 private:
     
-    navlib::nlHandle_t Navlib {};
+    TSharedPtr<navlib::FNlHandle> Navlib;
 };
 
 class SPACEMOUSEREADER_API FTDxNavContext : public FTDxNavContextBase

@@ -14,7 +14,7 @@ FTDxNavContextBase::FTDxNavContextBase()
 FTDxNavContextBase::~FTDxNavContextBase()
 {
     using namespace navlib;
-    if(Navlib) NlClose(Navlib);
+    if(Navlib) NlClose(Navlib->Handle);
 }
 
 void FTDxNavContextBase::Open()
@@ -71,17 +71,21 @@ void FTDxNavContextBase::Open()
         nlOptions_t::none
     };
 
+    nlHandle_t OutHandle;
+
     if(auto CreationError = NlCreate(
-        &Navlib,
+        &OutHandle,
         TCHAR_TO_ANSI(*GetProfileName()),
         Accessors.GetData(),
         Accessors.Num(),
         &Options
     )) {
         UE_LOG(LogSmReader, Error, TEXT("Could not connect to 3DxWare Navlib, %l"), CreationError)
-        Navlib = {};
+        Navlib.Reset();
         return;
     }
+
+    Navlib = MakeShared<FNlHandle>(OutHandle);
 
     OnPostOpen();
 }

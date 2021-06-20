@@ -252,6 +252,13 @@ namespace navlib
     NL_PROPERTY_TYPE( string_t          , Settings );
     NL_PROPERTY_TYPE( long              , SettingsChanged );
 
+    class FNlHandle
+    {
+    public:
+        nlHandle_t Handle;
+        FNlHandle(nlHandle_t InHandle) : Handle(InHandle) {}
+    };
+
     template<EProperty TProp>
     class TProperty
     {
@@ -269,7 +276,7 @@ namespace navlib
             return GPropertyMap[static_cast<uint8>(TProp)];
         }
 
-        explicit TProperty(const nlHandle_t& InCtx) : Ctx(InCtx) {}
+        explicit TProperty(TSharedPtr<FNlHandle> InCtx) : Ctx(InCtx) {}
         
         FTypeNL GetCached() { return Cache; }
         FTypeUE GetCachedUE() { return FromNL(Cache); }
@@ -279,7 +286,7 @@ namespace navlib
         FTypeNL Get() const
         {
             value_t Val;
-            if(NlReadValue(Ctx, GetProperty(), &Val))
+            if(NlReadValue(Ctx->Handle, GetProperty(), &Val))
             {
                 return Cache;
             }
@@ -295,7 +302,7 @@ namespace navlib
             SetCached(InVal);
             
             value_t Val(InVal);
-            auto Result = NlWriteValue(Ctx, GetProperty(), &Val);
+            auto Result = NlWriteValue(Ctx->Handle, GetProperty(), &Val);
 
             check(!Result);
         }
@@ -303,7 +310,7 @@ namespace navlib
         void SetUE(const FTypeUE& InVal) { Set(FromUE(InVal)); }
     
     private:
-        nlHandle_t Ctx;
+        TSharedPtr<FNlHandle> Ctx;
         FTypeNL Cache {};
     };
 }
