@@ -73,6 +73,9 @@ protected:
     void CalcSelectionBounds();
     bool IsSelectionAvailable();
     
+    bool bWasRealtime = false;
+    bool bWasOrbitCamera = false;
+    
 private:
     FSceneView* ViewCached = nullptr;
     FDelegateHandle EndFrame;

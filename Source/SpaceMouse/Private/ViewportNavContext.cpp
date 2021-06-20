@@ -48,6 +48,19 @@ void FViewportNavContext::OnPostOpen()
 
 void FViewportNavContext::Tick(float DeltaSeconds)
 {
+    if(IsMotionStartedFrame())
+    {
+        bWasRealtime = AssociatedVp->IsRealtime();
+        bWasOrbitCamera = AssociatedVp->ShouldOrbitCamera();
+
+        AssociatedVp->SetRealtime(true);
+        AssociatedVp->ToggleOrbitCamera(false);
+    }
+    if(IsMotionFinishedFrame())
+    {
+        AssociatedVp->SetRealtime(bWasRealtime);
+        AssociatedVp->ToggleOrbitCamera(bWasOrbitCamera);
+    }
 }
 
 bool FViewportNavContext::IsMotionStartedFrame() const
