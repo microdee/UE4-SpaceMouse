@@ -6,7 +6,8 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 #include "PropertyEditorDelegates.h"
-#include "SmEditorManager.h"
+//#include "SmEditorManager.h"
+#include "SmNavlibEditorManager.h"
 #include "LevelEditorViewport.h"
 #include "SpaceMouseConfig.h"
 
@@ -32,6 +33,6 @@ public:
     virtual void ShutdownModule() override;
     virtual bool SupportsDynamicReloading() override { return true; }
     
-    FSmEditorManager SmManager;
+    FSmNavlibEditorManager SmManager;
     class FSpaceMouseReaderModule* ReaderModule;
 };
