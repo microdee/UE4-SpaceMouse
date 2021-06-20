@@ -36,6 +36,9 @@ FSceneView* FViewportNavContext::GetSceneView()
 void FViewportNavContext::OnPostOpen()
 {
     FTDxNavContext::OnPostOpen();
+    Active.Set(AssociatedVp->IsVisible());
+    PrevVisible = AssociatedVp->IsVisible();
+    
     EndFrame = FCoreDelegates::OnEndFrame.AddLambda([this]()
     {
         ViewCached = nullptr;
@@ -61,6 +64,18 @@ void FViewportNavContext::Tick(float DeltaSeconds)
         AssociatedVp->SetRealtime(bWasRealtime);
         AssociatedVp->ToggleOrbitCamera(bWasOrbitCamera);
     }
+
+    if(AssociatedVp->IsVisible() && (AssociatedVp->IsVisible() ^ PrevVisible))
+    {
+        Active.Set(true);
+    }
+
+    if(PrevVisible && (AssociatedVp->IsVisible() ^ PrevVisible))
+    {
+        Active.Set(false);
+    }
+
+    PrevVisible = AssociatedVp->IsVisible();
 }
 
 bool FViewportNavContext::IsMotionStartedFrame() const

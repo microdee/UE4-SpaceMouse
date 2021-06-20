@@ -80,16 +80,18 @@ private:
     FSceneView* ViewCached = nullptr;
     FDelegateHandle EndFrame;
 
-    bool PrevMotion;
+    bool PrevMotion = false;
+    bool PrevVisible = false;
+    bool PrevFocus = false;
     
-    bool bHitFrame;
-    bool bIsHitAvailable;
-    FVector HitPosition;
-    FVector Pivot;
+    bool bHitFrame = false;
+    bool bIsHitAvailable = false;
+    FVector HitPosition {};
+    FVector Pivot {};
 
-    bool bSelectionBoundsFrame;
-    FVector SelectionMin;
-    FVector SelectionMax;
+    bool bSelectionBoundsFrame = false;
+    FVector SelectionMin {};
+    FVector SelectionMax {};
 };
 
 #endif
