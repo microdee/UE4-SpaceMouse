@@ -9,6 +9,8 @@
 
 #define WITH_DEBUG_PRINT 1
 
+class SOverlay;
+class SDebugVpNavlib;
 class FSceneView;
 /**
  * 
@@ -96,6 +98,12 @@ private:
     bool bSelectionBoundsFrame = false;
     FVector SelectionMin {};
     FVector SelectionMax {};
+
+    void DebugMatrix(uint64 Line, const TCHAR* Label, FMatrix $);
+
+    static TSharedPtr<SWidget> GetChildWidgetOfType(TSharedPtr<SWidget> InWidget, FName InType);
+    TSharedPtr<SOverlay> GetOverlayWidgetOfVp();
+    TSharedPtr<SDebugVpNavlib> DebugUI;
 };
 
 #endif

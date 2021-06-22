@@ -5,6 +5,7 @@
 #include "EditorViewportClient.h"
 #include "SEditorViewport.h"
 #include "Engine/Selection.h"
+#include "Widgets/SDebugVpNavlib.h"
 
 #if WITH_3DX_NAVLIB
 
@@ -51,6 +52,45 @@ void FViewportNavContext::OnPostOpen()
         PrevMotion = Motion.Get();
     });
     PivotUser.Set(false);
+
+    if(auto VpOverlay = GetOverlayWidgetOfVp())
+    {
+        VpOverlay->AddSlot()
+            . HAlign(HAlign_Fill)
+            . VAlign(VAlign_Fill)
+            [
+                SAssignNew(DebugUI, SDebugVpNavlib)
+                . SceneViewTr_Lambda([this]
+                {
+                    if(auto View = GetSceneView())
+                    {
+                        return FMatrix(
+                            {0, 0, 1, 0},
+                            {1, 0, 0, 0},
+                            {0, 1, 0, 0},
+                            {0, 0, 0, 1}
+                        ) * View->ViewMatrices.GetInvViewMatrix();
+                    }
+                    return FMatrix::Identity;
+                })
+                . ProjTr_Lambda([this]
+                {
+                    if(auto View = GetSceneView())
+                    {
+                        return View->ViewMatrices.GetProjectionMatrix();
+                    }
+                    return FMatrix::Identity;
+                })
+                . LocRotTr_Lambda([this]
+                {
+                    FTransform ViewTr(
+                        AssociatedVp->GetViewRotation(),
+                        AssociatedVp->GetViewLocation()
+                    );
+                    return ViewTr.ToMatrixNoScale();
+                })
+            ];
+    }
 }
 
 void FViewportNavContext::Tick(float DeltaSeconds)
@@ -66,8 +106,8 @@ void FViewportNavContext::Tick(float DeltaSeconds)
     }
     if(IsMotionFinishedFrame())
     {
-        AssociatedVp->SetRealtime(bWasRealtime);
-        AssociatedVp->ToggleOrbitCamera(bWasOrbitCamera);
+        //AssociatedVp->SetRealtime(bWasRealtime);
+        //AssociatedVp->ToggleOrbitCamera(bWasOrbitCamera);
     }
 
     if(AssociatedVp->IsVisible() && (AssociatedVp->IsVisible() ^ PrevVisible))
@@ -180,41 +220,14 @@ void FViewportNavContext::OnViewAffineGet(FViewAffineProperty& InValue)
     if(auto View = GetSceneView())
     {
 #if WITH_DEBUG_PRINT
-        {
-            auto $ = ViewTr.ToMatrixNoScale();
-            GEngine->AddOnScreenDebugMessage(
-                reinterpret_cast<uint64>(this) ^ __LINE__, 100.0f, FColor::Purple,
-                FString::Printf(
-                    TEXT("ViewAffine Get:\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n"),
-                    $.M[0][0], $.M[0][1], $.M[0][2], $.M[0][3],
-                    $.M[1][0], $.M[1][1], $.M[1][2], $.M[1][3],
-                    $.M[2][0], $.M[2][1], $.M[2][2], $.M[2][3],
-                    $.M[3][0], $.M[3][1], $.M[3][2], $.M[3][3]
-                )
-            );
-        }
+        DebugMatrix(__LINE__, TEXT("ViewAffine Get"), ViewTr.ToMatrixNoScale());
 #endif
         InValue.SetUE(ViewTr.ToMatrixNoScale());
     }
 }
 
 void FViewportNavContext::OnViewAffineSet(const FViewAffineProperty& InValue)
-{   
-#if WITH_DEBUG_PRINT
-    {
-        auto $ = InValue.GetUE();
-        GEngine->AddOnScreenDebugMessage(
-            reinterpret_cast<uint64>(this) ^ __LINE__, 100.0f, FColor::Purple,
-            FString::Printf(
-                TEXT("ViewAffine Set:\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n"),
-                $.M[0][0], $.M[0][1], $.M[0][2], $.M[0][3],
-                $.M[1][0], $.M[1][1], $.M[1][2], $.M[1][3],
-                $.M[2][0], $.M[2][1], $.M[2][2], $.M[2][3],
-                $.M[3][0], $.M[3][1], $.M[3][2], $.M[3][3]
-            )
-        );
-    }
-#endif
+{
     
     FTransform InTr(InValue.GetUE());
     AssociatedVp->SetViewLocation(InTr.GetLocation());
@@ -420,6 +433,45 @@ bool FViewportNavContext::IsSelectionAvailable()
         return Selected->Num() > 0;
     }
     return false;
+}
+
+void FViewportNavContext::DebugMatrix(uint64 Line, const TCHAR* Label, FMatrix $)
+{
+    GEngine->AddOnScreenDebugMessage(
+        reinterpret_cast<uint64>(this) ^ Line, 100.0f, FColor::Purple,
+        FString::Printf(
+            TEXT("%s:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n"),
+            Label,
+            $.M[0][0], $.M[0][1], $.M[0][2], $.M[0][3],
+            $.M[1][0], $.M[1][1], $.M[1][2], $.M[1][3],
+            $.M[2][0], $.M[2][1], $.M[2][2], $.M[2][3],
+            $.M[3][0], $.M[3][1], $.M[3][2], $.M[3][3]
+        )
+    );
+}
+
+TSharedPtr<SWidget> FViewportNavContext::GetChildWidgetOfType(TSharedPtr<SWidget> InWidget, FName InType)
+{
+    if(InWidget->GetType() == InType) return InWidget;
+    auto Children = InWidget->GetChildren();
+
+    for(int i=0; i<Children->Num(); i++)
+    {
+        auto CurrChild = GetChildWidgetOfType(
+            Children->GetChildAt(i),
+            InType
+        );
+        if(CurrChild.IsValid()) return CurrChild;
+    }
+    return {};
+}
+
+TSharedPtr<SOverlay> FViewportNavContext::GetOverlayWidgetOfVp()
+{
+    auto VpRootWidget = AssociatedVp->GetEditorViewportWidget();
+    auto Viewport = StaticCastSharedPtr<SViewport>(GetChildWidgetOfType(VpRootWidget, TEXT("SViewport")));
+    if(!Viewport) return {};
+    return StaticCastSharedRef<SOverlay>(Viewport->GetChildren()->GetChildAt(0));
 }
 
 #endif
