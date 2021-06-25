@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "ConvexVolume.h"
 #include "Widgets/DeclarativeSyntaxSupport.h"
 #include "Widgets/SCompoundWidget.h"
 
@@ -19,6 +21,12 @@ public:
     SLATE_ATTRIBUTE(FMatrix, SceneViewTr)
     SLATE_ATTRIBUTE(FMatrix, LocRotTr)
     SLATE_ATTRIBUTE(FMatrix, ProjTr)
+	SLATE_ATTRIBUTE(FVector, PivotPos)
+	SLATE_ATTRIBUTE(FVector, HitPos)
+	SLATE_ATTRIBUTE(FVector, PointerPos)
+	SLATE_ATTRIBUTE(FVector, HitLookfrom)
+	SLATE_ATTRIBUTE(FVector, HitDirection)
+	SLATE_ATTRIBUTE(FConvexVolume, Frustum)
 
     SLATE_END_ARGS()
 

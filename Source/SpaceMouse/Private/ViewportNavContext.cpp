@@ -55,6 +55,22 @@ void FViewportNavContext::OnPostOpen()
 
     if(auto VpOverlay = GetOverlayWidgetOfVp())
     {
+        auto GetProj = [=]() -> FMatrix
+        {
+            if(auto View = GetSceneView())
+            {
+                return View->ViewMatrices.ComputeInvProjectionNoAAMatrix();
+            }
+            return FMatrix::Identity;
+        };
+        auto GetFrustum = [=]() -> navlib::frustum_t
+        {
+            if(auto View = GetSceneView())
+            {
+                return navlib::TUnreal<navlib::frustum_t>::To(GetProj());
+            }
+            return {};
+        };
         VpOverlay->AddSlot()
             . HAlign(HAlign_Fill)
             . VAlign(VAlign_Fill)
@@ -64,31 +80,29 @@ void FViewportNavContext::OnPostOpen()
                 {
                     if(auto View = GetSceneView())
                     {
-                        return FMatrix(
-                            {0, 0, 1, 0},
-                            {1, 0, 0, 0},
-                            {0, 1, 0, 0},
-                            {0, 0, 0, 1}
-                        ) * View->ViewMatrices.GetInvViewMatrix();
+                        return View->ViewMatrices.GetInvViewMatrix();
                     }
                     return FMatrix::Identity;
                 })
-                . ProjTr_Lambda([this]
-                {
-                    if(auto View = GetSceneView())
-                    {
-                        return View->ViewMatrices.GetProjectionMatrix();
-                    }
-                    return FMatrix::Identity;
-                })
+                . ProjTr_Lambda([=] { return GetProj(); })
                 . LocRotTr_Lambda([this]
                 {
                     FTransform ViewTr(
                         AssociatedVp->GetViewRotation(),
                         AssociatedVp->GetViewLocation()
                     );
-                    return ViewTr.ToMatrixNoScale();
+                    return FMatrix(
+                        {0, 1, 0, 0},
+                        {0, 0, 1, 0},
+                        {1, 0, 0, 0},
+                        {0, 0, 0, 1}
+                    ) * ViewTr.ToMatrixNoScale();
                 })
+                . PivotPos_Lambda([this]{ return PivotPosition.GetCachedUE(); })
+                . PointerPos_Lambda([this]{ return PointerPosition.GetCachedUE(); })
+                . HitPos_Lambda([this]{ CalcHitTest(); return HitPosition; })
+                . HitLookfrom_Lambda([this]{ return HitLookfrom.GetCachedUE(); })
+                . HitDirection_Lambda([this]{ return HitDirection.GetCachedUE(); })
             ];
     }
 }
@@ -217,18 +231,11 @@ void FViewportNavContext::OnViewAffineGet(FViewAffineProperty& InValue)
         AssociatedVp->GetViewRotation(),
         AssociatedVp->GetViewLocation()
     );
-    if(auto View = GetSceneView())
-    {
-#if WITH_DEBUG_PRINT
-        DebugMatrix(__LINE__, TEXT("ViewAffine Get"), ViewTr.ToMatrixNoScale());
-#endif
-        InValue.SetUE(ViewTr.ToMatrixNoScale());
-    }
+    InValue.SetUE(ViewTr.ToMatrixNoScale());
 }
 
 void FViewportNavContext::OnViewAffineSet(const FViewAffineProperty& InValue)
 {
-    
     FTransform InTr(InValue.GetUE());
     AssociatedVp->SetViewLocation(InTr.GetLocation());
     AssociatedVp->SetViewRotation(FRotator(InTr.GetRotation()));

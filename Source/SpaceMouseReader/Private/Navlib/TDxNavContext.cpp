@@ -95,8 +95,8 @@ void FTDxNavContextBase::Open()
 
 void FTDxNavContext::OnPostOpen()
 {
-    OnCoordinateSystemGet(CoordinateSystem);
-    OnViewsFrontGet(ViewsFront);
+    //OnCoordinateSystemGet(CoordinateSystem);
+    //OnViewsFrontGet(ViewsFront);
     OnFrameTimeGet(FrameTime);
     OnFrameTimingSourceGet(FrameTimingSource);
 }
