@@ -1,4 +1,5 @@
 # SpaceMouse for Unreal Engine
+Not for Twinmotion. **DO NOT** expect it to work with Twinmotion.
 
 - [SpaceMouse for Unreal Engine](#spacemouse-for-unreal-engine)
 - [Installation](#installation)
