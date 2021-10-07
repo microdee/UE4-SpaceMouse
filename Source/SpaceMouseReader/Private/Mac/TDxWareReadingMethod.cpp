@@ -7,7 +7,7 @@
 #if PLATFORM_MAC
 
 #include "SpaceMouseReader.h"
-#include "Buttons.h"
+#include "SmButtons.h"
 
 // connection to driver
 // grabbed from https://github.com/blender/blender/blob/594f47ecd2d5367ca936cf6fc6ec8168c2b360d0/intern/ghost/intern/GHOST_NDOFManagerCocoa.mm

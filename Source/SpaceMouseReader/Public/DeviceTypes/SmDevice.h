@@ -4,7 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UserSettings.h"
+#include "SmUserSettings.h"
 
 class FMovementState;
 class FDebugInfoPrinter;

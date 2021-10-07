@@ -6,7 +6,7 @@
 #include "CoreMinimal.h"
 #include "SmKey.h"
 #include "UObject/Interface.h"
-#include "UserSettings.h"
+#include "SmUserSettings.h"
 #include "Curves/CurveFloat.h"
 #include "IDetailCustomization.h"
 #include "GameFramework/PlayerInput.h"

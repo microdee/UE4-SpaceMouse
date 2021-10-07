@@ -2,7 +2,7 @@
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 
-#include "Buttons.h"
+#include "SmButtons.h"
 
 EV3DCmd FButtonIterator::operator*() const
 {

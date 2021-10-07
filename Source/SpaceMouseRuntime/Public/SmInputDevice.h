@@ -5,7 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "IInputDevice.h"
-#include "Buttons.h"
+#include "SmButtons.h"
 #include "InputCoreTypes.h"
 
 class FGenericApplicationMessageHandler;

@@ -4,7 +4,7 @@
 
 #include "ReadingMethod/HidDataReadingMethod.h"
 #include "ReadingMethod/ActiveHidSmDevice.h"
-#include "Buttons.h"
+#include "SmButtons.h"
 #include "DebugInfoPrinter.h"
 #include "MovementState.h"
 #include "ProcessedDeviceOutput.h"

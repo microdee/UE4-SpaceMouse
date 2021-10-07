@@ -6,7 +6,7 @@
 #include "CoreMinimal.h"
 
 #include "SpaceMouseManager.h"
-#include "UserSettings.h"
+#include "SmUserSettings.h"
 
 class SPACEMOUSERUNTIME_API FSmRuntimeManager : public FSpaceMouseManager
 {

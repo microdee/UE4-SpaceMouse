@@ -4,7 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UserSettings.generated.h"
+#include "SmUserSettings.generated.h"
 
 struct FRichCurve;
 

@@ -5,7 +5,7 @@
 
 #include "CoreMinimal.h"
 
-#include "UserSettings.h"
+#include "SmUserSettings.h"
 
 class FMovementState;
 struct FRichCurve;

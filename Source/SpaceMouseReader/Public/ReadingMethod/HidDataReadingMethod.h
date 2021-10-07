@@ -6,7 +6,7 @@
 #include "CoreMinimal.h"
 
 #include "DataReadingMethod.h"
-#include "UserSettings.h"
+#include "SmUserSettings.h"
 
 /**
  * Class encapsulating a method to convert raw HID input into usable data

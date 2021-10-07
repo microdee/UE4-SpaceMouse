@@ -5,7 +5,7 @@
 
 #include "CoreMinimal.h"
 
-#include "UserSettings.h"
+#include "SmUserSettings.h"
 
 enum class ESmModelConfidence : uint8;
 class FSmDevice;

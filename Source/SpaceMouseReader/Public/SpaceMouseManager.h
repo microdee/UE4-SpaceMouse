@@ -6,9 +6,9 @@
 #include "CoreMinimal.h"
 
 
-#include "Buttons.h"
+#include "SmButtons.h"
 #include "ProcessedDeviceOutput.h"
-#include "UserSettings.h"
+#include "SmUserSettings.h"
 #include "Containers/StaticBitArray.h"
 
 class FSmDevice;

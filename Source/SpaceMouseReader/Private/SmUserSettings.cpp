@@ -2,5 +2,5 @@
 // This source code is under MIT License https://github.com/microdee/UE4-SpaceMouse/blob/master/LICENSE
 
 
-#include "UserSettings.h"
+#include "SmUserSettings.h"
 #include "Curves/RichCurve.h"
