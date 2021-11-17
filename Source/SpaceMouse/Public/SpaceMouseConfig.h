@@ -15,6 +15,7 @@
 
 class FInputBindingManager;
 class FUICommandInfo;
+enum class EV3DCmd : uint8;
 
 UENUM()
 enum class ESpaceMouseCameraBehavior : uint8

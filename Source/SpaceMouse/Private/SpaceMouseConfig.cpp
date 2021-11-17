@@ -100,7 +100,7 @@ void USpaceMouseConfig::RegisterInputBindingNotification()
     GEditor->GetTimerManager().Get().SetTimerForNextTick(FTimerDelegate::CreateLambda([this]()
     {
         auto& Ibm = FInputBindingManager::Get();
-        for(const auto Kvp : CustomInputBindings)
+        for(const auto& Kvp : CustomInputBindings)
         {
             const auto [Context, Command] = Kvp.Value;
             auto Cmd = Ibm.FindCommandInContext(Context, Command);
