@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "SmKey.h"
+#include "SmButtons.h"
 #include "UObject/Interface.h"
 #include "SmUserSettings.h"
 #include "Curves/CurveFloat.h"
@@ -15,7 +16,6 @@
 
 class FInputBindingManager;
 class FUICommandInfo;
-enum class EV3DCmd : uint8;
 
 UENUM()
 enum class ESpaceMouseCameraBehavior : uint8
