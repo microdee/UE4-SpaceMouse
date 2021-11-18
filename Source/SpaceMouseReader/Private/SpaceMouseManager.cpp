@@ -84,7 +84,7 @@ void FSpaceMouseManager::Tick(float DeltaSecs)
     {
         FString Message = TEXT("Connected SpaceMice: ") + FString::FromInt(Devices.Num());
 
-        for (const auto SmDevice : Devices)
+        for (const auto& SmDevice : Devices)
         {
             Message += TEXT("\n    Device: ") + SmDevice->DeviceName;
         }
