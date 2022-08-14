@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "SmKey.h"
+#include "SmButtons.h"
 #include "UObject/Interface.h"
 #include "SmUserSettings.h"
 #include "Curves/CurveFloat.h"
