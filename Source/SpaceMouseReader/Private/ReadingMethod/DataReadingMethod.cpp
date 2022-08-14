@@ -9,26 +9,26 @@
 #include "Curves/RichCurve.h"
 
 
-FDataReadingMethod::FDataReadingMethod()
+FSmDataReadingMethod::FSmDataReadingMethod()
 {
 }
 
-FDataReadingMethod::~FDataReadingMethod()
+FSmDataReadingMethod::~FSmDataReadingMethod()
 {
 }
 
 namespace SmDataReadingDetails
 {
     template<typename TResult>
-    void ApplyMovement(float fx, float fy, float fz, float DeltaSecs, const FMovementSettings& Settings, TResult& Output, TResult& NormOutput)
+    void ApplyMovement(float fx, float fy, float fz, float DeltaSecs, const FSmMovementSettings& Settings, TResult& Output, TResult& NormOutput)
     {
         FVector xmap = Settings.XAxisMap;
         FVector ymap = Settings.YAxisMap;
         FVector zmap = Settings.ZAxisMap;
 
-        fx = FDataReadingMethod::GetCurvedFloat(Settings.Curve, fx);
-        fy = FDataReadingMethod::GetCurvedFloat(Settings.Curve, fy);
-        fz = FDataReadingMethod::GetCurvedFloat(Settings.Curve, fz);
+        fx = FSmDataReadingMethod::GetCurvedFloat(Settings.Curve, fx);
+        fy = FSmDataReadingMethod::GetCurvedFloat(Settings.Curve, fy);
+        fz = FSmDataReadingMethod::GetCurvedFloat(Settings.Curve, fz);
 
         NormOutput = TResult(
             fx * xmap.X + fy * xmap.Y + fz * xmap.Z,
@@ -40,24 +40,24 @@ namespace SmDataReadingDetails
     }
 }
 
-float FDataReadingMethod::GetCurvedFloat(const FRichCurve* curve, float ff)
+float FSmDataReadingMethod::GetCurvedFloat(const FRichCurve* curve, float ff)
 {
     if(curve && FMath::Abs(ff) > SMALL_NUMBER)
         return curve->Eval(FMath::Abs(ff)) * FMath::Sign(ff);
     else return ff;
 }
 
-void FDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
+void FSmDataReadingMethod::Tick(FSmDataReadingOutput& Output, float DeltaSecs)
 {
     Output.MovementState->PreTick();
 }
 
-void FDataReadingMethod::TickMovementState(FDataReadingOutput& Output, float DeltaSecs)
+void FSmDataReadingMethod::TickMovementState(FSmDataReadingOutput& Output, float DeltaSecs)
 {
     Output.MovementState->Tick(Output.Settings.MovementTimeTolerance, DeltaSecs);
 }
 
-void FDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs)
+void FSmDataReadingMethod::ApplyTranslation(FSmDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs)
 {
     SmDataReadingDetails::ApplyMovement(
         fx, fy, fz,
@@ -68,7 +68,7 @@ void FDataReadingMethod::ApplyTranslation(FDataReadingOutput& Output, float fx, 
     );
 }
 
-void FDataReadingMethod::ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs)
+void FSmDataReadingMethod::ApplyRotation(FSmDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs)
 {
     SmDataReadingDetails::ApplyMovement(
         fp, fy, fr,

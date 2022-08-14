@@ -37,7 +37,7 @@ private:
     FVector GetOrbitingPosDeltaOffset(FRotator rotDelta, float forwardDelta);
 
 protected:
-    virtual FUserSettings GetUserSettings() override;
+    virtual FSmUserSettings GetUserSettings() override;
 
 public:
 

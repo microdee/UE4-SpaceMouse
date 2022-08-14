@@ -21,14 +21,14 @@ typedef TFunction<TSharedPtr<FSmDevice>(const FSmDeviceInstantiation&)> FSmDevic
 /**
  * 
  */
-class SPACEMOUSEREADER_API FDeviceFactory
+class SPACEMOUSEREADER_API FSmDeviceFactory
 {
 public:
-    FDeviceFactory();
-    ~FDeviceFactory();
+    FSmDeviceFactory();
+    ~FSmDeviceFactory();
 
     TMap<uint32 /* vid, pid */, FSmDeviceCreator> KnownModels;
     void AddModel(uint16 Vid, uint16 Pid, FSmDeviceCreator Creator);
 
-    void OpenConnectedDevices(const TFunction<FUserSettings()>& Settings, TArray<TSharedPtr<FSmDevice>>& Output);
+    void OpenConnectedDevices(const TFunction<FSmUserSettings()>& Settings, TArray<TSharedPtr<FSmDevice>>& Output);
 };

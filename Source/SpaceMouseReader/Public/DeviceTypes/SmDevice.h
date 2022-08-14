@@ -6,12 +6,12 @@
 #include "CoreMinimal.h"
 #include "SmUserSettings.h"
 
-class FMovementState;
-class FDebugInfoPrinter;
-class FDataReadingMethod;
-class FButtonCapabilities;
+class FSmMovementState;
+class FSmDebugInfoPrinter;
+class FSmDataReadingMethod;
+class FSmButtonCapabilities;
 class FActiveHidSmDevice;
-struct FProcessedDeviceOutput;
+struct FSmProcessedDeviceOutput;
 
 /**
  * Used to pass dynamic data to 
@@ -20,7 +20,7 @@ struct SPACEMOUSEREADER_API FSmDeviceInstantiation
 {
     int InternalID = 0;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
-    TFunction<FUserSettings()> UserSettings;
+    TFunction<FSmUserSettings()> UserSettings;
 };
 
 enum class ESmModelConfidence : uint8
@@ -41,8 +41,8 @@ public:
     FSmDevice(
         const FString DeviceName,
         const ESmModelConfidence ModelConfidence,
-        const TSharedPtr<FButtonCapabilities> Buttons,
-        const TSharedPtr<FDataReadingMethod> DataReadingMethod,
+        const TSharedPtr<FSmButtonCapabilities> Buttons,
+        const TSharedPtr<FSmDataReadingMethod> DataReadingMethod,
         const FSmDeviceInstantiation& InstanceData
     );
     ~FSmDevice();
@@ -50,14 +50,14 @@ public:
     FString DeviceName;
     ESmModelConfidence ModelConfidence;
     int InternalID;
-    TFunction<FUserSettings()> UserSettings;
-    TSharedPtr<FButtonCapabilities> Buttons;
-    TSharedPtr<FDataReadingMethod> DataReadingMethod;
+    TFunction<FSmUserSettings()> UserSettings;
+    TSharedPtr<FSmButtonCapabilities> Buttons;
+    TSharedPtr<FSmDataReadingMethod> DataReadingMethod;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
-    TSharedPtr<FProcessedDeviceOutput> NormData;
-    TSharedPtr<FProcessedDeviceOutput> ProcessedData;
-    TSharedPtr<FMovementState> MovementState;
-    TSharedPtr<FDebugInfoPrinter> DebugInfoPrinter;
+    TSharedPtr<FSmProcessedDeviceOutput> NormData;
+    TSharedPtr<FSmProcessedDeviceOutput> ProcessedData;
+    TSharedPtr<FSmMovementState> MovementState;
+    TSharedPtr<FSmDebugInfoPrinter> DebugInfoPrinter;
 
     void Tick(float DeltaSeconds);
 

@@ -15,6 +15,6 @@ public:
     FSingleReportTransRotMethod();
     ~FSingleReportTransRotMethod();
     
-    virtual void ReadData(FDataReadingOutput& Output, float DeltaSecs, uint8* Report) override;
+    virtual void ReadData(FSmDataReadingOutput& Output, float DeltaSecs, uint8* Report) override;
     virtual int GetReportSize() override { return 13; }
 };

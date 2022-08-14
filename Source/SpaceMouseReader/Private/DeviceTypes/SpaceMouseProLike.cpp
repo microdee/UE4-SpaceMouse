@@ -4,7 +4,7 @@
 
 #include "DeviceTypes/SpaceMouseProLike.h"
 
-void FSpaceMouseProLike::TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data)
+void FSpaceMouseProLike::TransformRawData(TSharedPtr<FSmProcessedDeviceOutput> Data)
 {
     Data->Buttons = MapModernButtons(Data->Buttons);
 }

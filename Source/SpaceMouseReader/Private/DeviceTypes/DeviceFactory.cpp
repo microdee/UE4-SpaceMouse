@@ -21,10 +21,10 @@
 
 namespace SmDevFactory_Details
 {
-    template<typename TButtonCapabilities = FButtonCapabilities, typename TDataReadingMethod = FSeparateReportTransRotMethod>
+    template<typename TButtonCapabilities = FSmButtonCapabilities, typename TDataReadingMethod = FSeparateReportTransRotMethod>
     FSmDeviceCreator DeclareModel(FString DeviceName, ESmModelConfidence Confidence = ESmModelConfidence::Tested)
     {
-        static_assert(std::is_convertible_v<TButtonCapabilities*, FButtonCapabilities*>, "Invalid button assignment class");
+        static_assert(std::is_convertible_v<TButtonCapabilities*, FSmButtonCapabilities*>, "Invalid button assignment class");
         static_assert(std::is_convertible_v<TDataReadingMethod*, FHidDataReadingMethod*>, "Invalid data reading method class");
         
         return [=](const FSmDeviceInstantiation& InstInfo)
@@ -42,7 +42,7 @@ namespace SmDevFactory_Details
 
 #define DETAILS SmDevFactory_Details
 
-FDeviceFactory::FDeviceFactory()
+FSmDeviceFactory::FSmDeviceFactory()
 {
     
     // https://github.com/FreeSpacenav/spacenavd/blob/a9eccf34e7cac969ee399f625aef827f4f4aaec6/src/dev.c#L202
@@ -177,16 +177,16 @@ FDeviceFactory::FDeviceFactory()
     ));
 }
 
-FDeviceFactory::~FDeviceFactory()
+FSmDeviceFactory::~FSmDeviceFactory()
 {
 }
 
-void FDeviceFactory::AddModel(uint16 Vid, uint16 Pid, FSmDeviceCreator Creator)
+void FSmDeviceFactory::AddModel(uint16 Vid, uint16 Pid, FSmDeviceCreator Creator)
 {
     KnownModels.Add(JOIN_VIDPID(Vid, Pid), Creator);
 }
 
-void FDeviceFactory::OpenConnectedDevices(const TFunction<FUserSettings()>& Settings, TArray<TSharedPtr<FSmDevice>>& Output)
+void FSmDeviceFactory::OpenConnectedDevices(const TFunction<FSmUserSettings()>& Settings, TArray<TSharedPtr<FSmDevice>>& Output)
 {
     auto cinfo = hid_enumerate(0, 0);
     

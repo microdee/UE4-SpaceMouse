@@ -51,7 +51,7 @@ class SPACEMOUSE_API USpaceMouseConfig : public UObject
 public:
     USpaceMouseConfig(const FObjectInitializer& ObjectInitializer);
 
-    FUserSettings GetUserSettings();
+    FSmUserSettings GetUserSettings();
 
     UPROPERTY(EditAnywhere, Config, Category = "Behavior")
     bool ActiveInBackground = false;

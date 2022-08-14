@@ -198,7 +198,7 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float for
 
     if(OrbitingOverlay) OrbitingOverlay->Draw(LastOrbitPivot, LastOrbitDistance);
 
-    return UCommonBehaviors::GetOrbitingTranslationDelta(
+    return USmCommonBehaviors::GetOrbitingTranslationDelta(
         LastOrbitPivotView,
         ActiveViewportClient->GetViewRotation(),
         rotDelta,
@@ -207,7 +207,7 @@ FVector FSmEditorManager::GetOrbitingPosDeltaOffset(FRotator rotDelta, float for
     );
 }
 
-FUserSettings FSmEditorManager::GetUserSettings()
+FSmUserSettings FSmEditorManager::GetUserSettings()
 {
     return GetMutableDefault<USpaceMouseConfig>()->GetUserSettings();
 }

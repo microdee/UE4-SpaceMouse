@@ -4,8 +4,8 @@
 
 #include "SmRuntimeManager.h"
 
-FUserSettings FSmRuntimeManager::GetUserSettings()
+FSmUserSettings FSmRuntimeManager::GetUserSettings()
 {
-    static FUserSettings BaseSettings {};
+    static FSmUserSettings BaseSettings {};
     return BaseSettings;
 }

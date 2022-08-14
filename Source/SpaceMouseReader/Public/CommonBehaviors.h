@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class SPACEMOUSEREADER_API UCommonBehaviors : public UBlueprintFunctionLibrary
+class SPACEMOUSEREADER_API USmCommonBehaviors : public UBlueprintFunctionLibrary
 {
     GENERATED_BODY()
 public:

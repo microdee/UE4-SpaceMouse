@@ -4,7 +4,7 @@
 
 #include "ProcessedDeviceOutput.h"
 
-FProcessedDeviceOutput FProcessedDeviceOutput::operator+(const FProcessedDeviceOutput& other) const
+FSmProcessedDeviceOutput FSmProcessedDeviceOutput::operator+(const FSmProcessedDeviceOutput& other) const
 {
     return {
         Translation + other.Translation,
@@ -13,7 +13,7 @@ FProcessedDeviceOutput FProcessedDeviceOutput::operator+(const FProcessedDeviceO
     };
 }
 
-FProcessedDeviceOutput FProcessedDeviceOutput::operator+(TSharedPtr<FProcessedDeviceOutput> other) const
+FSmProcessedDeviceOutput FSmProcessedDeviceOutput::operator+(TSharedPtr<FSmProcessedDeviceOutput> other) const
 {
     return {
         Translation + other->Translation,
@@ -22,7 +22,7 @@ FProcessedDeviceOutput FProcessedDeviceOutput::operator+(TSharedPtr<FProcessedDe
     };
 }
 
-FProcessedDeviceOutput&& FProcessedDeviceOutput::operator+=(const FProcessedDeviceOutput& other)
+FSmProcessedDeviceOutput&& FSmProcessedDeviceOutput::operator+=(const FSmProcessedDeviceOutput& other)
 {
     Translation += other.Translation;
     Rotation += other.Rotation;
@@ -30,7 +30,7 @@ FProcessedDeviceOutput&& FProcessedDeviceOutput::operator+=(const FProcessedDevi
     return MoveTemp(*this);
 }
 
-FProcessedDeviceOutput&& FProcessedDeviceOutput::operator+=(TSharedPtr<FProcessedDeviceOutput> other)
+FSmProcessedDeviceOutput&& FSmProcessedDeviceOutput::operator+=(TSharedPtr<FSmProcessedDeviceOutput> other)
 {
     Translation += other->Translation;
     Rotation += other->Rotation;

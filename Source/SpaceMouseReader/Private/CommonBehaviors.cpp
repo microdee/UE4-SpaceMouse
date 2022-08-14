@@ -4,7 +4,7 @@
 
 #include "SpaceMouseReader/Public/CommonBehaviors.h"
 
-FVector UCommonBehaviors::GetOrbitingTranslationDelta(
+FVector USmCommonBehaviors::GetOrbitingTranslationDelta(
     FVector Pivot,
     FRotator CurrentRotation,
     FRotator RotationDelta,

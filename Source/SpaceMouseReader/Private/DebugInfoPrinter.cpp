@@ -8,15 +8,15 @@
 #include "Engine/Engine.h"
 
 
-FDebugInfoPrinter::FDebugInfoPrinter()
+FSmDebugInfoPrinter::FSmDebugInfoPrinter()
 {
 }
 
-FDebugInfoPrinter::~FDebugInfoPrinter()
+FSmDebugInfoPrinter::~FSmDebugInfoPrinter()
 {
 }
 
-void FDebugInfoPrinter::Print(FString FriendlyDeviceName, const hid_device_info* DeviceInfo, int InternalID, bool bEnabled)
+void FSmDebugInfoPrinter::Print(FString FriendlyDeviceName, const hid_device_info* DeviceInfo, int InternalID, bool bEnabled)
 {
     if(!bEnabled || !DeviceInfo) return;
     
@@ -44,12 +44,12 @@ void FDebugInfoPrinter::Print(FString FriendlyDeviceName, const hid_device_info*
     ReportAll.Empty();
 }
 
-void FDebugInfoPrinter::AppendReport(const uint8* Report, uint32 Size)
+void FSmDebugInfoPrinter::AppendReport(const uint8* Report, uint32 Size)
 {
     ReportAll += FString::FromHexBlob(Report, Size);
 }
 
-void FDebugInfoPrinter::SetReport(int Index, const uint8* Report, uint32 Size)
+void FSmDebugInfoPrinter::SetReport(int Index, const uint8* Report, uint32 Size)
 {
     Reports[Index] = FString::FromHexBlob(Report, Size);
 }

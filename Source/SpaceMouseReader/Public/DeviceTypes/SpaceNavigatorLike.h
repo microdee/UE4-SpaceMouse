@@ -10,7 +10,7 @@
 /**
  * 
  */
-class SPACEMOUSEREADER_API FSpaceNavigatorLike : public FButtonCapabilities
+class SPACEMOUSEREADER_API FSpaceNavigatorLike : public FSmButtonCapabilities
 {
 public:
     FSpaceNavigatorLike()

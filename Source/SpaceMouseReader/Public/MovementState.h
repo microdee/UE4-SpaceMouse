@@ -5,19 +5,19 @@
 
 #include "CoreMinimal.h"
 
-DECLARE_MULTICAST_DELEGATE(FMovementEvent)
+DECLARE_MULTICAST_DELEGATE(FSmMovementEvent)
 
 /**
  * Class storing movement state of a SpaceMouse device
  */
-class SPACEMOUSEREADER_API FMovementState
+class SPACEMOUSEREADER_API FSmMovementState
 {
 public:
-    FMovementState();
-    ~FMovementState();
+    FSmMovementState();
+    ~FSmMovementState();
 
-    FMovementEvent OnMovementStarted;
-    FMovementEvent OnMovementEnded;
+    FSmMovementEvent OnMovementStarted;
+    FSmMovementEvent OnMovementEnded;
     
     bool bOnMovementStartedFrame = false;
     bool bOnMovementEndedFrame = false;
@@ -27,8 +27,8 @@ public:
     void PreTick();
     void Tick(float MovementTimeTolerance, float DeltaSeconds);
     void AccumulationReset();
-    void Accumulate(const FMovementState& Other);
-    void Accumulate(TSharedPtr<FMovementState> Other);
+    void Accumulate(const FSmMovementState& Other);
+    void Accumulate(TSharedPtr<FSmMovementState> Other);
     
 private:
     bool bPrevMoving = false;

@@ -4,7 +4,7 @@
 
 #include "DeviceTypes/SpaceExplorerLike.h"
 
-void FSpaceExplorerLike::TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data)
+void FSpaceExplorerLike::TransformRawData(TSharedPtr<FSmProcessedDeviceOutput> Data)
 {
     // Source of info: https://github.com/blender/blender/blob/594f47ecd2d5367ca936cf6fc6ec8168c2b360d0/intern/ghost/intern/GHOST_NDOFManager.cpp#L101
     static TArray<EV3DCmd> TargetV3DCmd = {

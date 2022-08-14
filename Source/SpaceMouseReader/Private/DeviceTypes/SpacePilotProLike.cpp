@@ -4,7 +4,7 @@
 
 #include "DeviceTypes/SpacePilotProLike.h"
 
-void FSpacePilotProLike::TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data)
+void FSpacePilotProLike::TransformRawData(TSharedPtr<FSmProcessedDeviceOutput> Data)
 {
     Data->Buttons = MapModernButtons(Data->Buttons);
 }

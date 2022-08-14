@@ -15,8 +15,8 @@
 FSmDevice::FSmDevice(
     const FString DeviceName,
     const ESmModelConfidence ModelConfidence,
-    const TSharedPtr<FButtonCapabilities> Buttons,
-    const TSharedPtr<FDataReadingMethod> DataReadingMethod,
+    const TSharedPtr<FSmButtonCapabilities> Buttons,
+    const TSharedPtr<FSmDataReadingMethod> DataReadingMethod,
     const FSmDeviceInstantiation& InstanceData
 )   : DeviceName(DeviceName)
     , ModelConfidence(ModelConfidence)
@@ -37,10 +37,10 @@ void FSmDevice::TickInit()
     if(!bInited)
     {
         bInited = true;
-        ProcessedData = MakeShared<FProcessedDeviceOutput>();
-        NormData = MakeShared<FProcessedDeviceOutput>();
-        DebugInfoPrinter = MakeShared<FDebugInfoPrinter>();
-        MovementState = MakeShared<FMovementState>();
+        ProcessedData = MakeShared<FSmProcessedDeviceOutput>();
+        NormData = MakeShared<FSmProcessedDeviceOutput>();
+        DebugInfoPrinter = MakeShared<FSmDebugInfoPrinter>();
+        MovementState = MakeShared<FSmMovementState>();
 
         DataReadingMethod->OnDataReceived.AddLambda([this]()
         {
@@ -59,7 +59,7 @@ void FSmDevice::Tick(float DeltaSeconds)
     TickInit();
 
     ProcessedData->Buttons = NormData->Buttons;
-    FDataReadingOutput Output
+    FSmDataReadingOutput Output
     {
         ProcessedData,
         NormData,

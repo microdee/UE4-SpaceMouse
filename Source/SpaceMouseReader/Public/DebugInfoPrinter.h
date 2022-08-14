@@ -12,14 +12,14 @@ struct hid_device_info;
 /**
  * 
  */
-class SPACEMOUSEREADER_API FDebugInfoPrinter
+class SPACEMOUSEREADER_API FSmDebugInfoPrinter
 {
 public:
 
     static inline const int ReportCount = 4;
     
-    FDebugInfoPrinter();
-    ~FDebugInfoPrinter();
+    FSmDebugInfoPrinter();
+    ~FSmDebugInfoPrinter();
 
     TStaticArray<FString, ReportCount> Reports;
     FString ReportAll {};

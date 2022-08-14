@@ -10,7 +10,7 @@
 /**
  * 
  */
-class SPACEMOUSEREADER_API FSpaceExplorerLike : public FButtonCapabilities
+class SPACEMOUSEREADER_API FSpaceExplorerLike : public FSmButtonCapabilities
 {
 public:
     FSpaceExplorerLike()
@@ -33,5 +33,5 @@ public:
         SupportedButtons.Add(EV3DCmd::FilterRotate);
     }
 
-    virtual void TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data) override;
+    virtual void TransformRawData(TSharedPtr<FSmProcessedDeviceOutput> Data) override;
 };

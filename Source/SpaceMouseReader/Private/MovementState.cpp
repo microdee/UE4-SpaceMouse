@@ -5,26 +5,26 @@
 #include "MovementState.h"
 
 
-FMovementState::FMovementState()
+FSmMovementState::FSmMovementState()
 {
 }
 
-FMovementState::~FMovementState()
+FSmMovementState::~FSmMovementState()
 {
 }
 
-void FMovementState::Move()
+void FSmMovementState::Move()
 {
     bMoving = true;
 }
 
-void FMovementState::PreTick()
+void FSmMovementState::PreTick()
 {
     bPrevMoving = MovementTimed > 0;
     bMoving = false;
 }
 
-void FMovementState::Tick(float MovementTimeTolerance, float DeltaSeconds)
+void FSmMovementState::Tick(float MovementTimeTolerance, float DeltaSeconds)
 {
     if(bMoving) MovementTimed = MovementTimeTolerance;
     
@@ -37,14 +37,14 @@ void FMovementState::Tick(float MovementTimeTolerance, float DeltaSeconds)
     if(bOnMovementEndedFrame) OnMovementEnded.Broadcast();
 }
 
-void FMovementState::AccumulationReset()
+void FSmMovementState::AccumulationReset()
 {
     bOnMovementStartedFrame = false;
     bOnMovementEndedFrame = false;
     bMoving = false;
 }
 
-void FMovementState::Accumulate(const FMovementState& Other)
+void FSmMovementState::Accumulate(const FSmMovementState& Other)
 {
     bMoving |= Other.bMoving;
     bOnMovementStartedFrame |= Other.bOnMovementStartedFrame;
@@ -54,7 +54,7 @@ void FMovementState::Accumulate(const FMovementState& Other)
     if(bOnMovementEndedFrame) OnMovementEnded.Broadcast();
 }
 
-void FMovementState::Accumulate(TSharedPtr<FMovementState> Other)
+void FSmMovementState::Accumulate(TSharedPtr<FSmMovementState> Other)
 {
     Accumulate(*Other.Get());
 }

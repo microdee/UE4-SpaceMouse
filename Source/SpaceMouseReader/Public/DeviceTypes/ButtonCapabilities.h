@@ -11,10 +11,10 @@
 /**
  * 
  */
-class SPACEMOUSEREADER_API FButtonCapabilities
+class SPACEMOUSEREADER_API FSmButtonCapabilities
 {
 public:
-    virtual ~FButtonCapabilities() = default;
+    virtual ~FSmButtonCapabilities() = default;
 
     TSet<EV3DCmd> SupportedButtons;
 
@@ -23,6 +23,6 @@ public:
 
     static FButtonBits MapButtons(FButtonBits HIDButtons, const TArray<EV3DCmd>& ToV3DCmd);
     
-    virtual void TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data) {}
+    virtual void TransformRawData(TSharedPtr<FSmProcessedDeviceOutput> Data) {}
 };
 

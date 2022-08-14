@@ -12,5 +12,5 @@ class SPACEMOUSERUNTIME_API FSmRuntimeManager : public FSpaceMouseManager
 {
 protected:
 
-    virtual FUserSettings GetUserSettings() override;
+    virtual FSmUserSettings GetUserSettings() override;
 };

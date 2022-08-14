@@ -11,14 +11,14 @@
 /**
  * 
  */
-struct SPACEMOUSEREADER_API FProcessedDeviceOutput
+struct SPACEMOUSEREADER_API FSmProcessedDeviceOutput
 {
     FVector Translation {0,0,0};
     FRotator Rotation {0,0,0};
     FButtonBits Buttons;
 
-    FProcessedDeviceOutput operator+(const FProcessedDeviceOutput& other) const;
-    FProcessedDeviceOutput operator+(TSharedPtr<FProcessedDeviceOutput> other) const;
-    FProcessedDeviceOutput&& operator+=(const FProcessedDeviceOutput& other);
-    FProcessedDeviceOutput&& operator+=(TSharedPtr<FProcessedDeviceOutput> other);
+    FSmProcessedDeviceOutput operator+(const FSmProcessedDeviceOutput& other) const;
+    FSmProcessedDeviceOutput operator+(TSharedPtr<FSmProcessedDeviceOutput> other) const;
+    FSmProcessedDeviceOutput&& operator+=(const FSmProcessedDeviceOutput& other);
+    FSmProcessedDeviceOutput&& operator+=(TSharedPtr<FSmProcessedDeviceOutput> other);
 };

@@ -25,7 +25,7 @@ FSeparateReportTransRotMethod::~FSeparateReportTransRotMethod()
     && -zz >= -GetAxisResolution() \
     )
 
-void FSeparateReportTransRotMethod::ReadData(FDataReadingOutput& Output, float DeltaSecs, uint8* Report)
+void FSeparateReportTransRotMethod::ReadData(FSmDataReadingOutput& Output, float DeltaSecs, uint8* Report)
 {
     Output.Debug->AppendReport(Report, GetReportSize());
     

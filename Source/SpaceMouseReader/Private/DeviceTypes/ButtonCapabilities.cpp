@@ -4,7 +4,7 @@
 
 #include "DeviceTypes/ButtonCapabilities.h"
 
-FButtonBits FButtonCapabilities::MapModernButtons(FButtonBits HIDButtons)
+FButtonBits FSmButtonCapabilities::MapModernButtons(FButtonBits HIDButtons)
 {
     // Source of info: https://github.com/blender/blender/blob/594f47ecd2d5367ca936cf6fc6ec8168c2b360d0/intern/ghost/intern/GHOST_NDOFManager.cpp#L91
     static TArray<EV3DCmd> TargetV3DCmd = {
@@ -43,7 +43,7 @@ FButtonBits FButtonCapabilities::MapModernButtons(FButtonBits HIDButtons)
     return MapButtons(HIDButtons, TargetV3DCmd);
 }
 
-FButtonBits FButtonCapabilities::MapButtons(FButtonBits HIDButtons, const TArray<EV3DCmd>& ToV3DCmd)
+FButtonBits FSmButtonCapabilities::MapButtons(FButtonBits HIDButtons, const TArray<EV3DCmd>& ToV3DCmd)
 {
     FButtonBits Output {};
     for(int i=0; i<ToV3DCmd.Num(); ++i)

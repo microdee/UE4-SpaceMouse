@@ -12,18 +12,18 @@
 #include "Containers/StaticBitArray.h"
 
 class FSmDevice;
-class FMovementState;
+class FSmMovementState;
 
 class SPACEMOUSEREADER_API FSpaceMouseManager
 {
 protected:
 
-    FProcessedDeviceOutput PrevAccumulatedData;
-    FProcessedDeviceOutput AccumulatedData;
-    FProcessedDeviceOutput NormalizedData;
+    FSmProcessedDeviceOutput PrevAccumulatedData;
+    FSmProcessedDeviceOutput AccumulatedData;
+    FSmProcessedDeviceOutput NormalizedData;
     TArray<TSharedPtr<FSmDevice>> Devices;
 
-    virtual FUserSettings GetUserSettings() = 0;
+    virtual FSmUserSettings GetUserSettings() = 0;
 
 public:
     virtual ~FSpaceMouseManager() = default;
@@ -34,7 +34,7 @@ public:
     FRotator FORCEINLINE GetNormalizedRotation() const { return NormalizedData.Rotation; }
     FButtonBits FORCEINLINE GetButtons() const { return AccumulatedData.Buttons; }
     
-    TSharedPtr<FMovementState> MovementState;
+    TSharedPtr<FSmMovementState> MovementState;
 
     bool Enabled = false;
     virtual void Tick(float DeltaSecs);

@@ -10,7 +10,7 @@
 /**
  * 
  */
-class SPACEMOUSEREADER_API FSpaceMouseProLike : public FButtonCapabilities
+class SPACEMOUSEREADER_API FSpaceMouseProLike : public FSmButtonCapabilities
 {
 public:
     FSpaceMouseProLike()
@@ -39,5 +39,5 @@ public:
         SupportedButtons.Add(EV3DCmd::KeyF4);
     }
     
-    virtual void TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data) override;
+    virtual void TransformRawData(TSharedPtr<FSmProcessedDeviceOutput> Data) override;
 };

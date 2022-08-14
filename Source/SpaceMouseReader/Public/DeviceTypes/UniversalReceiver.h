@@ -10,7 +10,7 @@
 /**
  * 
  */
-class SPACEMOUSEREADER_API FUniversalReceiver : public FButtonCapabilities
+class SPACEMOUSEREADER_API FUniversalReceiver : public FSmButtonCapabilities
 {
 public:
     FUniversalReceiver()
@@ -18,5 +18,5 @@ public:
         // TODO: detect actual device and use those buttons
     }
 
-    virtual void TransformRawData(TSharedPtr<FProcessedDeviceOutput> Data) override;
+    virtual void TransformRawData(TSharedPtr<FSmProcessedDeviceOutput> Data) override;
 };

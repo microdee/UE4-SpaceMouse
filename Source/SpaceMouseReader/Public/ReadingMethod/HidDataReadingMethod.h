@@ -11,7 +11,7 @@
 /**
  * Class encapsulating a method to convert raw HID input into usable data
  */
-class SPACEMOUSEREADER_API FHidDataReadingMethod : public FDataReadingMethod
+class SPACEMOUSEREADER_API FHidDataReadingMethod : public FSmDataReadingMethod
 {
 public:
     FHidDataReadingMethod();
@@ -20,12 +20,12 @@ public:
     virtual int GetReportSize() { return 7; }
     virtual int GetReportCount() { return 4; }
 
-    virtual void Tick(FDataReadingOutput& Output, float DeltaSecs) override;
-    virtual void ReadData(FDataReadingOutput& Output, float DeltaSecs, uint8* Report) = 0;
+    virtual void Tick(FSmDataReadingOutput& Output, float DeltaSecs) override;
+    virtual void ReadData(FSmDataReadingOutput& Output, float DeltaSecs, uint8* Report) = 0;
 
 protected:
     
     uint8 OutputBuffer[80];
     
-    void ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID = 3);
+    void ApplyButtons(FSmDataReadingOutput& Output, uint8* Report, int ReportID = 3);
 };

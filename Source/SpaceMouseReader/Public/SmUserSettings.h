@@ -9,7 +9,7 @@
 struct FRichCurve;
 
 USTRUCT(BlueprintType)
-struct FMovementSettings
+struct FSmMovementSettings
 {
     GENERATED_BODY()
     
@@ -30,7 +30,7 @@ struct FMovementSettings
 };
 
 USTRUCT(BlueprintType)
-struct SPACEMOUSEREADER_API FUserSettings
+struct SPACEMOUSEREADER_API FSmUserSettings
 {
     GENERATED_BODY()
 
@@ -44,7 +44,7 @@ struct SPACEMOUSEREADER_API FUserSettings
     float MovementTimeTolerance = 0.25;
 
     UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
-    FMovementSettings Translation
+    FSmMovementSettings Translation
     {
         {0, -1,  0},
         {1,  0,  0},
@@ -53,7 +53,7 @@ struct SPACEMOUSEREADER_API FUserSettings
     };
 
     UPROPERTY(BlueprintReadWrite, Category=SpaceMouse)
-    FMovementSettings Rotation
+    FSmMovementSettings Rotation
     {
         {1,  0,  0},
         {0,  0,  1},

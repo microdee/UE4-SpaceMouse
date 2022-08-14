@@ -15,5 +15,5 @@ public:
     FSeparateReportTransRotMethod();
     ~FSeparateReportTransRotMethod();
 
-    virtual void ReadData(FDataReadingOutput& Output, float DeltaSecs, uint8* Report) override;
+    virtual void ReadData(FSmDataReadingOutput& Output, float DeltaSecs, uint8* Report) override;
 };

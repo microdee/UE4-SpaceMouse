@@ -7,44 +7,44 @@
 
 #include "SmUserSettings.h"
 
-class FMovementState;
+class FSmMovementState;
 struct FRichCurve;
-struct FProcessedDeviceOutput;
-class FDebugInfoPrinter;
+struct FSmProcessedDeviceOutput;
+class FSmDebugInfoPrinter;
 class FActiveHidSmDevice;
 
 DECLARE_MULTICAST_DELEGATE(FDataReadEvent)
 
-struct SPACEMOUSEREADER_API FDataReadingOutput
+struct SPACEMOUSEREADER_API FSmDataReadingOutput
 {
-    TSharedPtr<FProcessedDeviceOutput> ProcessedData;
-    TSharedPtr<FProcessedDeviceOutput> NormData;
-    TSharedPtr<FDebugInfoPrinter> Debug;
+    TSharedPtr<FSmProcessedDeviceOutput> ProcessedData;
+    TSharedPtr<FSmProcessedDeviceOutput> NormData;
+    TSharedPtr<FSmDebugInfoPrinter> Debug;
     TSharedPtr<FActiveHidSmDevice> HidDevice;
-    TSharedPtr<FMovementState> MovementState;
-    FUserSettings Settings;
+    TSharedPtr<FSmMovementState> MovementState;
+    FSmUserSettings Settings;
 };
 
 /**
  * Base class to encapsulate and configure input data to be used by the device
  */
-class SPACEMOUSEREADER_API FDataReadingMethod
+class SPACEMOUSEREADER_API FSmDataReadingMethod
 {
 public:
-    FDataReadingMethod();
-    virtual ~FDataReadingMethod();
+    FSmDataReadingMethod();
+    virtual ~FSmDataReadingMethod();
     
     FDataReadEvent OnDataReceived;
     
     virtual int GetAxisResolution() { return 350; }
     static float GetCurvedFloat(const FRichCurve* curve, float ff);
     
-    virtual void Tick(FDataReadingOutput& Output, float DeltaSecs);
+    virtual void Tick(FSmDataReadingOutput& Output, float DeltaSecs);
 
 protected:
 
-    static void TickMovementState(FDataReadingOutput& Output, float DeltaSecs);
+    static void TickMovementState(FSmDataReadingOutput& Output, float DeltaSecs);
 
-    static void ApplyTranslation(FDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs);
-    static void ApplyRotation(FDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs);
+    static void ApplyTranslation(FSmDataReadingOutput& Output, float fx, float fy, float fz, float DeltaSecs);
+    static void ApplyRotation(FSmDataReadingOutput& Output, float fp, float fy, float fr, float DeltaSecs);
 };

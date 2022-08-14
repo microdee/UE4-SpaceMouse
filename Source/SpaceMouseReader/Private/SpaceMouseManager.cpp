@@ -24,7 +24,7 @@
 void FSpaceMouseManager::Initialize()
 {
     PrevAccumulatedData = AccumulatedData = {};
-    MovementState = MakeShared<FMovementState>();
+    MovementState = MakeShared<FSmMovementState>();
     Devices.Empty();
 
 #if PLATFORM_MAC // On mac we have to use the 3DxWare SDK (at least pretend ;) )
@@ -43,7 +43,7 @@ void FSpaceMouseManager::Initialize()
 
 #else // On windows we use HID (Linux is unknown yet)
 
-    FDeviceFactory Factory {};
+    FSmDeviceFactory Factory {};
     Factory.OpenConnectedDevices([this]() { return GetUserSettings(); }, Devices);
 
 #endif

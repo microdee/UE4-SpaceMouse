@@ -21,9 +21,9 @@ FHidDataReadingMethod::~FHidDataReadingMethod()
 
 // SpacePilot Pro had troubles with filtering only the most significant axis data for a frame
 
-void FHidDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
+void FHidDataReadingMethod::Tick(FSmDataReadingOutput& Output, float DeltaSecs)
 {
-    FDataReadingMethod::Tick(Output, DeltaSecs);
+    FSmDataReadingMethod::Tick(Output, DeltaSecs);
     uint8* Report = &OutputBuffer[0];
     int Ctr = 0;
 
@@ -40,7 +40,7 @@ void FHidDataReadingMethod::Tick(FDataReadingOutput& Output, float DeltaSecs)
     TickMovementState(Output, DeltaSecs);
 }
 
-void FHidDataReadingMethod::ApplyButtons(FDataReadingOutput& Output, uint8* Report, int ReportID)
+void FHidDataReadingMethod::ApplyButtons(FSmDataReadingOutput& Output, uint8* Report, int ReportID)
 {
     FMemory::Memcpy(&Output.ProcessedData->Buttons, Report + 1, GetReportSize() - 1);
     FMemory::Memcpy(&Output.NormData->Buttons, Report + 1, GetReportSize() - 1);

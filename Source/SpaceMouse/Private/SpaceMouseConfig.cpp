@@ -36,7 +36,7 @@ USpaceMouseConfig::USpaceMouseConfig(const FObjectInitializer& ObjectInitializer
     ShowInputBindingsButton = FSmInputDevice::GetKeyFrom(EV3DCmd::MenuButtonMappingEditor);
 }
 
-FUserSettings USpaceMouseConfig::GetUserSettings()
+FSmUserSettings USpaceMouseConfig::GetUserSettings()
 {
     return
     {
