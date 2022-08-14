@@ -1,53 +1,65 @@
 {
-  "FileVersion": 3,
-  "Version": 1,
-  "VersionName": "1.2.3",
-  "EngineVersion": "4.26.0",
-  "FriendlyName": "SpaceMouse",
-  "Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
-  "Category": "Input Devices",
-  "EnabledByDefault": true,
-  "CreatedBy": "microdee",
-  "CreatedByURL": "http://mcro.de",
-  "DocsURL": "https://github.com/microdee/UE4-SpaceMouse",
-  "MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/ad5ae5bca73f4a84a693394a0542fc92",
-  "SupportURL": "https://github.com/microdee/UE4-SpaceMouse/issues",
-  "CanContainContent": false,
-  "IsBetaVersion": false,
-  "Installed": true,
-  "RequiresBuildPlatform": false,
-  "Modules": [
-    {
-      "Name": "HIDUE",
-      "Type": "Runtime",
-      "LoadingPhase": "PreDefault"
-    },
-    {
-      "Name": "SpaceMouseReader",
-      "Type": "Runtime",
-      "LoadingPhase": "PreDefault",
-      "AdditionalDependencies": [
-        "Core",
-        "HIDUE"
-      ]
-    },
-    {
-      "Name": "SpaceMouseRuntime",
-      "Type": "Runtime",
-      "LoadingPhase": "Default",
-      "AdditionalDependencies": [
-        "Core",
-        "SpaceMouseReader"
-      ]
-    },
-    {
-      "Name": "SpaceMouse",
-      "Type": "Editor",
-      "LoadingPhase": "PostEngineInit",
-      "AdditionalDependencies": [
-        "Core",
-        "SpaceMouseReader"
-      ]
-    }
-  ]
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.2.5",
+	"EngineVersion": "5.0.3",
+	"FriendlyName": "SpaceMouse",
+	"Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
+	"Category": "Input Devices",
+	"EnabledByDefault": true,
+	"CreatedBy": "microdee",
+	"CreatedByURL": "http://mcro.de",
+	"DocsURL": "https://github.com/microdee/UE4-SpaceMouse",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/ad5ae5bca73f4a84a693394a0542fc92",
+	"SupportURL": "https://github.com/microdee/UE4-SpaceMouse/issues",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"Installed": true,
+	"RequiresBuildPlatform": false,
+	"Modules": [
+		{
+			"Name": "HIDUE",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "SpaceMouseReader",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"AdditionalDependencies": [
+				"Core",
+				"HIDUE"
+			],
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "SpaceMouseRuntime",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Core",
+				"SpaceMouseReader"
+			],
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "SpaceMouse",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit",
+			"AdditionalDependencies": [
+				"Core",
+				"SpaceMouseReader"
+			],
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		}
+	]
 }
