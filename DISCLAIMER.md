@@ -9,20 +9,19 @@ TDxUnrealEditor is installed automatically when you install or update the offici
 | Not open-source, not even the UE4 specific part <sup>[1](#f1)</sup> | Fully open source, including the HID implementation (HIDAPI) |
 | Full 3DxWare feature support <sup>[2](#f2)</sup> (obviously) | Doesn't know about 3DxWare |
 | Unified control scheme for all apps implementing 3Dx Navlib | Custom navigation scheme requires Unreal specific configuration |
-| Only controls the main editor viewport | It can control any 3D viewport in the editor <sup>[3](#f3)</sup> |
-| Better orbit/object mode implementation | Orbit/object mode is experimental |
-| I guess cross-platform at least on macOS <sup>[4](#f4)</sup> | So far Windows only |
+| It can control any 3D viewport in the editor | It can control any 3D viewport in the editor <sup>[3](#f3)</sup> |
+| Better orbit/object mode implementation | Orbit/object mode is more barebones |
+| Supports Windows and Mac | Supports Windows and Linux |
 | Configurable via 3DxWare | Configurable from UE4 Editor Preferences |
 | 3DxWare can bind Unreal Editor functions to buttons | SpaceMouse buttons are bindable to editor functions in Unreal |
 | Speed is configurable via 3DxWare | Reads and modifies camera speed set for the viewport |
-| No curvature or deadzone configuration <sup>[5](#f5)</sup> | Configure deadzone or curvature from Editor Preferences |
-| Doesn't support real ortho viewports | Controls ortho viewports too |
-| Cannot pilot actors | Can pilot actors |
+| No curvature or deadzone configuration <sup>[4](#f4)</sup> | Configure deadzone or curvature from Editor Preferences |
+| Controls ortho viewports too? Maybe? | Controls ortho viewports too |
+| They're working in piloting actors | Can pilot actors |
 | Only functions in Editor | Functions both in Editor and Runtime via a BP node |
 
 * This is not a complete list, and it might change with updates
 * <a name="f1">1</a> because of this I couldn't compare implementation differences
 * <a name="f2">2</a> This also allows you to sync your preferences accross multiple applications, SpaceMouse for UE obviously cannot provide or read that.
 * <a name="f3">3</a> Including skeletal and static mesh editors, material preview, niagara editors, or really anything which provides a camera to control
-* <a name="f4">4</a> This is only an assumption of mine.
-* <a name="f5">5</a> Not to my knowledge anyway.
+* <a name="f4">4</a> Not to my knowledge anyway.
