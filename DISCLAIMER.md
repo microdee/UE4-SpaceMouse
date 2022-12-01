@@ -4,24 +4,41 @@ After I released this plugin to the marketplace it came to my knowledge that 3D 
 
 TDxUnrealEditor is installed automatically when you install or update the official drivers. Functionality-wise it matches this plugin. When both plugins are installed at the same time the behavior is undefined and I cannot guarantee that both would work as expected. Probably the simultaneous presence of both plugin would cause many interaction glitches. Here's how they compare to each-other:
 
+| | TDxUnrealEditor | SpaceMouse for UE |
+| - | :-: | :-: |
+| Open-Source | ❌ <sup>[1](#f1)</sup> | ✔ |
+| Unified 3DxWare features/navigation | ✔ <sup>[2](#f2)</sup> | ❌ |
+| Custom navigation scheme for Unreal | ❌ | ✔ |
+| Control any 3D viewport in the editor <sup>[3](#f3)</sup> | ✔ | ✔ |
+| Supports Windows | ✔ | ✔ |
+| Supports Linux | ❌ | ✔ |
+| Supports Mac | ✔ | ❌ |
+| 3DxWare bindings for Unreal | ✔ | ❌ |
+| Button binding through editor preferences | ❌ | ✔ |
+| Respect and set camera speed of viewport | ❌ | ✔ |
+| Automatic camera speed depending on surroundings | ✔ | ❌ |
+| Configurable deadzone and reaction curvature | ❌ <sup>[4](#f4)</sup> | ✔ |
+| Control Ortho viewports | ❌ <sup>[7](#f7)</sup> | ✔ |
+| Piloting scene cameras and actors | ❌ <sup>[5](#f5)</sup> | ✔ |
+| Runtime support for packaged games | ❌ | ✔ <sup>[6](#f6)</sup> |
+| Orbitting navigation | ✔ | ✔ |
+| Flying navigation | ❌ | ✔ |
+| Keep Horizon ("Helicopter" mode) | ✔ | ✔ |
+| Save views for recalling later | ✔ | ❌ |
+
+Further differences
+
 | TDxUnrealEditor | SpaceMouse for UE |
 | - | - |
-| Not open-source, not even the UE4 specific part <sup>[1](#f1)</sup> | Fully open source, including the HID implementation (HIDAPI) |
-| Full 3DxWare feature support <sup>[2](#f2)</sup> (obviously) | Doesn't know about 3DxWare |
-| Unified control scheme for all apps implementing 3Dx Navlib | Custom navigation scheme requires Unreal specific configuration |
-| It can control any 3D viewport in the editor | It can control any 3D viewport in the editor <sup>[3](#f3)</sup> |
 | Better orbit/object mode implementation | Orbit/object mode is more barebones |
-| Supports Windows and Mac | Supports Windows and Linux |
 | Configurable via 3DxWare | Configurable from UE4 Editor Preferences |
-| 3DxWare can bind Unreal Editor functions to buttons | SpaceMouse buttons are bindable to editor functions in Unreal |
-| Speed is configurable via 3DxWare | Reads and modifies camera speed set for the viewport |
-| No curvature or deadzone configuration <sup>[4](#f4)</sup> | Configure deadzone or curvature from Editor Preferences |
-| Controls ortho viewports too? Maybe? | Controls ortho viewports too |
-| They're working in piloting actors | Can pilot actors |
-| Only functions in Editor | Functions both in Editor and Runtime via a BP node |
+| Fit selection to viewport is implemented by 3DConnexion | Uses vanilla Unreal fit to viewport function (F key) |
 
 * This is not a complete list, and it might change with updates
 * <a name="f1">1</a> because of this I couldn't compare implementation differences
 * <a name="f2">2</a> This also allows you to sync your preferences accross multiple applications, SpaceMouse for UE obviously cannot provide or read that.
 * <a name="f3">3</a> Including skeletal and static mesh editors, material preview, niagara editors, or really anything which provides a camera to control
 * <a name="f4">4</a> Not to my knowledge anyway.
+* <a name="f5">5</a> They're working on it though.
+* <a name="f6">6</a> Both via Blueprint and the Input framework
+* <a name="f7">7</a> Last time I've seen it didn't do that.
