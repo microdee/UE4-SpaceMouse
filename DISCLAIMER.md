@@ -4,7 +4,7 @@ After I released this plugin to the marketplace it came to my knowledge that 3D 
 
 TDxUnrealEditor is installed automatically when you install or update the official drivers. Functionality-wise it matches this plugin. When both plugins are installed at the same time the behavior is undefined and I cannot guarantee that both would work as expected. Probably the simultaneous presence of both plugin would cause many interaction glitches. Here's how they compare to each-other:
 
-| | 3DConnexion | SpaceMouse for UE |
+| | TDxUnrealEditor | SpaceMouse for UE |
 | -: | :-: | :-: |
 | Open-Source | ❌ <sup>[1](#f1)</sup> | ✔ |
 | Unified 3DxWare features/navigation | ✔ <sup>[2](#f2)</sup> | ❌ |
