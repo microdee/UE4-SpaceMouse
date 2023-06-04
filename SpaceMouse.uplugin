@@ -1,8 +1,8 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.2.5",
-	"EngineVersion": "5.0.3",
+	"VersionName": "1.2.6",
+	"EngineVersion": "5.2.0",
 	"FriendlyName": "SpaceMouse",
 	"Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
 	"Category": "Input Devices",
