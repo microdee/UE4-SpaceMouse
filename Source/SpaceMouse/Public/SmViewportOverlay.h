@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 
+class SWidget;
 class SOverlay;
 class SViewport;
 class STextBlock;

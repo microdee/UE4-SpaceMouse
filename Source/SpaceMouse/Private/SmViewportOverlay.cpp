@@ -6,8 +6,10 @@
 #include "Editor.h"
 #include "SEditorViewport.h"
 #include "EditorViewportClient.h"
+#include "SceneView.h"
 #include "Widgets/SViewport.h"
 #include "Widgets/Text/STextBlock.h"
+#include "Widgets/SWidget.h"
 
 
 FSmViewportOverlay::FSmViewportOverlay(FEditorViewportClient* VpClient)

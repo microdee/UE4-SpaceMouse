@@ -189,7 +189,11 @@ const FSlateBrush* SSmKeySelector::GetKeyIconImage() const
         if (Key.IsValid())
 #endif
         {
+#if UE_VERSION >= MAKE_UE_VERSION(5, 1)
+            return FAppStyle::GetBrush("Icons.Warning");
+#else
             return FEditorStyle::GetBrush("Icons.Warning");
+#endif
         }
         return GetIconFromKey(CurrentKeyValue.GetValue());
     }
@@ -564,7 +568,11 @@ bool SSmKeySelector::GetChildrenMatchingSearch(const TArray<FString>& InSearchTo
 
 const FSlateBrush* SSmKeySelector::GetIconFromKey(FKey Key) const
 {
+#if UE_VERSION >= MAKE_UE_VERSION(5, 1)
+    return FAppStyle::GetBrush(EKeys::GetMenuCategoryPaletteIcon(Key.GetMenuCategory()));
+#else
     return FEditorStyle::GetBrush(EKeys::GetMenuCategoryPaletteIcon(Key.GetMenuCategory()));
+#endif
 }
 
 #undef LOCTEXT_NAMESPACE

@@ -122,6 +122,63 @@ void FSmInputDevice::Tick(float DeltaTime)
 void FSmInputDevice::SendControllerEvents()
 {
     Manager->Tick(FApp::GetDeltaTime());
+    
+#if UE_VERSION >= MAKE_UE_VERSION(5, 1)
+    
+    IPlatformInputDeviceMapper& DeviceMapper = IPlatformInputDeviceMapper::Get();
+    FPlatformUserId PlatformUser = PLATFORMUSERID_NONE;
+    FInputDeviceId InputDevice = INPUTDEVICEID_NONE;
+    DeviceMapper.RemapControllerIdToPlatformUserAndDevice(0, OUT PlatformUser, OUT InputDevice);
+
+    // Send axis data only while moving and an extra frame when axis values are supposedly 0
+    if(Manager->MovementState->bMoving || Manager->MovementState->bOnMovementEndedFrame)
+    {
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Lateral"),
+            PlatformUser, InputDevice,
+            Manager->GetNormalizedTranslation().X
+        );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Horizontal"), 
+            PlatformUser, InputDevice,
+            Manager->GetNormalizedTranslation().Y
+        );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Vertical"), 
+            PlatformUser, InputDevice,
+            Manager->GetNormalizedTranslation().Z
+        );
+    
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Pitch"), 
+            PlatformUser, InputDevice,
+            Manager->GetNormalizedRotation().Pitch
+        );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Yaw"), 
+            PlatformUser, InputDevice,
+            Manager->GetNormalizedRotation().Yaw
+        );
+        MessageHandler->OnControllerAnalog(
+            SM_KEY_PREFIX_TEXT TEXT("Roll"), 
+            PlatformUser, InputDevice,
+            Manager->GetNormalizedRotation().Roll
+        );
+    }
+
+    for(int i=0; i<Manager->GetButtons().Num(); ++i)
+    {
+        auto SmButton = FSmButton::FromID(i);
+        if(Manager->ButtonDownFrame(SmButton))
+        {
+            MessageHandler->OnControllerButtonPressed(GetKeyFrom(SmButton).GetFName(), PlatformUser, InputDevice, false);
+        }
+        if(Manager->ButtonUpFrame(SmButton))
+        {
+            MessageHandler->OnControllerButtonReleased(GetKeyFrom(SmButton).GetFName(), PlatformUser, InputDevice, false);
+        }
+    }
+#else
 
     // Send axis data only while moving and an extra frame when axis values are supposedly 0
     if(Manager->MovementState->bMoving || Manager->MovementState->bOnMovementEndedFrame)
@@ -165,6 +222,7 @@ void FSmInputDevice::SendControllerEvents()
             MessageHandler->OnControllerButtonReleased(GetKeyFrom(SmButton).GetFName(), 0, false);
         }
     }
+#endif
 }
 
 void FSmInputDevice::SetMessageHandler(const TSharedRef<FGenericApplicationMessageHandler>& InMessageHandler)
