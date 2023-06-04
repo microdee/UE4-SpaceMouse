@@ -146,8 +146,7 @@ If for any reason you cannot use this plugin as a submodule and you want to make
 
 ## Note on macOS support
 
-macOS is not yet supported due to a roadblock I'm super frustrated about. Anyway it treats space mice as regular 2D mice before 3DxWare is installed. This means the OS prevents other programs accessing their HID data via the `HIDManager` to fight keyloggers, so they need the official drivers, which unfortunately don't want to cooperate with me as of the time of writing.
-[See installation instructions](MAC.md)
+3DConnexion claims to have Mac support for their official plugin now. In light of that Mac support is no longer persued and if you want to use your Space Mouse on Mac with Unreal Engine you should install their official plugin. This plugin keeps support for Windows and Linux (reportedly).
 
 ## Known issues:
 
