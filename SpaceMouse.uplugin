@@ -22,6 +22,7 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PreDefault",
 			"WhitelistPlatforms": [
+				"Linux",
 				"Win64"
 			]
 		},
@@ -34,6 +35,7 @@
 				"HIDUE"
 			],
 			"WhitelistPlatforms": [
+				"Linux",
 				"Win64"
 			]
 		},
@@ -46,6 +48,7 @@
 				"SpaceMouseReader"
 			],
 			"WhitelistPlatforms": [
+				"Linux",
 				"Win64"
 			]
 		},
@@ -58,6 +61,7 @@
 				"SpaceMouseReader"
 			],
 			"WhitelistPlatforms": [
+				"Linux",
 				"Win64"
 			]
 		}

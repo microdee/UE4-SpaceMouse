@@ -19,7 +19,7 @@ TDxUnrealEditor is installed automatically when you install or update the offici
 | Automatic camera speed depending on surroundings | ✔ | ❌ |
 | Configurable deadzone and reaction curvature | ❌ <sup>[4](#f4)</sup> | ✔ |
 | Control Ortho viewports | ❌ <sup>[7](#f7)</sup> | ✔ |
-| Piloting scene cameras and actors | ❌ <sup>[5](#f5)</sup> | ✔ |
+| Piloting scene cameras and actors | ✔ | ✔ |
 | Runtime support for packaged games | ❌ | ✔ <sup>[6](#f6)</sup> |
 | Orbitting navigation | ✔ | ✔ |
 | Flying navigation | ❌ | ✔ |
@@ -39,6 +39,5 @@ Further differences
 * <a name="f2">2</a> This also allows you to sync your preferences accross multiple applications, SpaceMouse for UE obviously cannot provide or read that.
 * <a name="f3">3</a> Including skeletal and static mesh editors, material preview, niagara editors, or really anything which provides a camera to control
 * <a name="f4">4</a> Not to my knowledge anyway.
-* <a name="f5">5</a> They're working on it though.
 * <a name="f6">6</a> Both via Blueprint and the Input framework
 * <a name="f7">7</a> Last time I've seen it didn't do that.
