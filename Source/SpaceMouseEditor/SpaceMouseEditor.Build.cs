@@ -3,14 +3,19 @@
 
 using UnrealBuildTool;
 
-public class SpaceMouse : ModuleRules
+public class SpaceMouseEditor : ModuleRules
 {
-    public SpaceMouse(ReadOnlyTargetRules Target) : base(Target)
+    public SpaceMouseEditor(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = PCHUsageMode.NoSharedPCHs;
         bEnableUndefinedIdentifierWarnings = false;
         CppStandard = CppStandardVersion.Cpp17;
-            
+
+        IsRedistributableOverride = true;
+        bLegalToDistributeObjectCode = true;
+        bPrecompile = true;
+        bUsePrecompiled = true;
+        PrecompileForTargets = PrecompileTargetsType.Any;
         
         PublicDependencyModuleNames.AddRange(new []
         {

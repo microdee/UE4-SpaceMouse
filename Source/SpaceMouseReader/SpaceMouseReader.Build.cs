@@ -11,6 +11,12 @@ public class SpaceMouseReader : ModuleRules
         PCHUsage = PCHUsageMode.NoSharedPCHs;
         bEnableUndefinedIdentifierWarnings = false;
 		CppStandard = CppStandardVersion.Cpp17;
+
+        IsRedistributableOverride = true;
+        bLegalToDistributeObjectCode = true;
+        bPrecompile = true;
+        bUsePrecompiled = true;
+        PrecompileForTargets = PrecompileTargetsType.Any;
 		
 		PublicDependencyModuleNames.AddRange(new []
 		{

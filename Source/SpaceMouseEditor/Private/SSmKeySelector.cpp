@@ -15,7 +15,7 @@
 #include "SmUeVersion.h"
 
 #include "SmInputDevice.h"
-#include "SpaceMouse.h"
+#include "SpaceMouseEditor.h"
 
 #define LOCTEXT_NAMESPACE "SmKeySelector"
 

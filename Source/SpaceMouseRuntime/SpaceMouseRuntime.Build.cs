@@ -11,6 +11,12 @@ public class SpaceMouseRuntime : ModuleRules
         bEnableUndefinedIdentifierWarnings = false;
 		CppStandard = CppStandardVersion.Cpp17;
 
+        IsRedistributableOverride = true;
+        bLegalToDistributeObjectCode = true;
+        bPrecompile = true;
+        bUsePrecompiled = true;
+        PrecompileForTargets = PrecompileTargetsType.Any;
+
         if (Target.Version.MajorVersion >= 5)
         {
             PrivateDependencyModuleNames.AddRange(new [] {

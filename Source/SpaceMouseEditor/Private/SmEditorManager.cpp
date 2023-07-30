@@ -6,7 +6,7 @@
 
 #include "CameraController.h"
 #include "CommonBehaviors.h"
-#include "SpaceMouse.h"
+#include "SpaceMouseEditor.h"
 #include "SmInputDevice.h"
 #include "Editor.h"
 #include "SEditorViewport.h"
