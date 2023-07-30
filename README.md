@@ -144,6 +144,10 @@ Upon updating from prior versions (<= 1.0.x pre-marketplace) please delete both 
 
 If for any reason you cannot use this plugin as a submodule and you want to make a pre-built release to be an engine plugin, then work with the [official test project](https://github.com/microdee/UE4-SpaceMouse-TestProject) and see the build instructions there.
 
+## Build a release for Linux
+
+To make a pre-built release for Linux, read the [Linux Build Guide](LINUX.md).
+
 ## Note on macOS support
 
 3DConnexion claims to have Mac support for their official plugin now. In light of that Mac support is no longer persued and if you want to use your Space Mouse on Mac with Unreal Engine you should install their official plugin. This plugin keeps support for Windows and Linux (reportedly).
