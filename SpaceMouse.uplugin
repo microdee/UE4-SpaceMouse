@@ -53,7 +53,7 @@
 			]
 		},
 		{
-			"Name": "SpaceMouse",
+			"Name": "SpaceMouseEditor",
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit",
 			"AdditionalDependencies": [
