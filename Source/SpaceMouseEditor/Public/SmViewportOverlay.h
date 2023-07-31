@@ -13,7 +13,7 @@ class FEditorViewportClient;
 /**
  * Object managing the lifespan of orbiting information over the active viewport
  */
-class SPACEMOUSE_API FSmViewportOverlay
+class SPACEMOUSEEDITOR_API FSmViewportOverlay
 {
 public:
     FSmViewportOverlay(FEditorViewportClient* VpClient);

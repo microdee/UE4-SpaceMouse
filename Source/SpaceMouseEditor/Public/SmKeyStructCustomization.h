@@ -11,7 +11,7 @@
 /**
  * 
  */
-class SPACEMOUSE_API FSmKeyStructCustomization
+class SPACEMOUSEEDITOR_API FSmKeyStructCustomization
     : public IPropertyTypeCustomization
 {
 public:

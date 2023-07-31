@@ -236,7 +236,7 @@ FSlateColor SSmKeySelector::GetKeyIconColor() const
 
 FReply SSmKeySelector::ListenForInput()
 {
-    auto& SmModule = FModuleManager::GetModuleChecked<FSpaceMouseModule>("SpaceMouse");
+    auto& SmModule = FModuleManager::GetModuleChecked<FSpaceMouseEditorModule>("SpaceMouse");
     if (!bListenForNextInput && !SmModule.SmManager.IsLearning())
     {
         bListenForNextInput = true;
@@ -248,7 +248,7 @@ FReply SSmKeySelector::ListenForInput()
 
 FReply SSmKeySelector::ProcessHeardInput(FKey KeyHeard)
 {
-    auto& SmModule = FModuleManager::GetModuleChecked<FSpaceMouseModule>("SpaceMouse");
+    auto& SmModule = FModuleManager::GetModuleChecked<FSpaceMouseEditorModule>("SpaceMouse");
     if (bListenForNextInput)	// TODO: Unnecessary. Keep it for safety?
     {
         // Allow cancellation with Esc key

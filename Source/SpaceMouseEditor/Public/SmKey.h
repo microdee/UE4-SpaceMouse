@@ -14,7 +14,7 @@
  * A replacement struct for FKeys, only used for custom SpaceMouse key selector
  */
 USTRUCT(BlueprintType)
-struct SPACEMOUSE_API FSmKey
+struct SPACEMOUSEEDITOR_API FSmKey
 {
     GENERATED_BODY()
 

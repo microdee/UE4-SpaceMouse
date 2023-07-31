@@ -12,7 +12,7 @@ struct FInputActionKeyMapping;
 class FEditorViewportClient;
 class FSmViewportOverlay;
 
-class SPACEMOUSE_API FSmEditorManager : public FSpaceMouseManager
+class SPACEMOUSEEDITOR_API FSmEditorManager : public FSpaceMouseManager
 {
 private:
 

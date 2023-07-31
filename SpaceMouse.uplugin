@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "1.2.7",
 	"EngineVersion": "5.2",
-	"FriendlyName": "SpaceMouse",
+	"FriendlyName": "SpaceMouse for Unreal Engine",
 	"Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
 	"Category": "Input Devices",
 	"EnabledByDefault": true,

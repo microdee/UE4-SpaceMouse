@@ -12,19 +12,19 @@
 
 //#define DEBUG_SM_VALUES 1
 
-#define LOCTEXT_NAMESPACE "FSpaceMouseModule"
+#define LOCTEXT_NAMESPACE "FSpaceMouseEditorModule"
 
 //General Log
-DEFINE_LOG_CATEGORY(SpaceMouseEditor);
+DEFINE_LOG_CATEGORY(LogSpaceMouseEditor);
 
-bool FSpaceMouseModule::HandleSettingsSaved()
+bool FSpaceMouseEditorModule::HandleSettingsSaved()
 {
     auto Settings = GetMutableDefault<USpaceMouseConfig>();
     Settings->SaveConfig();
     return true;
 }
 
-void FSpaceMouseModule::RegisterSettings()
+void FSpaceMouseEditorModule::RegisterSettings()
 {
     auto& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
     
@@ -49,14 +49,14 @@ void FSpaceMouseModule::RegisterSettings()
         // validate those or just act to settings changes.
         if (SettingsSection.IsValid())
         {
-            SettingsSection->OnModified().BindRaw(this, &FSpaceMouseModule::HandleSettingsSaved);
+            SettingsSection->OnModified().BindRaw(this, &FSpaceMouseEditorModule::HandleSettingsSaved);
         }
 
         Settings->RegisterInputBindingNotification();
     }
 }
 
-void FSpaceMouseModule::UnregisterSettings()
+void FSpaceMouseEditorModule::UnregisterSettings()
 {
     if(FModuleManager::Get().IsModuleLoaded("PropertyEditor"))
     {
@@ -71,7 +71,7 @@ void FSpaceMouseModule::UnregisterSettings()
     }
 }
 
-void FSpaceMouseModule::RegisterPropertyTypeCustomizations()
+void FSpaceMouseEditorModule::RegisterPropertyTypeCustomizations()
 {
     RegisterCustomPropertyTypeLayout(
         "SmKey",
@@ -79,7 +79,7 @@ void FSpaceMouseModule::RegisterPropertyTypeCustomizations()
     );
 }
 
-void FSpaceMouseModule::RegisterCustomPropertyTypeLayout(FName PropertyTypeName, FOnGetPropertyTypeCustomizationInstance PropertyTypeLayoutDelegate)
+void FSpaceMouseEditorModule::RegisterCustomPropertyTypeLayout(FName PropertyTypeName, FOnGetPropertyTypeCustomizationInstance PropertyTypeLayoutDelegate)
 {
     check(PropertyTypeName != NAME_None);
 
@@ -90,7 +90,7 @@ void FSpaceMouseModule::RegisterCustomPropertyTypeLayout(FName PropertyTypeName,
     PropertyModule.RegisterCustomPropertyTypeLayout(PropertyTypeName, PropertyTypeLayoutDelegate);
 }
 
-void FSpaceMouseModule::StartupModule()
+void FSpaceMouseEditorModule::StartupModule()
 {
     if(FModuleManager::Get().IsModuleLoaded("SpaceMouseReader"))
         ReaderModule = FModuleManager::GetModulePtr<FSpaceMouseReaderModule>("SpaceMouseReader");
@@ -107,7 +107,7 @@ void FSpaceMouseModule::StartupModule()
     SmManager.Start();
 }
 
-void FSpaceMouseModule::ShutdownModule()
+void FSpaceMouseEditorModule::ShutdownModule()
 {
     if(UObjectInitialized())
     {
@@ -117,4 +117,4 @@ void FSpaceMouseModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
     
-IMPLEMENT_MODULE(FSpaceMouseModule, SpaceMouse)
+IMPLEMENT_MODULE(FSpaceMouseEditorModule, SpaceMouseEditor)

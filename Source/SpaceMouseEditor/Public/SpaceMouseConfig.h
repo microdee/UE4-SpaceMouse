@@ -34,7 +34,7 @@ enum class EOrthoSmPlane : uint8
 };
 
 USTRUCT(BlueprintType)
-struct SPACEMOUSE_API FUICommandName
+struct SPACEMOUSEEDITOR_API FUICommandName
 {
     GENERATED_BODY()
     
@@ -46,7 +46,7 @@ struct SPACEMOUSE_API FUICommandName
 };
 
 UCLASS(Config=Editor, defaultconfig)
-class SPACEMOUSE_API USpaceMouseConfig : public UObject
+class SPACEMOUSEEDITOR_API USpaceMouseConfig : public UObject
 {
     GENERATED_BODY()
 public:

@@ -11,9 +11,9 @@
 #include "SpaceMouseConfig.h"
 
 //General Log
-DECLARE_LOG_CATEGORY_EXTERN(SpaceMouseEditor, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(LogSpaceMouseEditor, Log, All);
 
-class FSpaceMouseModule : public IModuleInterface
+class FSpaceMouseEditorModule : public IModuleInterface
 {
 private:
 

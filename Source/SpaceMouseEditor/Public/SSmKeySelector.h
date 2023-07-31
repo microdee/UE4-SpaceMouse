@@ -34,7 +34,7 @@ typedef STreeView<FKeyTreeItem> SKeyTreeView;
  * Exact copy of SKeySelector but only listing SpaceMouse keys
  * and it can tell a SpaceMouseManager that it's learning a button
  */
-class SPACEMOUSE_API SSmKeySelector : public SCompoundWidget
+class SPACEMOUSEEDITOR_API SSmKeySelector : public SCompoundWidget
 {
 public:
     SLATE_BEGIN_ARGS( SSmKeySelector )
