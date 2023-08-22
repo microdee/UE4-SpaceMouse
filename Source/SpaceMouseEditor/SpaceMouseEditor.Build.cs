@@ -7,7 +7,7 @@ public class SpaceMouseEditor : ModuleRules
 {
     public SpaceMouseEditor(ReadOnlyTargetRules Target) : base(Target)
     {
-        PCHUsage = PCHUsageMode.NoSharedPCHs;
+        PCHUsage = PCHUsageMode.NoPCHs;
         bEnableUndefinedIdentifierWarnings = false;
         CppStandard = CppStandardVersion.Cpp17;
 
