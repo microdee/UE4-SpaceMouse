@@ -2,7 +2,6 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "1.2.7",
-	"EngineVersion": "5.2",
 	"FriendlyName": "SpaceMouse for Unreal Engine",
 	"Description": "Control the active editor viewport camera with 3DConnexion SpaceMice",
 	"Category": "Input Devices",
@@ -30,10 +29,6 @@
 			"Name": "SpaceMouseReader",
 			"Type": "Runtime",
 			"LoadingPhase": "PreDefault",
-			"AdditionalDependencies": [
-				"Core",
-				"HIDUE"
-			],
 			"WhitelistPlatforms": [
 				"Linux",
 				"Win64"
@@ -43,10 +38,6 @@
 			"Name": "SpaceMouseRuntime",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Core",
-				"SpaceMouseReader"
-			],
 			"WhitelistPlatforms": [
 				"Linux",
 				"Win64"
@@ -56,10 +47,6 @@
 			"Name": "SpaceMouseEditor",
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit",
-			"AdditionalDependencies": [
-				"Core",
-				"SpaceMouseReader"
-			],
 			"WhitelistPlatforms": [
 				"Linux",
 				"Win64"

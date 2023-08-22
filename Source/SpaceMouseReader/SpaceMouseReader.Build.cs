@@ -6,27 +6,26 @@ using System.IO;
 
 public class SpaceMouseReader : ModuleRules
 {
-	public SpaceMouseReader(ReadOnlyTargetRules Target) : base(Target)
-	{
+    public SpaceMouseReader(ReadOnlyTargetRules Target) : base(Target)
+    {
         PCHUsage = PCHUsageMode.NoPCHs;
         bEnableUndefinedIdentifierWarnings = false;
-		CppStandard = CppStandardVersion.Cpp17;
+        CppStandard = CppStandardVersion.Cpp17;
 
         IsRedistributableOverride = true;
         bLegalToDistributeObjectCode = true;
         bPrecompile = true;
-        bUsePrecompiled = true;
         PrecompileForTargets = PrecompileTargetsType.Any;
-		
-		PublicDependencyModuleNames.AddRange(new []
-		{
+        
+        PublicDependencyModuleNames.AddRange(new []
+        {
             "Core",
             "CoreUObject",
             "Engine",
 
-			"HIDUE"
-			// ... add other public dependencies that you statically link with here ...
-		});
-	}
+            "HIDUE"
+            // ... add other public dependencies that you statically link with here ...
+        });
+    }
 }
-	
+    

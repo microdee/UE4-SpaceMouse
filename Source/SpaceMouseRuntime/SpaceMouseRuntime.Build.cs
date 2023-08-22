@@ -9,12 +9,11 @@ public class SpaceMouseRuntime : ModuleRules
     {
         PCHUsage = PCHUsageMode.NoPCHs;
         bEnableUndefinedIdentifierWarnings = false;
-		CppStandard = CppStandardVersion.Cpp17;
+        CppStandard = CppStandardVersion.Cpp17;
 
         IsRedistributableOverride = true;
         bLegalToDistributeObjectCode = true;
         bPrecompile = true;
-        bUsePrecompiled = true;
         PrecompileForTargets = PrecompileTargetsType.Any;
 
         if (Target.Version.MajorVersion >= 5)
