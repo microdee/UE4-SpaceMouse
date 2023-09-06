@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "Launch/Resources/Version.h"
+#include "Runtime/Launch/Resources/Version.h"
 
 #define MAKE_UE_VERSION(Major, Minor) (((Major) * 1000) + ((Minor) * 10))
 #define MAKE_UE_VERSION_P(Major, Minor, Patch) (MAKE_UE_VERSION(Major, Minor) + (Patch))
